@@ -35,14 +35,21 @@ interface ProductGridProps {
 export default function ProductGrid({ filters, limit, className }: ProductGridProps) {
   const { t } = useLanguage();
 
-  const queryKey = ["/api/products"];
+  // Build query parameters string
+  let queryString = "/api/products";
   if (filters) {
+    const params = new URLSearchParams();
     Object.entries(filters).forEach(([key, value]) => {
       if (value !== undefined) {
-        queryKey.push(`${key}=${value}`);
+        params.append(key, value.toString());
       }
     });
+    if (params.toString()) {
+      queryString += `?${params.toString()}`;
+    }
   }
+  
+  const queryKey = [queryString];
 
   const { data: products = [], isLoading, error } = useQuery<Product[]>({
     queryKey,
