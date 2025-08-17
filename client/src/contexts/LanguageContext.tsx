@@ -7,7 +7,11 @@ interface LanguageContextType {
   t: (key: keyof typeof translations) => string;
 }
 
-const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
+const LanguageContext = createContext<LanguageContextType>({
+  language: 'uz',
+  setLanguage: () => {},
+  t: (key) => key as string,
+});
 
 interface LanguageProviderProps {
   children: ReactNode;
@@ -46,7 +50,7 @@ export function LanguageProvider({ children }: LanguageProviderProps) {
 
 export function useLanguage() {
   const context = useContext(LanguageContext);
-  if (context === undefined) {
+  if (!context) {
     throw new Error('useLanguage must be used within a LanguageProvider');
   }
   return context;

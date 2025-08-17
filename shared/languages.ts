@@ -175,6 +175,8 @@ export const translations = {
   technicalError: { uz: "Kechirasiz, texnik xatolik yuz berdi. Iltimos, keyinroq urinib ko'ring.", ru: "Извините, произошла техническая ошибка. Пожалуйста, попробуйте позже." },
   support24: { uz: "24/7 qo'llab-quvvatlash", ru: "24/7 поддержка" },
   
+
+  
   // Timer translations
   days: { uz: "kun", ru: "дней" },
   hours: { uz: "soat", ru: "часов" },
