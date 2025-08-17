@@ -77,7 +77,9 @@ app.use((req, res, next) => {
     try {
       telegramBot.startScheduledPosts();
       blogService.startScheduledBlogGeneration();
-      log('Telegram bot and blog service started');
+      log('✅ Telegram marketing posts scheduled (every 6 hours)');
+      log('✅ Blog generation scheduled (every 2 hours, 12 posts daily)');
+      log('🤖 AI automation services started with Gemini 1.5 Flash');
     } catch (error) {
       console.error('Failed to start scheduled services:', error);
     }

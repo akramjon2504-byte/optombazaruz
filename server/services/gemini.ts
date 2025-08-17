@@ -2,6 +2,12 @@ import { GoogleGenAI } from "@google/genai";
 
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || "" });
 
+if (!process.env.GEMINI_API_KEY) {
+  console.warn('⚠️ GEMINI_API_KEY not found. AI features will be disabled.');
+} else {
+  console.log('✅ Gemini API initialized successfully');
+}
+
 export async function generateChatResponse(message: string, context?: string): Promise<string> {
   try {
     const systemPrompt = `Siz OptomBazar.uz optom savdo platformasining AI yordamchisisiz. 
@@ -11,7 +17,7 @@ export async function generateChatResponse(message: string, context?: string): P
     Javoblarni qisqa va aniq qiling.`;
 
     const response = await ai.models.generateContent({
-      model: "gemini-2.5-flash",
+      model: "gemini-1.5-flash",
       config: {
         systemInstruction: systemPrompt,
       },
@@ -53,7 +59,7 @@ export async function generateBlogPost(topic: string, category?: string): Promis
     }`;
 
     const response = await ai.models.generateContent({
-      model: "gemini-2.5-flash",
+      model: "gemini-1.5-flash",
       config: {
         responseMimeType: "application/json",
         responseSchema: {
@@ -92,7 +98,7 @@ export async function generateProductDescription(productName: string, category: 
     }`;
 
     const response = await ai.models.generateContent({
-      model: "gemini-2.5-flash",
+      model: "gemini-1.5-flash",
       config: {
         responseMimeType: "application/json",
         responseSchema: {
@@ -125,7 +131,7 @@ export async function generateMarketingContent(type: 'telegram' | 'social', prod
     O'zbek va rus tillarini aralashtiring.`;
 
     const response = await ai.models.generateContent({
-      model: "gemini-2.5-flash",
+      model: "gemini-1.5-flash",
       contents: prompt,
     });
 

@@ -1,123 +1,233 @@
-interface TelegramBot {
-  sendMessage(chatId: string, text: string, options?: any): Promise<any>;
-}
+import TelegramBot from 'node-telegram-bot-api';
+import { generateMarketingContent } from './gemini';
+import { storage } from '../storage';
 
 class TelegramService {
-  private bot: TelegramBot | null = null;
-  private channelId: string = process.env.TELEGRAM_CHANNEL_ID || "@optombazaruzb";
-  private botToken: string = process.env.TELEGRAM_BOT_TOKEN || "";
+  private bot?: TelegramBot;
+  private channelId = '@optombazaruzb';
+  private adminUserId = 1021369075; // Admin user ID
+  private isInitialized = false;
 
   constructor() {
-    this.initBot();
+    this.initializeBot();
   }
 
-  private async initBot() {
+  private initializeBot() {
+    const token = process.env.TELEGRAM_BOT_TOKEN || '7640281872:AAE3adEZv3efPr-V4Xt77tFgs5k7vVWxqZQ';
+    
+    if (!token || token === 'your_bot_token_here') {
+      console.log('Telegram bot token not configured');
+      return;
+    }
+
     try {
-      if (!this.botToken) {
-        console.warn("Telegram bot token not configured");
+      this.bot = new TelegramBot(token, { polling: true });
+      this.setupCommands();
+      this.isInitialized = true;
+      console.log('✅ Telegram bot initialized: @optombazaruzb');
+    } catch (error) {
+      console.error('Failed to initialize Telegram bot:', error);
+    }
+  }
+
+  private setupCommands() {
+    if (!this.bot) return;
+
+    // Admin commands
+    this.bot.onText(/\/start/, (msg) => {
+      const chatId = msg.chat.id;
+      const welcomeMessage = `
+🛒 OptomBazar.uz - O'zbekistondagi #1 optom platformasi!
+
+🤖 Bu bot sizga quyidagi xizmatlarni taklif etadi:
+• Yangi mahsulotlar haqida ma'lumot
+• Maxsus chegirmalar va aksiyalar
+• Blog yangiliklari
+• Savol-javoblar
+
+📱 Saytimiz: https://optombazar.uz
+📞 Aloqa: +998 (90) 123-45-67
+`;
+      this.bot?.sendMessage(chatId, welcomeMessage);
+    });
+
+    // Admin panel for content generation
+    this.bot.onText(/\/admin/, (msg) => {
+      const chatId = msg.chat.id;
+      if (msg.from?.id !== this.adminUserId) {
+        this.bot?.sendMessage(chatId, '❌ Sizda admin huquqi yo\'q');
         return;
       }
 
-      // Dynamic import to avoid bundling issues
-      const TelegramBot = await import('node-telegram-bot-api');
-      this.bot = new TelegramBot.default(this.botToken);
-      console.log("Telegram bot initialized");
-    } catch (error) {
-      console.error("Failed to initialize Telegram bot:", error);
-    }
-  }
+      const adminMenu = `
+🔧 Admin Panel - OptomBazar.uz
 
-  async sendToChannel(message: string, options?: { 
-    parse_mode?: 'HTML' | 'Markdown';
-    disable_web_page_preview?: boolean;
-  }): Promise<boolean> {
-    try {
-      if (!this.bot || !this.channelId) {
-        console.warn("Telegram not configured properly");
-        return false;
+📝 /generate_blog - Yangi blog post yaratish
+📢 /generate_post - Marketing post yaratish
+📊 /stats - Statistika ko'rish
+🛒 /products - Mahsulotlar ro'yxati
+`;
+      this.bot?.sendMessage(chatId, adminMenu);
+    });
+
+    // Generate blog post command
+    this.bot.onText(/\/generate_blog/, async (msg) => {
+      const chatId = msg.chat.id;
+      if (msg.from?.id !== this.adminUserId) {
+        this.bot?.sendMessage(chatId, '❌ Sizda admin huquqi yo\'q');
+        return;
       }
 
-      await this.bot.sendMessage(this.channelId, message, options);
-      return true;
-    } catch (error) {
-      console.error("Failed to send Telegram message:", error);
-      return false;
-    }
+      try {
+        this.bot?.sendMessage(chatId, '📝 Blog post yaratilmoqda...');
+        const { blogService } = await import('./blog');
+        const success = await blogService.generateDailyBlog();
+        
+        if (success) {
+          this.bot?.sendMessage(chatId, '✅ Blog post muvaffaqiyatli yaratildi va chop etildi!');
+        } else {
+          this.bot?.sendMessage(chatId, '❌ Blog post yaratishda xatolik yuz berdi');
+        }
+      } catch (error) {
+        console.error('Manual blog generation error:', error);
+        this.bot?.sendMessage(chatId, '❌ Xatolik: Blog post yaratib bo\'lmadi');
+      }
+    });
+
+    // Generate marketing post command
+    this.bot.onText(/\/generate_post/, async (msg) => {
+      const chatId = msg.chat.id;
+      if (msg.from?.id !== this.adminUserId) {
+        this.bot?.sendMessage(chatId, '❌ Sizda admin huquqi yo\'q');
+        return;
+      }
+
+      try {
+        this.bot?.sendMessage(chatId, '📢 Marketing post yaratilmoqda...');
+        await this.sendScheduledPost();
+        this.bot?.sendMessage(chatId, '✅ Marketing post muvaffaqiyatli yuborildi!');
+      } catch (error) {
+        console.error('Manual marketing post error:', error);
+        this.bot?.sendMessage(chatId, '❌ Xatolik: Marketing post yaratib bo\'lmadi');
+      }
+    });
+
+    console.log('✅ Telegram bot commands configured');
   }
 
-  async sendPromotion(products: Array<{name: string; price: string; discount?: string}>) {
-    const productList = products.map(p => 
-      `• ${p.name} - ${p.price}${p.discount ? ` (${p.discount} chegirma!)` : ''}`
-    ).join('\n');
+  async sendScheduledPost() {
+    if (!this.isInitialized || !this.bot) {
+      console.log('Telegram bot not initialized, skipping scheduled post');
+      return;
+    }
 
-    const message = `🔥 *AKSIYA!* 🔥
-
-Yangi mahsulotlar OptomBazar.uz da:
-
-${productList}
-
-📞 Buyurtma: +998 71 123-45-67
-🌐 optombazar.uz
-📍 Biz bilan bog'laning!
-
-#OptomBazar #Aksiya #O'zbekiston`;
-
-    return this.sendToChannel(message, { 
-      parse_mode: 'Markdown',
-      disable_web_page_preview: true 
-    });
+    try {
+      // Get random products for promotion
+      const allProducts = await storage.getProducts({});
+      const products = allProducts.slice(0, 5);
+      const productNames = products.map(p => p.nameUz).slice(0, 3);
+      
+      // Generate marketing content using Gemini 1.5 Flash
+      const content = await generateMarketingContent('telegram', productNames);
+      
+      // Send to channel
+      await this.bot.sendMessage(this.channelId, content, {
+        parse_mode: 'HTML',
+        disable_web_page_preview: false
+      });
+      
+      console.log('✅ Scheduled Telegram post sent');
+    } catch (error) {
+      console.error('Failed to send scheduled post:', error);
+    }
   }
 
   async sendBlogPost(title: string, excerpt: string, slug: string) {
-    const message = `📝 *Yangi maqola!*
+    if (!this.isInitialized || !this.bot) {
+      console.log('Telegram bot not initialized, skipping blog post');
+      return;
+    }
 
-*${title}*
+    try {
+      const message = `
+📖 <b>Yangi blog maqola!</b>
+
+${title}
 
 ${excerpt}
 
-Batafsil: optombazar.uz/blog/${slug}
+👀 To'liq o'qish: https://optombazar.uz/blog/${slug}
 
-#Blog #OptomBazar #Maslahat`;
+#OptomBazar #Blog #Biznes
+`;
 
-    return this.sendToChannel(message, { 
-      parse_mode: 'Markdown' 
-    });
+      await this.bot.sendMessage(this.channelId, message, {
+        parse_mode: 'HTML',
+        disable_web_page_preview: false
+      });
+      
+      console.log('✅ Blog post sent to Telegram channel');
+    } catch (error) {
+      console.error('Failed to send blog post to Telegram:', error);
+    }
   }
 
-  async sendNewProducts(products: Array<{name: string; category: string; price: string}>) {
-    const productList = products.map(p => 
-      `• ${p.name} (${p.category}) - ${p.price}`
-    ).join('\n');
+  async sendPromotion(products: Array<{ name: string; price: string; discount?: string }>) {
+    if (!this.isInitialized || !this.bot) {
+      console.log('Telegram bot not initialized, skipping promotion');
+      return;
+    }
 
-    const message = `🆕 *Yangi mahsulotlar!*
+    try {
+      let message = `
+🎉 <b>HAFTALIK AKSIYA!</b> 🎉
 
-${productList}
+🛒 Maxsus chegirmalar OptomBazar.uz da:
 
-Buyurtma berish: optombazar.uz
+`;
 
-#YangiMahsulotlar #OptomBazar`;
+      products.forEach((product, index) => {
+        message += `${index + 1}. <b>${product.name}</b>\n`;
+        message += `   💰 ${product.price}`;
+        if (product.discount) {
+          message += ` (${product.discount} CHEGIRMA!)`;
+        }
+        message += `\n\n`;
+      });
 
-    return this.sendToChannel(message, { 
-      parse_mode: 'Markdown' 
-    });
+      message += `
+📞 Buyurtma berish: +998 (90) 123-45-67
+🌐 Sayt: https://optombazar.uz
+🚚 Tez yetkazib berish butun O'zbekiston bo'ylab!
+
+#OptomBazar #Aksiya #Chegirma #OptomSavdo
+`;
+
+      await this.bot.sendMessage(this.channelId, message, {
+        parse_mode: 'HTML',
+        disable_web_page_preview: false
+      });
+      
+      console.log('✅ Weekly promotion sent to Telegram');
+    } catch (error) {
+      console.error('Failed to send promotion to Telegram:', error);
+    }
   }
 
-  async sendWelcomeMessage(customerName: string) {
-    const message = `🎉 *Yangi mijoz qo'shildi!*
+  startScheduledPosts() {
+    if (!this.isInitialized) {
+      console.log('Telegram bot not initialized, cannot start scheduled posts');
+      return;
+    }
 
-${customerName} OptomBazar.uz ga qo'shildi!
+    // Send marketing posts every 6 hours
+    setInterval(async () => {
+      await this.sendScheduledPost();
+    }, 6 * 60 * 60 * 1000); // 6 hours
 
-Bizning katta oilamizga xush kelibsiz! 🤝
-
-📞 Aloqa: +998 71 123-45-67
-🌐 optombazar.uz
-
-#YangiMijoz #OptomBazar #Welcome`;
-
-    return this.sendToChannel(message, { 
-      parse_mode: 'Markdown' 
-    });
+    console.log('✅ Telegram scheduled marketing posts started (every 6 hours)');
   }
 }
 
 export const telegramService = new TelegramService();
+export const telegramBot = telegramService;

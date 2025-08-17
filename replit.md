@@ -37,13 +37,14 @@ Bu to'liq funksional elektron tijorat veb-ilovasi bo'lib, Replit Agent muhitidan
   - ✅ Code xatolari va duplikat kalitlar to'g'irildi
 
 - **2024-08-17**: Integrated AI-Powered Marketing Automation
-  - Implemented Telegram bot (@optombazaruzb) with admin controls
-  - Added Gemini 2.5 Flash API integration for content generation
-  - Created automated blog service generating 10-12 daily posts
-  - Set up marketing post automation (every 6 hours)
-  - Added admin routes for manual content generation
-  - Telegram bot token: 7640281872:AAE3adEZv3efPr-V4Xt77tFgs5k7vVWxqZQ
-  - Admin User ID: 1021369075 (with full bot control access)
+  - ✅ Implemented Telegram bot (@optombazaruzb) with admin controls
+  - ✅ Added Gemini 1.5 Flash API integration for content generation (bepul model)
+  - ✅ Created automated blog service generating 12 daily posts (every 2 hours)
+  - ✅ Set up marketing post automation (every 6 hours)  
+  - ✅ Added admin routes for manual content generation
+  - ✅ Telegram bot token: 7640281872:AAE3adEZv3efPr-V4Xt77tFgs5k7vVWxqZQ
+  - ✅ Admin User ID: 1021369075 (with full bot control access)
+  - ✅ All AI services fully automated without manual intervention
 
 ## Database Schema
 - Users, categories, products, cart/wishlist items

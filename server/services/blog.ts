@@ -121,6 +121,20 @@ class BlogService {
     
     return images[category] || images.business;
   }
+
+  startScheduledBlogGeneration() {
+    // Generate blog posts every 2 hours (12 posts per day)
+    setInterval(async () => {
+      try {
+        await this.generateDailyBlog();
+        console.log('✅ Scheduled blog post generated');
+      } catch (error) {
+        console.error('Failed to generate scheduled blog post:', error);
+      }
+    }, 2 * 60 * 60 * 1000); // 2 hours
+
+    console.log('✅ Blog generation scheduled (every 2 hours, 12 posts daily)');
+  }
 }
 
 export const blogService = new BlogService();
