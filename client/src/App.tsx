@@ -14,11 +14,13 @@ function Router() {
   return (
     <Switch>
       <Route path="/" component={Home} />
-      <Route path="/catalog" component={Catalog} />
+      <Route path="/catalog" component={() => <Catalog />} />
       <Route path="/product/:slug" component={ProductDetail} />
       <Route path="/blog" component={Blog} />
       <Route path="/blog/:slug" component={Blog} />
-      <Route path="/promotions" component={() => <Catalog filters={{ isPromo: true }} />} />
+      <Route path="/promotions">
+        <Catalog filters={{ isPromo: true }} />
+      </Route>
       <Route path="/contact" component={NotFound} />
       <Route path="/cart" component={NotFound} />
       <Route path="/delivery" component={NotFound} />
