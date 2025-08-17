@@ -15,6 +15,29 @@ class BlogService {
     { uz: "Logistika va yetkazib berish", ru: "Логистика и доставка", category: "logistics" }
   ];
 
+  async generateBlogPost(topic: string): Promise<any> {
+    try {
+      // Generate content using Gemini
+      const content = await generateBlogPost(topic, "business");
+      
+      // Create blog post
+      return await storage.createBlogPost({
+        titleUz: content.titleUz,
+        titleRu: content.titleRu,
+        contentUz: content.contentUz,
+        contentRu: content.contentRu,
+        slug: content.slug,
+        excerpt: content.excerpt,
+        imageUrl: this.getTopicImage("business"),
+        isAiGenerated: true,
+        isPublished: true
+      });
+    } catch (error) {
+      console.error("Failed to generate blog post:", error);
+      throw error;
+    }
+  }
+
   async generateDailyBlog(): Promise<boolean> {
     try {
       // Select random topic

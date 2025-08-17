@@ -2,6 +2,62 @@ import { storage } from "../storage";
 import type { Order, Payment } from "@shared/schema";
 
 export class PaymentService {
+  // Get available payment methods
+  static async getPaymentMethods(): Promise<any[]> {
+    return [
+      {
+        id: 'qr_card',
+        name: 'QR karta orqali to\'lash',
+        description: 'Uzbekiston QR karta tizimi orqali',
+        icon: '💳'
+      },
+      {
+        id: 'cash_delivery',
+        name: 'Yetkazib berishda to\'lash',
+        description: 'Mahsulot yetkazib berilganda naqd to\'lash',
+        icon: '💰'
+      },
+      {
+        id: 'bank_transfer',
+        name: 'Bank o\'tkazmasi',
+        description: 'Bank hisob raqamiga o\'tkazma',
+        icon: '🏦'
+      }
+    ];
+  }
+
+  // Get bank transfer details
+  static async getBankTransferDetails(): Promise<any> {
+    return {
+      bankName: 'Xalq Banki',
+      accountNumber: '20208000600000001234',
+      accountName: 'OptomBazar.uz',
+      mfo: '00014',
+      inn: '123456789'
+    };
+  }
+
+  // Create order
+  static async createOrder(orderData: any): Promise<any> {
+    try {
+      // Create order in storage
+      const order = await storage.createOrder(orderData);
+      
+      // Create payment record
+      const payment = await storage.createPayment({
+        orderId: order.id,
+        paymentMethod: orderData.paymentMethod,
+        amount: orderData.totalAmount,
+        status: 'pending'
+      });
+
+      return { order, payment };
+    } catch (error) {
+      console.error('Order creation failed:', error);
+      throw error;
+    }
+  }
+
   // QR Card payment processing
   static async processQRCardPayment(orderId: string, qrCardNumber: string): Promise<boolean> {
     try {

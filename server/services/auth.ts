@@ -7,10 +7,10 @@ import { eq } from 'drizzle-orm';
 interface RegisterData {
   email: string;
   password: string;
-  firstName?: string;
-  lastName?: string;
-  phone?: string;
-  preferredLanguage?: 'uz' | 'ru';
+  firstName?: string | null;
+  lastName?: string | null;
+  phone?: string | null;
+  preferredLanguage?: string | null;
 }
 
 interface LoginData {

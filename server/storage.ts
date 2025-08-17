@@ -153,7 +153,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getAllCategories(): Promise<Category[]> {
-    return await db.select().from(categories).orderBy(desc(categories.createdAt));
+    return await db.select().from(categories);
   }
 
   async updateCategory(id: number, updates: Partial<Category>): Promise<Category> {

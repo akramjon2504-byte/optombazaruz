@@ -4,7 +4,7 @@ import session from "express-session";
 import connectPg from "connect-pg-simple";
 import { storage } from "./storage";
 import { authService } from "./services/auth";
-import { insertUserSchema, insertCategorySchema, insertProductSchema, insertCartItemSchema, insertWishlistItemSchema, insertChatMessageSchema, insertOrderSchema, insertPaymentSchema } from "@shared/schema";
+import { insertUserSchema, insertCategorySchema, insertProductSchema, insertCartItemSchema, insertWishlistItemSchema, insertChatMessageSchema, insertOrderSchema, insertPaymentSchema, insertBlogPostSchema } from "@shared/schema";
 import { setupAuth, isAuthenticated } from "./replitAuth";
 import { generateChatResponse } from "./services/gemini";
 import { blogService } from "./services/blog";
@@ -111,7 +111,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post('/api/auth/register', async (req, res) => {
     try {
       const validatedData = insertUserSchema.parse(req.body);
-      const user = await authService.registerUser(validatedData);
+      if (!validatedData.email || !validatedData.password) {
+        return res.status(400).json({ message: 'Email va parol majburiy' });
+      }
+      const user = await authService.registerUser(validatedData as any);
       
       // Send welcome message to Telegram channel
       try {
@@ -133,7 +136,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const admin = await authService.adminLogin(username, password);
       
       // Store admin in session
-      (req.session as any).userId = admin.id;
+      const session = req.session as any;
+      session.userId = admin.id;
+      session.isAdmin = admin.isAdmin;
+      session.user = admin;
       
       res.json(admin);
     } catch (error) {
@@ -148,7 +154,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const user = await authService.loginUser({ email, password });
       
       // Store user in session
-      (req.session as any).userId = user.id;
+      const session = req.session as any;
+      session.userId = user.id;
+      session.isAdmin = user.isAdmin;
+      session.user = user;
       
       res.json(user);
     } catch (error) {
@@ -315,8 +324,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Check credentials
       if (username === 'Admin' && password === 'GIsobot201415*') {
         // Set session
-        req.session.isAdmin = true;
-        req.session.user = { username: 'Admin', isAdmin: true };
+        (req.session as any).isAdmin = true;
+        (req.session as any).user = { username: 'Admin', isAdmin: true };
         
         res.json({ success: true, user: { username: 'Admin', isAdmin: true } });
       } else {
@@ -405,8 +414,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Check user auth status
   app.get('/api/auth/user', (req, res) => {
-    if (req.session?.isAdmin) {
-      res.json(req.session.user);
+    const session = req.session as any;
+    if (session?.isAdmin) {
+      res.json(session.user);
     } else {
       res.status(401).json({ message: 'Not authenticated' });
     }
@@ -860,7 +870,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         slug: blogPostData.titleUz.toLowerCase()
           .replace(/[^\w\s]/g, '')
           .replace(/\s+/g, '-'),
-        publishedAt: blogPostData.isPublished ? new Date() : null
+        isPublished: blogPostData.isPublished
       });
       
       res.status(201).json(blogPost);
@@ -883,8 +893,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const { isPublished } = req.body;
       
       await storage.updateBlogPost(id, { 
-        isPublished,
-        publishedAt: isPublished ? new Date() : null 
+        isPublished
       });
       
       res.json({ success: true });
