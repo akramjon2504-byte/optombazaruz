@@ -16,11 +16,15 @@ export const sessions = pgTable(
 export const users = pgTable("users", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   email: text("email").unique(),
+  password: text("password"), // For admin login
   firstName: text("first_name"),
   lastName: text("last_name"),
   profileImageUrl: text("profile_image_url"),
   phone: text("phone"),
   isAdmin: boolean("is_admin").default(false),
+  authProvider: text("auth_provider").default("email"), // email, google, replit
+  preferredLanguage: text("preferred_language").default("uz"), // uz, ru
+  lastLoginAt: timestamp("last_login_at"),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow()
 });
@@ -239,6 +243,33 @@ export const insertPaymentSchema = createInsertSchema(payments).omit({
   processedAt: true
 });
 
+// Export types
+export type InsertUser = z.infer<typeof insertUserSchema>;
+export type UpsertUser = z.infer<typeof upsertUserSchema>;
+export type User = typeof users.$inferSelect;
+export type Category = typeof categories.$inferSelect;
+export type Product = typeof products.$inferSelect;
+export type CartItem = typeof cartItems.$inferSelect;
+export type WishlistItem = typeof wishlistItems.$inferSelect;
+export type Review = typeof reviews.$inferSelect;
+export type BlogPost = typeof blogPosts.$inferSelect;
+export type ChatMessage = typeof chatMessages.$inferSelect;
+export type PromoTimer = typeof promoTimers.$inferSelect;
+export type Order = typeof orders.$inferSelect;
+export type Payment = typeof payments.$inferSelect;
+export type AnalyticsEvent = typeof analyticsEvents.$inferSelect;
+export type CustomerInsight = typeof customerInsights.$inferSelect;
+
+export type InsertCategory = z.infer<typeof insertCategorySchema>;
+export type InsertProduct = z.infer<typeof insertProductSchema>;
+export type InsertCartItem = z.infer<typeof insertCartItemSchema>;
+export type InsertWishlistItem = z.infer<typeof insertWishlistItemSchema>;
+export type InsertReview = z.infer<typeof insertReviewSchema>;
+export type InsertBlogPost = z.infer<typeof insertBlogPostSchema>;
+export type InsertChatMessage = z.infer<typeof insertChatMessageSchema>;
+export type InsertPromoTimer = z.infer<typeof insertPromoTimerSchema>;
+export type InsertOrder = z.infer<typeof insertOrderSchema>;
+export type InsertPayment = z.infer<typeof insertPaymentSchema>;
 export const insertAnalyticsEventSchema = createInsertSchema(analyticsEvents).omit({
   id: true,
   createdAt: true
@@ -250,25 +281,8 @@ export const insertCustomerInsightSchema = createInsertSchema(customerInsights).
   updatedAt: true
 });
 
-// Types
-export type InsertUser = z.infer<typeof insertUserSchema>;
-export type UpsertUser = z.infer<typeof upsertUserSchema>;
-export type User = typeof users.$inferSelect;
-
-export type InsertCategory = z.infer<typeof insertCategorySchema>;
-export type Category = typeof categories.$inferSelect;
-
-export type InsertProduct = z.infer<typeof insertProductSchema>;
-export type Product = typeof products.$inferSelect;
-
-export type InsertCartItem = z.infer<typeof insertCartItemSchema>;
-export type CartItem = typeof cartItems.$inferSelect;
-
-export type InsertWishlistItem = z.infer<typeof insertWishlistItemSchema>;
-export type WishlistItem = typeof wishlistItems.$inferSelect;
-
-export type InsertReview = z.infer<typeof insertReviewSchema>;
-export type Review = typeof reviews.$inferSelect;
+export type InsertAnalyticsEvent = z.infer<typeof insertAnalyticsEventSchema>;
+export type InsertCustomerInsight = z.infer<typeof insertCustomerInsightSchema>;
 
 export type InsertBlogPost = z.infer<typeof insertBlogPostSchema>;
 export type BlogPost = typeof blogPosts.$inferSelect;

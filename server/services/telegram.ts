@@ -4,7 +4,7 @@ interface TelegramBot {
 
 class TelegramService {
   private bot: TelegramBot | null = null;
-  private channelId: string = process.env.TELEGRAM_CHANNEL_ID || "";
+  private channelId: string = process.env.TELEGRAM_CHANNEL_ID || "@optombazaruzb";
   private botToken: string = process.env.TELEGRAM_BOT_TOKEN || "";
 
   constructor() {

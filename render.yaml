@@ -1,0 +1,40 @@
+# Render deployment configuration for OptomBazar.uz
+
+services:
+  - type: web
+    name: optombazar
+    env: node
+    plan: free
+    buildCommand: npm ci && npm run build
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        fromDatabase:
+          name: optombazar-db
+          property: connectionString
+      - key: SESSION_SECRET
+        generateValue: true
+      - key: GEMINI_API_KEY
+        sync: false  # User needs to set manually
+      - key: TELEGRAM_BOT_TOKEN
+        sync: false  # User needs to set manually
+      - key: GOOGLE_OAUTH_CLIENT_ID
+        sync: false  # User needs to set manually
+      - key: GOOGLE_OAUTH_CLIENT_SECRET
+        sync: false  # User needs to set manually
+      - key: TELEGRAM_CHANNEL_ID
+        value: "@optombazaruzb"
+      - key: RENDER_EXTERNAL_URL
+        fromService:
+          type: web
+          name: optombazar
+          property: host
+
+databases:
+  - name: optombazar-db
+    databaseName: optombazar
+    user: optombazar
+    plan: free

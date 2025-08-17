@@ -3,7 +3,9 @@ import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { LanguageProvider } from "@/hooks/use-language";
+import { LanguageProvider } from "@/contexts/LanguageContext";
+import { useAuth } from "@/hooks/useAuth";
+import { Skeleton } from "@/components/ui/skeleton";
 import NotFound from "@/pages/not-found";
 import Home from "@/pages/home";
 import Catalog from "@/pages/catalog";
@@ -11,13 +13,29 @@ import ProductDetail from "@/pages/product-detail";
 import Blog from "@/pages/blog";
 import Contact from "@/pages/contact";
 import Cart from "@/pages/cart";
-import Admin from "@/pages/Admin";
+import AdminPanel from "@/pages/AdminPanel";
+import Login from "@/pages/Login";
+import Register from "@/pages/Register";
 import Delivery from "@/pages/delivery";
 import Help from "@/pages/help";
 
-function Router() {
+function AuthRouter() {
+  const { isLoading, isAuthenticated, isAdmin } = useAuth();
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="space-y-4 text-center">
+          <Skeleton className="h-8 w-48 mx-auto" />
+          <Skeleton className="h-4 w-32 mx-auto" />
+        </div>
+      </div>
+    );
+  }
+
   return (
     <Switch>
+      {/* Public routes */}
       <Route path="/" component={Home} />
       <Route path="/catalog" component={() => <Catalog />} />
       <Route path="/product/:slug" component={ProductDetail} />
@@ -28,11 +46,21 @@ function Router() {
       </Route>
       <Route path="/contact" component={Contact} />
       <Route path="/cart" component={Cart} />
-      <Route path="/admin" component={Admin} />
       <Route path="/delivery" component={Delivery} />
+      <Route path="/help" component={Help} />
+      
+      {/* Auth routes */}
+      <Route path="/login" component={Login} />
+      <Route path="/register" component={Register} />
+      
+      {/* Protected admin route */}
+      <Route path="/admin">
+        {isAuthenticated && isAdmin ? <AdminPanel /> : <Login />}
+      </Route>
+      
+      {/* Placeholder routes */}
       <Route path="/payment" component={NotFound} />
       <Route path="/returns" component={NotFound} />
-      <Route path="/help" component={Help} />
       <Route path="/privacy" component={NotFound} />
       <Route path="/terms" component={NotFound} />
       <Route component={NotFound} />
@@ -46,7 +74,7 @@ function App() {
       <LanguageProvider>
         <TooltipProvider>
           <Toaster />
-          <Router />
+          <AuthRouter />
         </TooltipProvider>
       </LanguageProvider>
     </QueryClientProvider>

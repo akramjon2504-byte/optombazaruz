@@ -1,6 +1,10 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
+import session from "express-session";
+import connectPg from "connect-pg-simple";
 import { storage } from "./storage";
+import { authService } from "./services/auth";
+import { insertUserSchema } from "@shared/schema";
 import { setupAuth, isAuthenticated } from "./replitAuth";
 import { generateChatResponse } from "./services/gemini";
 import { blogService } from "./services/blog";
@@ -11,10 +15,158 @@ import { PaymentService } from "./services/payment";
 import { randomUUID } from "crypto";
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Session configuration
+  const pgStore = connectPg(session);
+  const sessionStore = new pgStore({
+    conString: process.env.DATABASE_URL,
+    createTableIfMissing: false,
+    ttl: 7 * 24 * 60 * 60 * 1000, // 1 week
+    tableName: "sessions",
+  });
+
+  app.use(session({
+    secret: process.env.SESSION_SECRET || 'dev-secret-key-change-in-production',
+    store: sessionStore,
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 1 week
+    },
+  }));
+
   // Seed database with real OptomBazar.uz data
   await seedDatabase();
 
-  // Auth middleware
+  // Define middleware functions
+  const requireAuth = async (req: any, res: Response, next: NextFunction) => {
+    if (!req.user) {
+      return res.status(401).json({ message: 'Authentication required' });
+    }
+    next();
+  };
+
+  const requireAdmin = async (req: any, res: Response, next: NextFunction) => {
+    const user = await storage.getUser(req.user.id);
+    if (!user?.isAdmin) {
+      return res.status(403).json({ message: 'Admin access required' });
+    }
+    next();
+  };
+
+  // Admin routes
+  app.get('/api/admin/stats', requireAuth, requireAdmin, async (req, res) => {
+    try {
+      // Get basic stats
+      const stats = {
+        totalUsers: await storage.getUserCount(),
+        totalOrders: 0,
+        monthlySales: 0,
+        totalMessages: 0
+      };
+      res.json(stats);
+    } catch (error) {
+      console.error('Stats error:', error);
+      res.status(500).json({ message: 'Server error' });
+    }
+  });
+
+  app.get('/api/admin/users', requireAuth, requireAdmin, async (req, res) => {
+    try {
+      const users = await storage.getAllUsers();
+      res.json(users);
+    } catch (error) {
+      console.error('Users error:', error);
+      res.status(500).json({ message: 'Server error' });
+    }
+  });
+
+  app.post('/api/admin/telegram/send', requireAuth, requireAdmin, async (req, res) => {
+    try {
+      const { message } = req.body;
+      const success = await telegramService.sendToChannel(message);
+      if (success) {
+        res.json({ success: true });
+      } else {
+        res.status(400).json({ message: 'Telegram xabari yuborilmadi' });
+      }
+    } catch (error) {
+      console.error('Telegram send error:', error);
+      res.status(500).json({ message: 'Server error' });
+    }
+  });
+
+  app.post('/api/admin/blog/generate', requireAuth, requireAdmin, async (req, res) => {
+    try {
+      const { topic } = req.body;
+      const blogPost = await blogService.generateBlogPost(topic);
+      res.json(blogPost);
+    } catch (error) {
+      console.error('Blog generation error:', error);
+      res.status(500).json({ message: 'Blog yaratishda xatolik' });
+    }
+  });
+
+  // Auth routes
+  app.post('/api/auth/register', async (req, res) => {
+    try {
+      const validatedData = insertUserSchema.parse(req.body);
+      const user = await authService.registerUser(validatedData);
+      res.status(201).json(user);
+    } catch (error) {
+      console.error('Registration error:', error);
+      res.status(400).json({ message: error instanceof Error ? error.message : 'Ro\'yxatdan o\'tishda xatolik' });
+    }
+  });
+
+  app.post('/api/auth/login', async (req, res) => {
+    try {
+      const { email, password } = req.body;
+      const user = await authService.loginUser({ email, password });
+      
+      // Store user in session
+      (req.session as any).userId = user.id;
+      
+      res.json(user);
+    } catch (error) {
+      console.error('Login error:', error);
+      res.status(401).json({ message: error instanceof Error ? error.message : 'Kirish xatoligi' });
+    }
+  });
+
+  app.post('/api/auth/logout', async (req, res) => {
+    req.session.destroy((err) => {
+      if (err) {
+        return res.status(500).json({ message: 'Logout xatoligi' });
+      }
+      res.clearCookie('connect.sid');
+      res.json({ success: true });
+    });
+  });
+
+  app.get('/api/auth/user', async (req, res) => {
+    try {
+      const userId = (req.session as any)?.userId;
+      if (!userId) {
+        return res.status(401).json({ message: 'Unauthorized' });
+      }
+
+      const user = await authService.getUserById(userId);
+      if (!user) {
+        return res.status(401).json({ message: 'User not found' });
+      }
+
+      res.json(user);
+    } catch (error) {
+      console.error('Get user error:', error);
+      res.status(500).json({ message: 'Server error' });
+    }
+  });
+
+  // Auth middleware functions already defined above - reusing them
+
+  // Auth middleware for legacy routes
   await setupAuth(app);
 
   // Auth routes
