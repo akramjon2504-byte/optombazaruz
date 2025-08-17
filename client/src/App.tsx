@@ -9,6 +9,11 @@ import Home from "@/pages/home";
 import Catalog from "@/pages/catalog";
 import ProductDetail from "@/pages/product-detail";
 import Blog from "@/pages/blog";
+import Contact from "@/pages/contact";
+import Cart from "@/pages/cart";
+import Admin from "@/pages/Admin";
+import Delivery from "@/pages/delivery";
+import Help from "@/pages/help";
 
 function Router() {
   return (
@@ -21,12 +26,13 @@ function Router() {
       <Route path="/promotions">
         <Catalog filters={{ isPromo: true }} />
       </Route>
-      <Route path="/contact" component={NotFound} />
-      <Route path="/cart" component={NotFound} />
-      <Route path="/delivery" component={NotFound} />
+      <Route path="/contact" component={Contact} />
+      <Route path="/cart" component={Cart} />
+      <Route path="/admin" component={Admin} />
+      <Route path="/delivery" component={Delivery} />
       <Route path="/payment" component={NotFound} />
       <Route path="/returns" component={NotFound} />
-      <Route path="/help" component={NotFound} />
+      <Route path="/help" component={Help} />
       <Route path="/privacy" component={NotFound} />
       <Route path="/terms" component={NotFound} />
       <Route component={NotFound} />

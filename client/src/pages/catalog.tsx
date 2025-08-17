@@ -161,12 +161,12 @@ export default function Catalog({ filters: propFilters }: CatalogProps) {
               {/* Category Filter */}
               <div className="mb-6">
                 <label className="block text-sm font-medium mb-2">Kategoriya</label>
-                <Select value={selectedCategory} onValueChange={handleCategoryChange}>
+                <Select value={selectedCategory || 'all'} onValueChange={(value) => handleCategoryChange(value === 'all' ? '' : value)}>
                   <SelectTrigger data-testid="select-category">
                     <SelectValue placeholder="Kategoriyani tanlang" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">Barcha kategoriyalar</SelectItem>
+                    <SelectItem value="all">Barcha kategoriyalar</SelectItem>
                     {categories.map((category) => (
                       <SelectItem key={category.id} value={category.id}>
                         {language === 'uz' ? category.nameUz : category.nameRu}
