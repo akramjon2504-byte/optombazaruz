@@ -16,7 +16,9 @@ interface ProductCardProps {
     price: string;
     originalPrice?: string | null;
     slug: string;
-    images: string[];
+    imageUrl?: string | null;
+    imageUrl2?: string | null;
+    imageUrl3?: string | null;
     isHit: boolean;
     isPromo: boolean;
     discountPercent: number;
@@ -53,7 +55,7 @@ export default function ProductCard({ product, className }: ProductCardProps) {
       <Card className={cn("hover-lift overflow-hidden cursor-pointer", className)} data-testid={`card-product-${product.id}`}>
         <div className="relative">
           <img
-            src={product.images[0] || "https://via.placeholder.com/300x200?text=No+Image"}
+            src={product.imageUrl || "https://via.placeholder.com/300x200?text=No+Image"}
             alt={productName}
             className="w-full h-48 object-cover"
             data-testid={`img-product-${product.id}`}
