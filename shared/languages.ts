@@ -75,6 +75,45 @@ export const translations = {
   hotDeals: { uz: "Issiq takliflar", ru: "Горячие предложения" },
   freeShipping: { uz: "Bepul yetkazib berish", ru: "Бесплатная доставка" },
   wholesale: { uz: "Optom narxlar", ru: "Оптовые цены" },
+  
+  // Hero Section
+  heroTitle: { uz: "O'zbekistonning Eng Yirik Optom Bazori", ru: "Крупнейший Оптовый Рынок Узбекистана" },
+  heroSubtitle: { uz: "5000 dan ortiq mahsulot, eng yaxshi narxlar va tezkor yetkazib berish", ru: "Более 5000 товаров, лучшие цены и быстрая доставка" },
+  viewCatalog: { uz: "Katalogni ko'rish", ru: "Смотреть каталог" },
+  aiAssistant: { uz: "AI Yordamchi", ru: "AI Помощник" },
+  
+  // Features
+  wholesalePrices: { uz: "Optom Narxlar", ru: "Оптовые Цены" },
+  fastDelivery: { uz: "Tezkor Yetkazib Berish", ru: "Быстрая Доставка" },
+  qualityGuarantee: { uz: "Sifat Kafolati", ru: "Гарантия Качества" },
+  support247: { uz: "24/7 Qo'llab-quvvatlash", ru: "24/7 Поддержка" },
+  
+  // Categories
+  popularCategories: { uz: "Mashhur Kategoriyalar", ru: "Популярные Категории" },
+  viewAll: { uz: "Barchasini ko'rish", ru: "Смотреть все" },
+  productsCount: { uz: "mahsulot", ru: "товаров" },
+  
+  // Latest News
+  latestNews: { uz: "So'nggi Yangiliklar", ru: "Последние Новости" },
+  readMore: { uz: "Batafsil", ru: "Подробнее" },
+  generatedByAI: { uz: "AI tomonidan yaratilgan", ru: "Создано с помощью ИИ" },
+  
+  // Company Info
+  companyFeatures: { uz: "Kompaniya Imkoniyatlari", ru: "Возможности Компании" },
+  
+  // Header & Navigation
+  searchPlaceholder: { uz: "Mahsulotlarni qidirish...", ru: "Поиск товаров..." },
+  promotions: { uz: "Aksiyalar", ru: "Акции" },
+  hitProducts: { uz: "Hit mahsulotlar", ru: "Хит товары" },
+  
+  // Product Card & Actions
+  hit: { uz: "Хит", ru: "Хит" },
+  outOfStockMessage: { uz: "Qolmadi", ru: "Нет в наличии" },
+  
+  // Common UI elements
+  loadMore: { uz: "Ko'proq yuklash", ru: "Загрузить больше" },
+  showAll: { uz: "Barchasini ko'rsatish", ru: "Показать все" },
+  closeMenu: { uz: "Menyuni yopish", ru: "Закрыть меню" },
 };
 
 export function getTranslation(key: keyof typeof translations, lang: Language): string {

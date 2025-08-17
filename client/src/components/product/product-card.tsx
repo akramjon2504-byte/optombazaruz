@@ -55,7 +55,7 @@ export default function ProductCard({ product, className }: ProductCardProps) {
       <Card className={cn("hover-lift overflow-hidden cursor-pointer", className)} data-testid={`card-product-${product.id}`}>
         <div className="relative">
           <img
-            src={product.imageUrl || "https://via.placeholder.com/300x200?text=No+Image"}
+            src={product.imageUrl || "https://via.placeholder.com/300x200?text=Rasm+yo'q"}
             alt={productName}
             className="w-full h-48 object-cover"
             data-testid={`img-product-${product.id}`}
@@ -65,7 +65,7 @@ export default function ProductCard({ product, className }: ProductCardProps) {
           <div className="absolute top-2 right-2 flex flex-col gap-2">
             {product.isHit && (
               <Badge variant="secondary" className="bg-secondary text-white">
-                Hit
+                {t("hit")}
               </Badge>
             )}
             {product.discountPercent > 0 && (
@@ -132,7 +132,7 @@ export default function ProductCard({ product, className }: ProductCardProps) {
             data-testid={`button-add-to-cart-${product.id}`}
           >
             <ShoppingCart className="w-4 h-4 mr-2" />
-            {product.stock === 0 ? "Qolmadi" : t("addToCart")}
+            {product.stock === 0 ? t("outOfStockMessage") : t("addToCart")}
           </Button>
         </CardContent>
       </Card>

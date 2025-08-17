@@ -1,7 +1,7 @@
-# E-Commerce Application - Replit Migration
+# Optombazar - O'zbekistonda Optom Bozori
 
-## Project Overview
-This is a full-stack e-commerce web application that was successfully migrated from Replit Agent to the standard Replit environment. The application features multilingual support (Uzbek/Russian), product catalog management, shopping cart functionality, user authentication, and admin features.
+## Loyiha Haqida
+Bu to'liq funksional elektron tijorat veb-ilovasi bo'lib, Replit Agent muhitidan Replit standart muhitiga muvaffaqiyatli ko'chirilgan. Ilova ikki tilda (o'zbek va rus) qo'llab-quvvatlaydi, mahsulot katalogini boshqarish, savatcha funksiyalari, foydalanuvchi autentifikatsiyasi va admin panelini o'z ichiga oladi.
 
 ## Architecture
 - **Frontend**: React 18 + TypeScript + Vite
@@ -37,11 +37,44 @@ This is a full-stack e-commerce web application that was successfully migrated f
 - Analytics events and customer insights
 - Session storage for authentication
 
-## User Preferences
-- No specific preferences documented yet
+## Foydalanuvchi Talablari
+- Sayt faqat o'zbek va rus tillarida bo'lishi kerak
+- Ingliz tilidagi so'zlarni olib tashlash kerak
+- Optombazar.uz saytiga mos keluvchi dizayn va funksiyalar
 
-## Development Notes
-- Uses tsx for TypeScript execution in development
-- Drizzle ORM for type-safe database operations
-- Replit-specific configurations in vite.config.ts
-- All packages managed through npm (avoid manual package.json edits)
+## Texnik Topshiriq (TS)
+
+### 1-Bosqich: Tilni Tozalash ✓
+- [x] Ingliz tilidagi so'zlarni aniqlash va almashtirish
+- [x] O'zbek va rus tilidagi tarjimalarni to'liq tekshirish
+- [x] UI komponentlarida til sozlamalarini sozlash
+
+### 2-Bosqich: Mahsulot Katalogi
+- [ ] Optombazar.uz saytidagi mahsulotlar ro'yxatini import qilish
+- [ ] Kategoriyalarni to'g'ri tashkil etish
+- [ ] Mahsulot rasmlarini optimizatsiya qilish
+- [ ] Narxlarni so'm valyutasida ko'rsatish
+
+### 3-Bosqich: Dizayn va UX
+- [ ] Optombazar.uz dizayniga mos keluvchi ranglar va stillar
+- [ ] O'zbek va rus tilidagi navigatsiya
+- [ ] Mobil qurilmalar uchun optimizatsiya
+- [ ] SEO optimallashtirish
+
+### 4-Bosqich: E-tijorat Funksiyalari
+- [ ] Savat va buyurtma berish tizimi
+- [ ] To'lov tizimlari (Click, Payme, naqd)
+- [ ] Yetkazib berish hisob-kitoblari
+- [ ] SMS bildirishnomalar
+
+### 5-Bosqich: Admin Panel
+- [ ] Mahsulotlarni boshqarish
+- [ ] Buyurtmalarni kuzatish
+- [ ] Hisobotlar va statistika
+- [ ] Foydalanuvchilarni boshqarish
+
+## Rivojlanish Eslatmalari
+- tsx TypeScript bajarish uchun ishlatiladi
+- Drizzle ORM xavfsiz ma'lumotlar bazasi operatsiyalari uchun
+- vite.config.ts da Replit sozlamalari
+- Barcha paketlar npm orqali boshqariladi
