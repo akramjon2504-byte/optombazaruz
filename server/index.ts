@@ -2,6 +2,8 @@ import express, { type Request, Response, NextFunction } from "express";
 import session from "express-session";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
+import { telegramBot } from "./telegram-bot";
+import { blogService } from "./services/blog-service";
 
 const app = express();
 app.use(express.json());
@@ -70,5 +72,14 @@ app.use((req, res, next) => {
     reusePort: true,
   }, () => {
     log(`serving on port ${port}`);
+    
+    // Start scheduled services
+    try {
+      telegramBot.startScheduledPosts();
+      blogService.startScheduledBlogGeneration();
+      log('Telegram bot and blog service started');
+    } catch (error) {
+      console.error('Failed to start scheduled services:', error);
+    }
   });
 })();

@@ -8,7 +8,7 @@ import { insertUserSchema, insertCategorySchema, insertProductSchema, insertCart
 import { setupAuth, isAuthenticated } from "./replitAuth";
 import { generateChatResponse } from "./services/gemini";
 import { blogService } from "./services/blog";
-import { telegramService } from "./services/telegram";
+import telegramRoutes from "./routes/telegram";
 import { seedDatabase } from "./seedData";
 import { PaymentService } from "./services/payment";
 import { randomUUID } from "crypto";
@@ -960,6 +960,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ message: "Failed to fetch analytics" });
     }
   });
+
+  // Use telegram routes
+  app.use('/api', telegramRoutes);
 
   const httpServer = createServer(app);
 

@@ -12,23 +12,33 @@ Bu to'liq funksional elektron tijorat veb-ilovasi bo'lib, Replit Agent muhitidan
 - **State Management**: TanStack Query for API state, React Context for global state
 
 ## Key Features
-- Multilingual support (Uzbek/Russian)
-- Product catalog with categories, search, filtering
+- Multilingual support (Uzbek/Russian) - English text removed
+- Product catalog with categories, search, filtering  
 - Shopping cart and wishlist functionality
 - User authentication and admin panel
 - Payment integration (Stripe, QR cards, cash on delivery)
-- Blog system with AI content generation
+- AI-powered blog system with Gemini 2.5 Flash
+- Automated marketing content generation (10-12 posts daily)
+- Telegram bot (@optombazaruzb) for marketing automation
+- Real-time AI chat widget with Gemini integration
 - Analytics and customer insights
-- Telegram bot integration
-- Real-time notifications
 
-## Recent Changes (Migration)
+## Recent Changes (Migration and AI Integration)
 - **2024-08-17**: Successfully migrated from Replit Agent to Replit
   - Created PostgreSQL database and pushed schema
   - Fixed ProductCard component interface to match database schema
   - Updated image handling from `images` array to `imageUrl` fields
   - Verified all dependencies are installed and working
   - Application now running successfully on port 5000
+
+- **2024-08-17**: Integrated AI-Powered Marketing Automation
+  - Implemented Telegram bot (@optombazaruzb) with admin controls
+  - Added Gemini 2.5 Flash API integration for content generation
+  - Created automated blog service generating 10-12 daily posts
+  - Set up marketing post automation (every 6 hours)
+  - Added admin routes for manual content generation
+  - Telegram bot token: 7640281872:AAE3adEZv3efPr-V4Xt77tFgs5k7vVWxqZQ
+  - Admin User ID: 1021369075 (with full bot control access)
 
 ## Database Schema
 - Users, categories, products, cart/wishlist items
@@ -44,10 +54,13 @@ Bu to'liq funksional elektron tijorat veb-ilovasi bo'lib, Replit Agent muhitidan
 
 ## Texnik Topshiriq (TS)
 
-### 1-Bosqich: Tilni Tozalash ✓
+### 1-Bosqich: Tilni Tozalash va AI Integration ✓
 - [x] Ingliz tilidagi so'zlarni aniqlash va almashtirish
 - [x] O'zbek va rus tilidagi tarjimalarni to'liq tekshirish
 - [x] UI komponentlarida til sozlamalarini sozlash
+- [x] Telegram bot (@optombazaruzb) integratsiyasi
+- [x] Gemini 2.5 Flash API orqali AI-powered content generation
+- [x] Avtomatik blog va marketing post yaratish tizimi
 
 ### 2-Bosqich: Mahsulot Katalogi
 - [ ] Optombazar.uz saytidagi mahsulotlar ro'yxatini import qilish
