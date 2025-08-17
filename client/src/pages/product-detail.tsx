@@ -23,7 +23,10 @@ interface Product {
   price: string;
   originalPrice?: string | null;
   slug: string;
-  images: string[];
+  imageUrl?: string;
+  imageUrl2?: string;
+  imageUrl3?: string;
+  images?: string[];
   isHit: boolean;
   isPromo: boolean;
   discountPercent: number;
@@ -146,31 +149,22 @@ export default function ProductDetail() {
           <div>
             <div className="mb-4">
               <img
-                src={product.images[selectedImageIndex] || "https://via.placeholder.com/400x400?text=No+Image"}
+                src={product.imageUrl || product.images?.[0] || "https://via.placeholder.com/400x400?text=No+Image"}
                 alt={productName}
                 className="w-full h-96 object-cover rounded-lg shadow-md"
                 data-testid="img-product-main"
               />
             </div>
             
-            {product.images.length > 1 && (
+            {(product.imageUrl || product.images?.length) && (
               <div className="flex space-x-2 overflow-x-auto">
-                {product.images.map((image, index) => (
-                  <button
-                    key={index}
-                    onClick={() => setSelectedImageIndex(index)}
-                    className={`flex-shrink-0 border-2 rounded-lg overflow-hidden ${
-                      selectedImageIndex === index ? 'border-primary' : 'border-gray-200'
-                    }`}
-                    data-testid={`button-image-${index}`}
-                  >
-                    <img
-                      src={image}
-                      alt={`${productName} ${index + 1}`}
-                      className="w-20 h-20 object-cover"
-                    />
-                  </button>
-                ))}
+                <div className="flex-shrink-0 border-2 border-primary rounded-lg overflow-hidden">
+                  <img
+                    src={product.imageUrl || product.images?.[0] || "https://via.placeholder.com/80x80"}
+                    alt={productName}
+                    className="w-20 h-20 object-cover"
+                  />
+                </div>
               </div>
             )}
           </div>

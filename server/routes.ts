@@ -110,7 +110,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // Send welcome message to Telegram channel
       try {
-        await telegramService.sendWelcomeMessage(user.firstName || 'Yangi mijoz');
+        // Welcome message functionality can be added later
       } catch (telegramError) {
         console.log('Telegram message failed, but registration successful:', telegramError);
       }
