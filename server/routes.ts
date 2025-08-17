@@ -14,23 +14,14 @@ import { PaymentService } from "./services/payment";
 import { randomUUID } from "crypto";
 
 export async function registerRoutes(app: Express): Promise<Server> {
-  // Session configuration
-  const pgStore = connectPg(session);
-  const sessionStore = new pgStore({
-    conString: process.env.DATABASE_URL,
-    createTableIfMissing: false,
-    ttl: 7 * 24 * 60 * 60 * 1000, // 1 week
-    tableName: "sessions",
-  });
-
+  // Session configuration - using memory store for now
   app.use(session({
     secret: process.env.SESSION_SECRET || 'dev-secret-key-change-in-production',
-    store: sessionStore,
     resave: false,
     saveUninitialized: false,
     cookie: {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
+      secure: false, // Keep false for development
       maxAge: 7 * 24 * 60 * 60 * 1000, // 1 week
     },
   }));
@@ -326,6 +317,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         // Set session
         (req.session as any).isAdmin = true;
         (req.session as any).user = { username: 'Akramjon', isAdmin: true };
+        (req.session as any).userId = 'admin-user';
+        
+        console.log('Session set:', req.session);
         
         res.json({ success: true, user: { username: 'Akramjon', isAdmin: true } });
       } else {
@@ -414,11 +408,35 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Check user auth status
   app.get('/api/auth/user', (req, res) => {
-    const session = req.session as any;
-    if (session?.isAdmin) {
-      res.json(session.user);
-    } else {
-      res.status(401).json({ message: 'Not authenticated' });
+    try {
+      const session = req.session as any;
+      
+      // Log session information
+      const sessionInfo = {
+        sessionID: req.sessionID,
+        hasSession: !!req.session,
+        isAdmin: session?.isAdmin,
+        hasUser: !!session?.user,
+        sessionKeys: Object.keys(session || {}),
+        cookieValue: req.headers.cookie
+      };
+      
+      // Debug: send session info for diagnosis
+      if (req.query.debug === 'true') {
+        return res.json({ debug: sessionInfo });
+      }
+      
+      if (session?.isAdmin && session?.user) {
+        res.json(session.user);
+      } else {
+        res.status(401).json({ 
+          message: 'Unauthorized',
+          debug: sessionInfo
+        });
+      }
+    } catch (error) {
+      console.error('AUTH ERROR:', error);
+      res.status(500).json({ message: 'Server error' });
     }
   });
 
@@ -432,8 +450,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     });
   });
 
-  // Auth middleware for legacy routes
-  await setupAuth(app);
+  // Legacy setupAuth removed - using simple session-based auth
 
   // QR Card payment endpoint
   app.post('/api/payment/qr-card', async (req, res) => {

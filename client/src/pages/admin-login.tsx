@@ -28,11 +28,20 @@ function AdminLogin() {
       });
 
       if (response.ok) {
+        const result = await response.json();
+        console.log('Login successful:', result);
+        
+        // Store admin status in localStorage for now
+        localStorage.setItem('isAdmin', 'true');
+        localStorage.setItem('adminUser', JSON.stringify(result.user));
+        
         toast({
           title: 'Login muvaffaqiyatli',
           description: 'Admin panelga yo\'naltirilmoqda...',
         });
-        setLocation('/admin');
+        
+        // Redirect to admin panel
+        window.location.href = '/admin';
       } else {
         const error = await response.text();
         toast({
