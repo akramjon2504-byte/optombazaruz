@@ -14,6 +14,35 @@ import { useToast } from '@/hooks/use-toast';
 import { useLanguage } from '@/lib/language-context';
 import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 import { apiRequest } from '@/lib/queryClient';
+
+// Type definitions
+interface Category {
+  id: string;
+  nameUz: string;
+  nameRu: string;
+  descriptionUz?: string;
+  descriptionRu?: string;
+  imageUrl?: string;
+  slug: string;
+}
+
+interface Product {
+  id: string;
+  nameUz: string;
+  nameRu: string;
+  descriptionUz: string;
+  descriptionRu: string;
+  categoryId: string;
+  price: number;
+  originalPrice?: number;
+  imageUrl?: string;
+  imageUrl2?: string;
+  imageUrl3?: string;
+  slug: string;
+  isHit: boolean;
+  isPromo: boolean;
+  stock: number;
+}
 import { 
   Users, 
   Package, 
@@ -59,10 +88,12 @@ function AdminPanel() {
     nameRu: '',
     descriptionUz: '',
     descriptionRu: '',
-    categoryId: 0,
+    categoryId: '',
     price: 0,
     originalPrice: 0,
     imageUrl: '',
+    imageUrl2: '',
+    imageUrl3: '',
     isHit: false,
     isPromo: false,
     stock: 0
@@ -321,10 +352,12 @@ function AdminPanel() {
       nameRu: '',
       descriptionUz: '',
       descriptionRu: '',
-      categoryId: 0,
+      categoryId: '',
       price: 0,
       originalPrice: 0,
       imageUrl: '',
+      imageUrl2: '',
+      imageUrl3: '',
       isHit: false,
       isPromo: false,
       stock: 0
@@ -355,6 +388,8 @@ function AdminPanel() {
       price: product.price,
       originalPrice: product.originalPrice || 0,
       imageUrl: product.imageUrl || '',
+      imageUrl2: product.imageUrl2 || '',
+      imageUrl3: product.imageUrl3 || '',
       isHit: product.isHit || false,
       isPromo: product.isPromo || false,
       stock: product.stock
@@ -680,18 +715,42 @@ function AdminPanel() {
                       <Label htmlFor="productCategory" className="text-right">
                         {language === 'uz' ? 'Kategoriya' : 'Категория'}
                       </Label>
-                      <Select value={productForm.categoryId.toString()} onValueChange={(value) => setProductForm({...productForm, categoryId: parseInt(value)})}>
+                      <Select value={productForm.categoryId} onValueChange={(value) => setProductForm({...productForm, categoryId: value})}>
                         <SelectTrigger className="col-span-3">
                           <SelectValue placeholder={language === 'uz' ? 'Kategoriya tanlang' : 'Выберите категорию'} />
                         </SelectTrigger>
                         <SelectContent>
                           {categories?.map((category: Category) => (
-                            <SelectItem key={category.id} value={category.id.toString()}>
+                            <SelectItem key={category.id} value={category.id}>
                               {language === 'uz' ? category.nameUz : category.nameRu}
                             </SelectItem>
                           ))}
                         </SelectContent>
                       </Select>
+                    </div>
+                    <div className="grid grid-cols-4 items-center gap-4">
+                      <Label htmlFor="productDescUz" className="text-right">
+                        {language === 'uz' ? 'Tavsif (O\'zbek)' : 'Описание (Узбекский)'}
+                      </Label>
+                      <Textarea
+                        id="productDescUz"
+                        value={productForm.descriptionUz}
+                        onChange={(e) => setProductForm({...productForm, descriptionUz: e.target.value})}
+                        className="col-span-3"
+                        rows={3}
+                      />
+                    </div>
+                    <div className="grid grid-cols-4 items-center gap-4">
+                      <Label htmlFor="productDescRu" className="text-right">
+                        {language === 'uz' ? 'Tavsif (Rus)' : 'Описание (Русский)'}
+                      </Label>
+                      <Textarea
+                        id="productDescRu"
+                        value={productForm.descriptionRu}
+                        onChange={(e) => setProductForm({...productForm, descriptionRu: e.target.value})}
+                        className="col-span-3"
+                        rows={3}
+                      />
                     </div>
                     <div className="grid grid-cols-4 items-center gap-4">
                       <Label htmlFor="productPrice" className="text-right">
@@ -715,6 +774,42 @@ function AdminPanel() {
                         value={productForm.stock}
                         onChange={(e) => setProductForm({...productForm, stock: parseInt(e.target.value) || 0})}
                         className="col-span-3"
+                      />
+                    </div>
+                    <div className="grid grid-cols-4 items-center gap-4">
+                      <Label htmlFor="productImage1" className="text-right">
+                        {language === 'uz' ? 'Rasm URL 1' : 'URL изображения 1'}
+                      </Label>
+                      <Input
+                        id="productImage1"
+                        value={productForm.imageUrl}
+                        onChange={(e) => setProductForm({...productForm, imageUrl: e.target.value})}
+                        className="col-span-3"
+                        placeholder="https://example.com/image1.jpg"
+                      />
+                    </div>
+                    <div className="grid grid-cols-4 items-center gap-4">
+                      <Label htmlFor="productImage2" className="text-right">
+                        {language === 'uz' ? 'Rasm URL 2' : 'URL изображения 2'}
+                      </Label>
+                      <Input
+                        id="productImage2"
+                        value={productForm.imageUrl2}
+                        onChange={(e) => setProductForm({...productForm, imageUrl2: e.target.value})}
+                        className="col-span-3"
+                        placeholder="https://example.com/image2.jpg"
+                      />
+                    </div>
+                    <div className="grid grid-cols-4 items-center gap-4">
+                      <Label htmlFor="productImage3" className="text-right">
+                        {language === 'uz' ? 'Rasm URL 3' : 'URL изображения 3'}
+                      </Label>
+                      <Input
+                        id="productImage3"
+                        value={productForm.imageUrl3}
+                        onChange={(e) => setProductForm({...productForm, imageUrl3: e.target.value})}
+                        className="col-span-3"
+                        placeholder="https://example.com/image3.jpg"
                       />
                     </div>
                   </div>
