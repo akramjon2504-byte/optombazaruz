@@ -1,0 +1,64 @@
+# IDE fayllari
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Node.js modullari
+node_modules/
+npm-debug.log
+yarn-debug.log
+yarn-error.log
+
+# Mahalliy muhit fayllari
+.env
+.env.local
+.env.*.local
+
+# Log fayllari
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Build fayllari
+/dist
+/build
+
+# Kesh fayllari
+.cache/
+.temp/
+.tmp/
+
+# Tizim fayllari
+.DS_Store
+Thumbs.db
+
+# Test natijalari
+coverage/
+.nyc_output/
+
+# Yig'ilgan fayllar
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Yig'ilgan kodlar
+*.com
+*.class
+*.dll
+*.exe
+*.o
+*.so
+
+# Yordamchi fayllar
+*.bak
+*.swp
+*~
+.~*

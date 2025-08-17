@@ -44,12 +44,14 @@ export default function Home() {
 
   const getCategoryProductCount = (slug: string) => {
     const counts: Record<string, number> = {
-      "polietilen-paketlar": 500,
-      "bir-martalik-idishlar": 300,
-      "uy-buyumlari": 250,
+      "polietilenovye-pakety": 500,
+      "odnorazovaya-posuda": 300,
+      "tovary-dlya-doma-dlya-magazinov-kafe-restoranov-barov": 250,
       "elektronika": 150,
-      "kiyim-kechak": 200,
-      "kimyoviy-vositalar": 100
+      "odejda": 200,
+      "bytovaya-himiya": 100,
+      "kantstovary-dlya-shkoly-i-ofisa-vse-dlya-ucheby-i-raboty": 180,
+      "tovary-dlya-prazdnikov": 80
     };
     return counts[slug] || 50;
   };

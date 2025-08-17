@@ -97,14 +97,16 @@ export class MemStorage implements IStorage {
   }
 
   private seedData() {
-    // Seed categories
+    // Seed categories - Real OptomBazar.uz categories from sitemap
     const categories = [
-      { nameUz: "Polietilen paketlar", nameRu: "Полиэтиленовые пакеты", slug: "polietilen-paketlar", icon: "fas fa-shopping-bag" },
-      { nameUz: "Bir martalik idishlar", nameRu: "Одноразовая посуда", slug: "bir-martalik-idishlar", icon: "fas fa-utensils" },
-      { nameUz: "Uy buyumlari", nameRu: "Товары для дома", slug: "uy-buyumlari", icon: "fas fa-home" },
+      { nameUz: "Polietilen paketlar", nameRu: "Полиэтиленовые пакеты", slug: "polietilenovye-pakety", icon: "fas fa-shopping-bag" },
+      { nameUz: "Bir martalik idishlar", nameRu: "Одноразовая посуда", slug: "odnorazovaya-posuda", icon: "fas fa-utensils" },
+      { nameUz: "Uy buyumlari, do'konlar, kafe, restoranlar uchun", nameRu: "Товары для дома, магазинов, кафе, ресторанов, баров", slug: "tovary-dlya-doma-dlya-magazinov-kafe-restoranov-barov", icon: "fas fa-home" },
       { nameUz: "Elektronika", nameRu: "Электроника", slug: "elektronika", icon: "fas fa-laptop" },
-      { nameUz: "Kiyim-kechak", nameRu: "Одежда", slug: "kiyim-kechak", icon: "fas fa-tshirt" },
-      { nameUz: "Kimyoviy vositalar", nameRu: "Бытовая химия", slug: "kimyoviy-vositalar", icon: "fas fa-spray-can" }
+      { nameUz: "Kiyim-kechak", nameRu: "Одежда", slug: "odejda", icon: "fas fa-tshirt" },
+      { nameUz: "Maishiy kimyo", nameRu: "Бытовая химия", slug: "bytovaya-himiya", icon: "fas fa-spray-can" },
+      { nameUz: "Kantselyariya tovarlari", nameRu: "Канцтовары для школы и офиса", slug: "kantstovary-dlya-shkoly-i-ofisa-vse-dlya-ucheby-i-raboty", icon: "fas fa-pen" },
+      { nameUz: "Bayram tovarlari", nameRu: "Товары для праздников", slug: "tovary-dlya-prazdnikov", icon: "fas fa-gift" }
     ];
 
     categories.forEach(cat => {
@@ -117,39 +119,71 @@ export class MemStorage implements IStorage {
       });
     });
 
-    // Seed products
+    // Seed products - Real OptomBazar.uz products from sitemap
     const products = [
       {
-        nameUz: "Polietilen paketlar to'plami", nameRu: "Полиэтиленовые пакеты набор",
-        slug: "polietilen-paketlar-toplami", price: "850.00", originalPrice: "900.00",
-        descriptionUz: "Yuqori sifatli polietilen paketlar", descriptionRu: "Высококачественные полиэтиленовые пакеты",
-        categoryId: Array.from(this.categories.values()).find(c => c.slug === "polietilen-paketlar")?.id!,
+        nameUz: "Polietilen paket-mayka rasmsiz", nameRu: "Полиэтиленовый пакет-майка без рисунка",
+        slug: "polietilenovyy-paket-mayka-bez-risunka", price: "850.00", originalPrice: "900.00",
+        descriptionUz: "Yuqori sifatli polietilen paket-maykakar, rasmsiz, optom savdo uchun", descriptionRu: "Высококачественные полиэтиленовые пакеты-майка без рисунка для оптовой торговли",
+        categoryId: Array.from(this.categories.values()).find(c => c.slug === "polietilenovye-pakety")?.id!,
         images: ["https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=400"],
-        isHit: false, isPromo: true, discountPercent: 6, stock: 100, rating: "4.2", reviewCount: 15
+        isHit: false, isPromo: true, discountPercent: 6, stock: 10000, rating: "4.2", reviewCount: 128
       },
       {
-        nameUz: "Bir martalik idishlar to'plami", nameRu: "Одноразовая посуда набор",
-        slug: "bir-martalik-idishlar-toplami", price: "7500.00", originalPrice: "9200.00",
-        descriptionUz: "Ekologik toza bir martalik idishlar", descriptionRu: "Экологически чистая одноразовая посуда",
-        categoryId: Array.from(this.categories.values()).find(c => c.slug === "bir-martalik-idishlar")?.id!,
+        nameUz: "Fasovka paketlari va rulonlar", nameRu: "Фасовочные пакеты в рулонах", 
+        slug: "fasovochnye-pakety-i-rulone", price: "12500.00", originalPrice: "14800.00",
+        descriptionUz: "Shaffof fasovka paketlari, rulonlarda", descriptionRu: "Прозрачные фасовочные пакеты в рулонах",
+        categoryId: Array.from(this.categories.values()).find(c => c.slug === "polietilenovye-pakety")?.id!,
+        images: ["https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=400"],
+        isHit: true, isPromo: true, discountPercent: 16, stock: 5000, rating: "4.5", reviewCount: 89
+      },
+      {
+        nameUz: "Plastik bir martalik idishlar", nameRu: "Одноразовая пластиковая посуда",
+        slug: "odnorazovaya-plastikovaya-posuda", price: "7500.00", originalPrice: "9200.00",
+        descriptionUz: "Ekologik toza bir martalik plastik idishlar to'plami", descriptionRu: "Экологически чистая одноразовая пластиковая посуда",
+        categoryId: Array.from(this.categories.values()).find(c => c.slug === "odnorazovaya-posuda")?.id!,
         images: ["https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400"],
-        isHit: false, isPromo: true, discountPercent: 18, stock: 50, rating: "4.8", reviewCount: 23
+        isHit: false, isPromo: true, discountPercent: 18, stock: 2500, rating: "4.8", reviewCount: 234
       },
       {
-        nameUz: "Hojatxona qog'ozi Elma Lux Premium", nameRu: "Туалетная бумага Elma Lux Premium",
-        slug: "hojatxona-qogozi-elma-lux", price: "28500.00",
-        descriptionUz: "3 qatlamli yumshoq hojatxona qog'ozi", descriptionRu: "3-х слойная мягкая туалетная бумага",
-        categoryId: Array.from(this.categories.values()).find(c => c.slug === "uy-buyumlari")?.id!,
-        images: ["https://images.unsplash.com/photo-1586075010923-2dd4570fb338?w=400"],
-        isHit: true, isPromo: false, discountPercent: 0, stock: 200, rating: "4.1", reviewCount: 56
-      },
-      {
-        nameUz: "Plastik stakanlar 200ml DKplast", nameRu: "Пластиковые стаканы 200мл DKplast",
-        slug: "plastik-stakanlar-200ml", price: "80.00",
-        descriptionUz: "Shaffof plastik stakanlar", descriptionRu: "Прозрачные пластиковые стаканы",
-        categoryId: Array.from(this.categories.values()).find(c => c.slug === "bir-martalik-idishlar")?.id!,
+        nameUz: "Qog'ozdan bir martalik stakanlar va qopqoqlar", nameRu: "Одноразовые бумажные стаканы крышки и тарелки",
+        slug: "odnorazovye-bumajnye-stakany-kryshki-i-tarelki", price: "18500.00",
+        descriptionUz: "Qog'ozdan tayyorlangan bir martalik stakanlar, qopqoqlar va tarelkalar", descriptionRu: "Одноразовые бумажные стаканы, крышки и тарелки",
+        categoryId: Array.from(this.categories.values()).find(c => c.slug === "odnorazovaya-posuda")?.id!,
         images: ["https://images.unsplash.com/photo-1584464491033-06628f3a6b7b?w=400"],
-        isHit: true, isPromo: false, discountPercent: 0, stock: 1000, rating: "4.3", reviewCount: 70
+        isHit: true, isPromo: false, discountPercent: 0, stock: 1500, rating: "4.3", reviewCount: 156
+      },
+      {
+        nameUz: "Tualet qog'ozi", nameRu: "Туалетная бумага",
+        slug: "tualetnaya-bumaga", price: "28500.00",
+        descriptionUz: "Yumshoq va mustahkam tualet qog'ozi", descriptionRu: "Мягкая и прочная туалетная бумага",
+        categoryId: Array.from(this.categories.values()).find(c => c.slug === "tovary-dlya-doma-dlya-magazinov-kafe-restoranov-barov")?.id!,
+        images: ["https://images.unsplash.com/photo-1586075010923-2dd4570fb338?w=400"],
+        isHit: true, isPromo: false, discountPercent: 0, stock: 8000, rating: "4.1", reviewCount: 456
+      },
+      {
+        nameUz: "Nam salfetkakar", nameRu: "Влажные салфетки",
+        slug: "vlajnye-salfetki", price: "8900.00", originalPrice: "10500.00",
+        descriptionUz: "Antibakterial nam salfetkakar", descriptionRu: "Антибактериальные влажные салфетки",
+        categoryId: Array.from(this.categories.values()).find(c => c.slug === "tovary-dlya-doma-dlya-magazinov-kafe-restoranov-barov")?.id!,
+        images: ["https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400"],
+        isHit: false, isPromo: true, discountPercent: 15, stock: 3200, rating: "4.6", reviewCount: 189
+      },
+      {
+        nameUz: "Televizorlar", nameRu: "Телевизоры", 
+        slug: "televizory", price: "2850000.00", originalPrice: "3200000.00",
+        descriptionUz: "Zamonaviy Smart TV televizorlar", descriptionRu: "Современные Smart TV телевизоры",
+        categoryId: Array.from(this.categories.values()).find(c => c.slug === "elektronika")?.id!,
+        images: ["https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?w=400"],
+        isHit: true, isPromo: true, discountPercent: 11, stock: 25, rating: "4.7", reviewCount: 67
+      },
+      {
+        nameUz: "Konditsionerlar", nameRu: "Кондиционеры",
+        slug: "konditsionery", price: "4200000.00",
+        descriptionUz: "Energiya tejamkor konditsionerlar", descriptionRu: "Энергосберегающие кондиционеры",
+        categoryId: Array.from(this.categories.values()).find(c => c.slug === "elektronika")?.id!,
+        images: ["https://images.unsplash.com/photo-1585254701275-0b2c5b4e5c6f?w=400"],
+        isHit: true, isPromo: false, discountPercent: 0, stock: 15, rating: "4.8", reviewCount: 43
       }
     ];
 
@@ -539,7 +573,7 @@ export class MemStorage implements IStorage {
       bankDetails: paymentData.bankDetails || null,
       metadata: paymentData.metadata || null,
       createdAt: new Date(),
-      processedAt: paymentData.processedAt || null
+      processedAt: null
     };
     this.payments.set(id, payment);
     return payment;

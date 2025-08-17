@@ -2,7 +2,16 @@
 
 ## Overview
 
-OptomBazar is a modern e-commerce platform built for the Uzbekistan wholesale market. The application serves as a comprehensive marketplace where businesses can browse and purchase wholesale products across multiple categories. The platform features a modern React frontend with shadcn/ui components, an Express.js backend API, and integrates AI-powered chat assistance and marketing automation through Telegram and Google's Gemini AI.
+OptomBazar is a modern e-commerce platform built for the Uzbekistan wholesale market, recreating the original OptomBazar.uz website with enhanced functionality. The application serves as a comprehensive marketplace where businesses can browse and purchase wholesale products across multiple categories including polyethylene bags, disposable tableware, home goods, electronics, clothing, household chemicals, office supplies, and party supplies. The platform features a modern React frontend with shadcn/ui components, an Express.js backend API, and integrates AI-powered chat assistance and marketing automation through Telegram and Google's Gemini AI.
+
+## Recent Changes (January 2025)
+
+✓ Migrated from PHP-based Moguta CMS to modern React/Node.js stack
+✓ Imported real product categories and catalog structure from original OptomBazar.uz sitemap
+✓ Fixed critical API routing bugs in ProductGrid component 
+✓ Integrated authentic Uzbekistan wholesale market data and product listings
+✓ Added support for Russian language product names and descriptions matching original site
+✓ Enhanced with modern features: AI chat, Telegram marketing, QR card payments
 
 ## User Preferences
 
