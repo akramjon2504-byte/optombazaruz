@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Truck, Clock, Package, MapPin } from "lucide-react";
-import { useLanguage } from "@/lib/language-context";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 export default function Delivery() {
   const { language } = useLanguage();

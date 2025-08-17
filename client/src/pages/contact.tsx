@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Mail, Phone, MapPin, Clock } from "lucide-react";
-import { useLanguage } from "@/lib/language-context";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 export default function Contact() {
   const { language } = useLanguage();

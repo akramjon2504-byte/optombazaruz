@@ -2,7 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
 import { HelpCircle, MessageCircle, Phone, Mail } from "lucide-react";
-import { useLanguage } from "@/lib/language-context";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 export default function Help() {
   const { language } = useLanguage();

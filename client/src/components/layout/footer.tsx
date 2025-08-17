@@ -1,5 +1,5 @@
 import { Link } from "wouter";
-import { useLanguage } from "@/lib/language-context";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { Facebook, Instagram, Send, Youtube, Phone, Mail, MapPin, Clock } from "lucide-react";
 
 export default function Footer() {

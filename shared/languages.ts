@@ -162,7 +162,7 @@ export const translations = {
   openChat: { uz: "Chatni ochish", ru: "Открыть чат" },
   
   // Error messages
-  technicalError: { uz: "Kechirasiz, texnik xatolik yuz berdi. Iltimos, keyinroq urinib ko'ring.", ru: "Извините, произошла техническая ошибка. Пожалуйста, попробуйте позже." },
+  noResults: { uz: "Hech qanday mahsulot topilmadi", ru: "Ничего не найдено" },
   
   // Additional home page sections
   whyOptomBazar: { uz: "Nega OptomBazar?", ru: "Почему OptomBazar?" },
@@ -172,7 +172,14 @@ export const translations = {
   // Additional missing translations
   ourServices: { uz: "Bizning xizmatlarimiz", ru: "Наши услуги" },
   customerReviews: { uz: "Mijozlar fikrlari", ru: "Отзывы клиентов" },
-  readMore: { uz: "Batafsil", ru: "Подробнее" },
+  technicalError: { uz: "Kechirasiz, texnik xatolik yuz berdi. Iltimos, keyinroq urinib ko'ring.", ru: "Извините, произошла техническая ошибка. Пожалуйста, попробуйте позже." },
+  support24: { uz: "24/7 qo'llab-quvvatlash", ru: "24/7 поддержка" },
+  
+  // Timer translations
+  days: { uz: "kun", ru: "дней" },
+  hours: { uz: "soat", ru: "часов" },
+  minutes: { uz: "daqiqa", ru: "минут" },
+  seconds: { uz: "soniya", ru: "секунд" },
 };
 
 export function getTranslation(key: keyof typeof translations, lang: Language): string {
