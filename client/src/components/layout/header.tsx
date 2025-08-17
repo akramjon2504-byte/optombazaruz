@@ -82,7 +82,7 @@ export default function Header() {
               </div>
               <div className="ml-3">
                 <h1 className="font-bold text-2xl text-gray-900">OptomBazar</h1>
-                <p className="text-sm text-gray-600">Оптовый рынок Узбекистана</p>
+                <p className="text-sm text-gray-600">{language === "uz" ? "O'zbekistonning optom bozori" : "Оптовый рынок Узбекистана"}</p>
               </div>
             </div>
           </Link>

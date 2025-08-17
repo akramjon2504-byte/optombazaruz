@@ -172,6 +172,7 @@ export const translations = {
   // Additional missing translations
   ourServices: { uz: "Bizning xizmatlarimiz", ru: "Наши услуги" },
   customerReviews: { uz: "Mijozlar fikrlari", ru: "Отзывы клиентов" },
+  readMore: { uz: "Batafsil", ru: "Подробнее" },
 };
 
 export function getTranslation(key: keyof typeof translations, lang: Language): string {

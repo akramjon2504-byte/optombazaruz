@@ -195,7 +195,7 @@ export default function Home() {
               📝 AI {t("blog")}
             </h3>
             <p className="text-xl text-gray-600">
-              Gemini AI tomonidan yaratilgan foydali maqolalar
+              {language === "uz" ? "AI tomonidan yaratilgan foydali maqolalar" : "Полезные статьи, созданные ИИ"}
             </p>
           </div>
           
@@ -230,7 +230,7 @@ export default function Home() {
                       <p className="text-gray-600 mb-4">{post.excerpt}</p>
                       
                       <span className="text-primary hover:underline font-semibold">
-                        Batafsil o'qish →
+                        {t("readMore")} →
                       </span>
                     </CardContent>
                   </Card>

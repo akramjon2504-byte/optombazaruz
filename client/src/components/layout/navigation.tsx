@@ -4,7 +4,7 @@ import { Menu, X } from "lucide-react";
 import { useLanguage } from "@/lib/language-context";
 
 export default function Navigation() {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const [isCategoriesOpen, setIsCategoriesOpen] = useState(false);
 
   return (
@@ -60,8 +60,8 @@ export default function Navigation() {
                   <div className="flex items-center space-x-3 hover:bg-gray-50 p-3 rounded cursor-pointer" data-testid="link-category-bags">
                     <i className="fas fa-shopping-bag text-primary text-xl"></i>
                     <div>
-                      <div className="font-semibold">Polietilen paketlar</div>
-                      <div className="text-sm text-gray-500">500+ mahsulot</div>
+                      <div className="font-semibold">{language === "uz" ? "Polietilen paketlar" : "Полиэтиленовые пакеты"}</div>
+                      <div className="text-sm text-gray-500">500+ {t("productsCount")}</div>
                     </div>
                   </div>
                 </Link>
@@ -70,8 +70,8 @@ export default function Navigation() {
                   <div className="flex items-center space-x-3 hover:bg-gray-50 p-3 rounded cursor-pointer" data-testid="link-category-dishes">
                     <i className="fas fa-utensils text-secondary text-xl"></i>
                     <div>
-                      <div className="font-semibold">Bir martalik idishlar</div>
-                      <div className="text-sm text-gray-500">300+ mahsulot</div>
+                      <div className="font-semibold">{language === "uz" ? "Bir martalik idishlar" : "Одноразовая посуда"}</div>
+                      <div className="text-sm text-gray-500">300+ {t("productsCount")}</div>
                     </div>
                   </div>
                 </Link>
@@ -80,8 +80,8 @@ export default function Navigation() {
                   <div className="flex items-center space-x-3 hover:bg-gray-50 p-3 rounded cursor-pointer" data-testid="link-category-home">
                     <i className="fas fa-home text-accent text-xl"></i>
                     <div>
-                      <div className="font-semibold">Uy buyumlari</div>
-                      <div className="text-sm text-gray-500">250+ mahsulot</div>
+                      <div className="font-semibold">{language === "uz" ? "Uy buyumlari" : "Товары для дома"}</div>
+                      <div className="text-sm text-gray-500">250+ {t("productsCount")}</div>
                     </div>
                   </div>
                 </Link>
@@ -90,8 +90,8 @@ export default function Navigation() {
                   <div className="flex items-center space-x-3 hover:bg-gray-50 p-3 rounded cursor-pointer" data-testid="link-category-electronics">
                     <i className="fas fa-laptop text-purple-600 text-xl"></i>
                     <div>
-                      <div className="font-semibold">Elektronika</div>
-                      <div className="text-sm text-gray-500">150+ mahsulot</div>
+                      <div className="font-semibold">{language === "uz" ? "Elektronika" : "Электроника"}</div>
+                      <div className="text-sm text-gray-500">150+ {t("productsCount")}</div>
                     </div>
                   </div>
                 </Link>
@@ -100,8 +100,8 @@ export default function Navigation() {
                   <div className="flex items-center space-x-3 hover:bg-gray-50 p-3 rounded cursor-pointer" data-testid="link-category-clothing">
                     <i className="fas fa-tshirt text-pink-600 text-xl"></i>
                     <div>
-                      <div className="font-semibold">Kiyim-kechak</div>
-                      <div className="text-sm text-gray-500">200+ mahsulot</div>
+                      <div className="font-semibold">{language === "uz" ? "Kiyim-kechak" : "Одежда"}</div>
+                      <div className="text-sm text-gray-500">200+ {t("productsCount")}</div>
                     </div>
                   </div>
                 </Link>
@@ -110,8 +110,8 @@ export default function Navigation() {
                   <div className="flex items-center space-x-3 hover:bg-gray-50 p-3 rounded cursor-pointer" data-testid="link-category-chemicals">
                     <i className="fas fa-spray-can text-gray-600 text-xl"></i>
                     <div>
-                      <div className="font-semibold">Kimyoviy vositalar</div>
-                      <div className="text-sm text-gray-500">100+ mahsulot</div>
+                      <div className="font-semibold">{language === "uz" ? "Kimyoviy vositalar" : "Бытовая химия"}</div>
+                      <div className="text-sm text-gray-500">100+ {t("productsCount")}</div>
                     </div>
                   </div>
                 </Link>
