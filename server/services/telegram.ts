@@ -101,6 +101,23 @@ Buyurtma berish: optombazar.uz
       parse_mode: 'Markdown' 
     });
   }
+
+  async sendWelcomeMessage(customerName: string) {
+    const message = `🎉 *Yangi mijoz qo'shildi!*
+
+${customerName} OptomBazar.uz ga qo'shildi!
+
+Bizning katta oilamizga xush kelibsiz! 🤝
+
+📞 Aloqa: +998 71 123-45-67
+🌐 optombazar.uz
+
+#YangiMijoz #OptomBazar #Welcome`;
+
+    return this.sendToChannel(message, { 
+      parse_mode: 'Markdown' 
+    });
+  }
 }
 
 export const telegramService = new TelegramService();

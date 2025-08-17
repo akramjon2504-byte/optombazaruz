@@ -100,6 +100,39 @@ export class AuthService {
     }
   }
 
+  async adminLogin(username: string, password: string) {
+    try {
+      // Check for predefined admin credentials
+      if (username === 'Akramjon' && password === 'GIsobot201415*') {
+        // Check if admin user exists
+        let [adminUser] = await db
+          .select()
+          .from(users)
+          .where(eq(users.email, 'admin@optombazar.uz'))
+          .limit(1);
+
+        if (!adminUser) {
+          // Create admin user if doesn't exist
+          const newAdmin = await this.createAdminUser('admin@optombazar.uz', 'GIsobot201415*');
+          adminUser = { ...newAdmin, password: null }; // Match expected type
+        }
+
+        // Update last login time
+        await db
+          .update(users)
+          .set({ lastLoginAt: new Date() })
+          .where(eq(users.id, adminUser.id));
+
+        const { password: _, ...userWithoutPassword } = adminUser;
+        return userWithoutPassword;
+      } else {
+        throw new Error('Noto\'g\'ri admin ma\'lumotlari');
+      }
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async createAdminUser(email: string, password: string) {
     try {
       const hashedPassword = await this.hashPassword(password);
@@ -110,7 +143,8 @@ export class AuthService {
           id: nanoid(),
           email,
           password: hashedPassword,
-          firstName: 'Admin',
+          firstName: 'Akramjon',
+          lastName: 'Admin',
           isAdmin: true,
           authProvider: 'email',
           preferredLanguage: 'uz',

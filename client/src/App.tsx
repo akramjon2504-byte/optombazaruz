@@ -16,6 +16,7 @@ import Cart from "@/pages/cart";
 import AdminPanel from "@/pages/AdminPanel";
 import Login from "@/pages/Login";
 import Register from "@/pages/Register";
+import AdminLogin from "@/pages/admin-login";
 import Delivery from "@/pages/delivery";
 import Help from "@/pages/help";
 
@@ -52,10 +53,11 @@ function AuthRouter() {
       {/* Auth routes */}
       <Route path="/login" component={Login} />
       <Route path="/register" component={Register} />
+      <Route path="/admin/login" component={AdminLogin} />
       
       {/* Protected admin route */}
       <Route path="/admin">
-        {isAuthenticated && isAdmin ? <AdminPanel /> : <Login />}
+        {isAuthenticated && isAdmin ? <AdminPanel /> : <AdminLogin />}
       </Route>
       
       {/* Placeholder routes */}
