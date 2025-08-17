@@ -1,171 +1,67 @@
 import { storage } from "../storage";
-import { randomUUID } from "crypto";
-import type { InsertOrder, InsertPayment } from "@shared/schema";
-
-export interface PaymentMethod {
-  id: string;
-  name: string;
-  nameUz: string;
-  nameRu: string;
-  description: string;
-  isActive: boolean;
-  processingFee?: number;
-}
-
-// Uzbekistan payment methods
-export const paymentMethods: PaymentMethod[] = [
-  {
-    id: "qr_card",
-    name: "QR Card",
-    nameUz: "QR Karta",
-    nameRu: "QR Карта",
-    description: "Pay with Uzbekistan QR cards (Humo, Uzcard)",
-    isActive: true,
-    processingFee: 0
-  },
-  {
-    id: "cash_delivery",
-    name: "Cash on Delivery",
-    nameUz: "Yetkazib berishda naqd pul",
-    nameRu: "Наличными при доставке",
-    description: "Pay cash when your order is delivered",
-    isActive: true,
-    processingFee: 0
-  },
-  {
-    id: "bank_transfer",
-    name: "Bank Transfer",
-    nameUz: "Bank o'tkazmasi",
-    nameRu: "Банковский перевод",
-    description: "Direct bank transfer to our account",
-    isActive: true,
-    processingFee: 0
-  }
-];
-
-export interface OrderData {
-  userId?: string;
-  sessionId: string;
-  paymentMethod: string;
-  shippingAddress: {
-    firstName: string;
-    lastName: string;
-    phone: string;
-    email?: string;
-    region: string;
-    city: string;
-    address: string;
-    postalCode?: string;
-  };
-  customerInfo: {
-    firstName: string;
-    lastName: string;
-    phone: string;
-    email?: string;
-  };
-  items: Array<{
-    productId: string;
-    productName: string;
-    quantity: number;
-    price: number;
-    totalPrice: number;
-  }>;
-  notes?: string;
-}
+import type { Order, Payment } from "@shared/schema";
 
 export class PaymentService {
-  static generateOrderNumber(): string {
-    const date = new Date();
-    const year = date.getFullYear().toString().slice(-2);
-    const month = (date.getMonth() + 1).toString().padStart(2, '0');
-    const day = date.getDate().toString().padStart(2, '0');
-    const random = Math.floor(Math.random() * 9999).toString().padStart(4, '0');
-    return `OPT${year}${month}${day}${random}`;
-  }
-
-  static calculateTotal(items: OrderData['items']): number {
-    return items.reduce((total, item) => total + item.totalPrice, 0);
-  }
-
-  static async createOrder(orderData: OrderData): Promise<string> {
-    const orderNumber = this.generateOrderNumber();
-    const totalAmount = this.calculateTotal(orderData.items);
-
-    const order: InsertOrder = {
-      userId: orderData.userId,
-      sessionId: orderData.sessionId,
-      paymentMethod: orderData.paymentMethod,
-      totalAmount: totalAmount.toString(),
-      shippingAddress: orderData.shippingAddress,
-      customerInfo: orderData.customerInfo,
-      items: orderData.items,
-      notes: orderData.notes || null
-    };
-
-    const createdOrder = await storage.createOrder(order);
-    
-    // Create initial payment record
-    const payment: InsertPayment = {
-      orderId: createdOrder.id,
-      paymentMethod: orderData.paymentMethod,
-      amount: totalAmount.toString()
-    };
-
-    await storage.createPayment(payment);
-    
-    return createdOrder.id;
-  }
-
-  static async processQRCardPayment(orderId: string, cardNumber: string): Promise<boolean> {
+  // QR Card payment processing
+  static async processQRCardPayment(orderId: string, qrCardNumber: string): Promise<boolean> {
     try {
-      // In a real implementation, this would integrate with Uzbekistan payment gateways
-      // like UzCard, Humo, or Click
+      // In production, this would integrate with Uzbekistan's QR card payment system
+      // For now, we'll simulate a successful payment
       
-      // Simulate QR card validation
-      if (!this.validateQRCardNumber(cardNumber)) {
-        throw new Error("Invalid QR card number");
-      }
-
       // Update payment status
-      await storage.updatePaymentStatus(orderId, "completed", {
-        qrCardNumber: cardNumber,
-        transactionId: `TXN_${randomUUID()}`,
-        processedAt: new Date()
+      await storage.updatePaymentStatus(orderId, 'completed', {
+        qrCardNumber,
+        processedAt: new Date(),
+        transactionId: `QR-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
       });
 
-      await storage.updateOrderStatus(orderId, "confirmed");
-      
+      // Update order status
+      await storage.updateOrderStatus(orderId, 'confirmed');
+
+      console.log(`QR Card payment processed for order ${orderId}: ${qrCardNumber}`);
       return true;
     } catch (error) {
-      await storage.updatePaymentStatus(orderId, "failed");
-      throw error;
+      console.error('QR Card payment failed:', error);
+      await storage.updatePaymentStatus(orderId, 'failed');
+      return false;
     }
   }
 
-  static validateQRCardNumber(cardNumber: string): boolean {
-    // Basic validation for Uzbekistan card numbers
-    const cleanNumber = cardNumber.replace(/\s+/g, '');
-    
-    // UzCard: starts with 8600, 16 digits
-    // Humo: starts with 9860, 16 digits
-    const uzCardPattern = /^8600\d{12}$/;
-    const humoPattern = /^9860\d{12}$/;
-    
-    return uzCardPattern.test(cleanNumber) || humoPattern.test(cleanNumber);
+  // Bank transfer payment processing
+  static async processBankTransfer(orderId: string, bankDetails: any): Promise<boolean> {
+    try {
+      // In production, this would integrate with Uzbekistan banking APIs
+      
+      await storage.updatePaymentStatus(orderId, 'pending', {
+        bankDetails,
+        processedAt: new Date(),
+        transactionId: `BANK-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
+      });
+
+      // Order remains in pending until bank transfer is confirmed
+      console.log(`Bank transfer initiated for order ${orderId}`);
+      return true;
+    } catch (error) {
+      console.error('Bank transfer failed:', error);
+      await storage.updatePaymentStatus(orderId, 'failed');
+      return false;
+    }
   }
 
-  static async getBankTransferDetails() {
-    return {
-      bankName: "Xalq Bank",
-      accountNumber: "20214000600123456789",
-      accountName: "OptomBazar LLC",
-      swift: "POPLUZ22",
-      inn: "123456789",
-      mfo: "00445"
-    };
-  }
+  // Cash on delivery - no processing needed, just mark as pending
+  static async processCashOnDelivery(orderId: string): Promise<boolean> {
+    try {
+      await storage.updatePaymentStatus(orderId, 'pending', {
+        paymentMethod: 'cash_delivery',
+        processedAt: new Date()
+      });
 
-  static getPaymentMethods(): PaymentMethod[] {
-    return paymentMethods.filter(method => method.isActive);
+      await storage.updateOrderStatus(orderId, 'confirmed');
+      console.log(`Cash on delivery order confirmed: ${orderId}`);
+      return true;
+    } catch (error) {
+      console.error('Cash on delivery processing failed:', error);
+      return false;
+    }
   }
 }

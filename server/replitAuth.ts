@@ -32,7 +32,7 @@ export function getSession() {
     tableName: "sessions",
   });
   return session({
-    secret: process.env.SESSION_SECRET || 'optombazar-default-secret-key-change-in-production',
+    secret: process.env.SESSION_SECRET || "optombazar-default-secret-key-for-development",
     store: sessionStore,
     resave: false,
     saveUninitialized: false,

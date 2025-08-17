@@ -1,0 +1,59 @@
+User-agent: Yandex
+  Allow: /uploads/
+  Allow: *.css
+  Allow: *.js
+  Allow: *.jpg
+  Allow: *.JPG
+  Allow: *.svg
+  Disallow: /install*
+  Disallow: /mg-admin*
+  Disallow: /personal*
+  Disallow: /enter*
+  Disallow: /forgotpass*
+  Disallow: /payment*
+  Disallow: /registration*
+  Disallow: /compare*
+  Disallow: /cart*
+  Disallow: /*?*lp*
+  Disallow: *applyFilter=*
+  Disallow: *?inCartProductId=*
+  Disallow: *?inCompareProductId=*
+  Host: optombazar.uz
+
+  User-agent: *
+  Allow: /uploads/
+  Allow: /*.js
+  Allow: /*.css
+  Allow: /*.jpg
+  Allow: /*.gif
+  Allow: /*.png
+  Allow: /*.svg
+  Allow: *engine-script-LANG.js*
+  Allow: *engine-script.js*
+
+  Disallow: /install*
+  Disallow: /mg-admin*
+  Disallow: /personal*
+  Disallow: /enter*
+  Disallow: /forgotpass*
+  Disallow: /payment*
+  Disallow: /registration*
+  Disallow: /compare*
+  Disallow: /cart*
+  Disallow: /*?*lp*
+  Disallow: *applyFilter=*
+  Disallow: *?inCartProductId=*
+  Disallow: *?inCompareProductId=*
+
+  User-agent: Googlebot
+  Allow: *.css
+  Allow: *.js
+  Allow: *.jpg
+  Allow: *.JPG
+  Allow: *.svg
+  Allow: /mg-core/script/*.js
+  Allow: *engine-script-LANG.js*
+  Disallow: /*?
+  Disallow: /mg-formvalid
+
+  Sitemap: http://optombazar.uz/sitemap.xml

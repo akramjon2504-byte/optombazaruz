@@ -5,11 +5,15 @@ import { setupAuth, isAuthenticated } from "./replitAuth";
 import { generateChatResponse } from "./services/gemini";
 import { blogService } from "./services/blog";
 import { telegramService } from "./services/telegram";
+import { seedDatabase } from "./seedData";
 import { insertProductSchema, insertCartItemSchema, insertWishlistItemSchema, insertChatMessageSchema, insertOrderSchema, insertPaymentSchema } from "@shared/schema";
 import { PaymentService } from "./services/payment";
 import { randomUUID } from "crypto";
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Seed database with real OptomBazar.uz data
+  await seedDatabase();
+
   // Auth middleware
   await setupAuth(app);
 
@@ -22,6 +26,72 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error fetching user:", error);
       res.status(500).json({ message: "Failed to fetch user" });
+    }
+  });
+
+  // QR Card payment endpoint
+  app.post('/api/payment/qr-card', async (req, res) => {
+    try {
+      const { orderId, qrCardNumber } = req.body;
+      
+      if (!orderId || !qrCardNumber) {
+        return res.status(400).json({ message: "Order ID and QR card number required" });
+      }
+
+      const success = await PaymentService.processQRCardPayment(orderId, qrCardNumber);
+      
+      if (success) {
+        res.json({ success: true, message: "Payment processed successfully" });
+      } else {
+        res.status(400).json({ success: false, message: "Payment processing failed" });
+      }
+    } catch (error) {
+      console.error("QR Card payment error:", error);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
+
+  // Bank transfer payment endpoint
+  app.post('/api/payment/bank-transfer', async (req, res) => {
+    try {
+      const { orderId, bankDetails } = req.body;
+      
+      if (!orderId || !bankDetails) {
+        return res.status(400).json({ message: "Order ID and bank details required" });
+      }
+
+      const success = await PaymentService.processBankTransfer(orderId, bankDetails);
+      
+      if (success) {
+        res.json({ success: true, message: "Bank transfer initiated" });
+      } else {
+        res.status(400).json({ success: false, message: "Bank transfer failed" });
+      }
+    } catch (error) {
+      console.error("Bank transfer error:", error);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
+
+  // Cash on delivery endpoint
+  app.post('/api/payment/cash-delivery', async (req, res) => {
+    try {
+      const { orderId } = req.body;
+      
+      if (!orderId) {
+        return res.status(400).json({ message: "Order ID required" });
+      }
+
+      const success = await PaymentService.processCashOnDelivery(orderId);
+      
+      if (success) {
+        res.json({ success: true, message: "Cash on delivery order confirmed" });
+      } else {
+        res.status(400).json({ success: false, message: "Order confirmation failed" });
+      }
+    } catch (error) {
+      console.error("Cash on delivery error:", error);
+      res.status(500).json({ message: "Internal server error" });
     }
   });
 
@@ -358,6 +428,114 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ 
         message: error instanceof Error ? error.message : "Payment processing failed" 
       });
+    }
+  });
+
+  // Admin blog management endpoints
+  app.get('/api/admin/blog', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const user = await storage.getUser(userId);
+      
+      if (!user?.isAdmin) {
+        return res.status(403).json({ message: "Admin access required" });
+      }
+
+      const posts = await storage.getBlogPosts(50);
+      res.json(posts);
+    } catch (error) {
+      console.error("Error fetching blog posts:", error);
+      res.status(500).json({ message: "Failed to fetch blog posts" });
+    }
+  });
+
+  app.post('/api/admin/blog', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const user = await storage.getUser(userId);
+      
+      if (!user?.isAdmin) {
+        return res.status(403).json({ message: "Admin access required" });
+      }
+
+      const blogPostData = insertBlogPostSchema.parse(req.body);
+      const blogPost = await storage.createBlogPost({
+        ...blogPostData,
+        slug: blogPostData.titleUz.toLowerCase()
+          .replace(/[^\w\s]/g, '')
+          .replace(/\s+/g, '-'),
+        publishedAt: blogPostData.isPublished ? new Date() : null
+      });
+      
+      res.status(201).json(blogPost);
+    } catch (error) {
+      console.error("Error creating blog post:", error);
+      res.status(500).json({ message: "Failed to create blog post" });
+    }
+  });
+
+  app.patch('/api/admin/blog/:id', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const user = await storage.getUser(userId);
+      
+      if (!user?.isAdmin) {
+        return res.status(403).json({ message: "Admin access required" });
+      }
+
+      const { id } = req.params;
+      const { isPublished } = req.body;
+      
+      await storage.updateBlogPost(id, { 
+        isPublished,
+        publishedAt: isPublished ? new Date() : null 
+      });
+      
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error updating blog post:", error);
+      res.status(500).json({ message: "Failed to update blog post" });
+    }
+  });
+
+  app.post('/api/admin/generate-blog-post', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const user = await storage.getUser(userId);
+      
+      if (!user?.isAdmin) {
+        return res.status(403).json({ message: "Admin access required" });
+      }
+
+      const { topic } = req.body;
+      const blogPost = await blogService.generateBlogPost(topic || "E-tijorat va optom savdo");
+      res.json(blogPost);
+    } catch (error) {
+      console.error("Error generating blog post:", error);
+      res.status(500).json({ message: "Failed to generate blog post" });
+    }
+  });
+
+  app.get('/api/admin/analytics', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const user = await storage.getUser(userId);
+      
+      if (!user?.isAdmin) {
+        return res.status(403).json({ message: "Admin access required" });
+      }
+
+      const analytics = {
+        totalUsers: 0,
+        totalOrders: 0, 
+        totalRevenue: 0,
+        totalPosts: (await storage.getBlogPosts(1000)).length
+      };
+      
+      res.json(analytics);
+    } catch (error) {
+      console.error("Error fetching analytics:", error);
+      res.status(500).json({ message: "Failed to fetch analytics" });
     }
   });
 
