@@ -114,6 +114,64 @@ export const translations = {
   loadMore: { uz: "Ko'proq yuklash", ru: "Загрузить больше" },
   showAll: { uz: "Barchasini ko'rsatish", ru: "Показать все" },
   closeMenu: { uz: "Menyuni yopish", ru: "Закрыть меню" },
+  
+  // Footer sections
+  aboutDesc: { uz: "OptomBazar - O'zbekistonning yetakchi optom savdo platformasi", ru: "OptomBazar - ведущая оптовая торговая платформа Узбекистана" },
+  forCustomers: { uz: "Mijozlar uchun", ru: "Для клиентов" },
+  delivery: { uz: "Yetkazib berish", ru: "Доставка" },
+  payment: { uz: "To'lov", ru: "Оплата" },
+  returns: { uz: "Qaytarish", ru: "Возврат" },
+  help: { uz: "Yordam", ru: "Помощь" },
+  aiHelperDesc: { uz: "AI yordamchi", ru: "ИИ помощник" },
+  fastDeliveryDesc: { uz: "Tez yetkazib berish", ru: "Быстрая доставка" },
+  qualityGuaranteeDesc: { uz: "Sifat kafolati", ru: "Гарантия качества" },
+  support24Desc: { uz: "24/7 qo'llab-quvvatlash", ru: "Круглосуточная поддержка" },
+  
+  // Contact info
+  contactInfo: { uz: "Aloqa", ru: "Контакты" },
+  openHours: { uz: "24/7 ochiq", ru: "24/7 открыто" },
+  address: { uz: "Toshkent sh., O'zbekiston", ru: "г. Ташкент, Узбекистан" },
+  
+  // Telegram
+  telegramChannel: { uz: "Telegram kanal", ru: "Telegram канал" },
+  latestOffers: { uz: "Eng so'nggi takliflar", ru: "Последние предложения" },
+  join: { uz: "Qo'shilish", ru: "Присоединиться" },
+  close: { uz: "Yopish", ru: "Закрыть" },
+  
+  // Legal
+  privacyPolicy: { uz: "Maxfiylik siyosati", ru: "Политика конфиденциальности" },
+  termsOfUse: { uz: "Foydalanish shartlari", ru: "Условия использования" },
+  allRights: { uz: "© 2024 OptomBazar.uz. Barcha huquqlar himoyalangan.", ru: "© 2024 OptomBazar.uz. Все права защищены." },
+  
+  // Home page sections
+  mainCategories: { uz: "Asosiy Kategoriyalar", ru: "Основные Категории" },
+  flashSale: { uz: "Tezkor Savdo", ru: "Быстрая Распродажа" },
+  limitedOffer: { uz: "Cheklangan taklif - Ulgurish uchun shoshiling!", ru: "Ограниченное предложение - Спешите успеть!" },
+  
+  // Company features section
+  companyFeaturesTitle: { uz: "Nega bizni tanlashadi?", ru: "Почему выбирают нас?" },
+  freeConsultation: { uz: "Bepul maslahat", ru: "Бесплатные консультации" },
+  guaranteedQuality: { uz: "Kafolatlangan sifat", ru: "Гарантированное качество" },
+  onlineSupport: { uz: "Onlayn qo'llab-quvvatlash", ru: "Онлайн поддержка" },
+  
+  // Chat widget
+  chatGreeting: { uz: "Salom! AI yordamchi sifatida sizga qanday yordam bera olaman?", ru: "Привет! Как ИИ помощник, чем могу вам помочь?" },
+  chatPlaceholder: { uz: "Xabar yozing...", ru: "Напишите сообщение..." },
+  sendMessage: { uz: "Xabar yuborish", ru: "Отправить сообщение" },
+  closeChat: { uz: "Chatni yopish", ru: "Закрыть чат" },
+  openChat: { uz: "Chatni ochish", ru: "Открыть чат" },
+  
+  // Error messages
+  technicalError: { uz: "Kechirasiz, texnik xatolik yuz berdi. Iltimos, keyinroq urinib ko'ring.", ru: "Извините, произошла техническая ошибка. Пожалуйста, попробуйте позже." },
+  
+  // Additional home page sections
+  whyOptomBazar: { uz: "Nega OptomBazar?", ru: "Почему OptomBazar?" },
+  ourAdvantages: { uz: "Bizning afzalliklarimiz", ru: "Наши преимущества" },
+  aiHelper: { uz: "AI Yordamchi", ru: "ИИ Помощник" },
+  
+  // Additional missing translations
+  ourServices: { uz: "Bizning xizmatlarimiz", ru: "Наши услуги" },
+  customerReviews: { uz: "Mijozlar fikrlari", ru: "Отзывы клиентов" },
 };
 
 export function getTranslation(key: keyof typeof translations, lang: Language): string {

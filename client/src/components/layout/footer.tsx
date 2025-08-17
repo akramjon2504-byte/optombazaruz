@@ -153,11 +153,11 @@ export default function Footer() {
               </li>
               <li className="flex items-center">
                 <MapPin className="w-4 h-4 mr-2" />
-                Toshkent sh., O'zbekiston
+                {t("address")}
               </li>
               <li className="flex items-center">
                 <Clock className="w-4 h-4 mr-2" />
-                24/7 ochiq
+                {t("openHours")}
               </li>
             </ul>
           </div>

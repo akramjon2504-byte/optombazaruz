@@ -62,7 +62,7 @@ export default function ChatWidget() {
         ...prev,
         {
           id: Date.now().toString(),
-          message: "Kechirasiz, texnik xatolik yuz berdi. Iltimos, keyinroq urinib ko'ring.",
+          message: t("technicalError"),
           isFromUser: false,
           timestamp: new Date(),
         },
@@ -119,7 +119,7 @@ export default function ChatWidget() {
         <CardHeader className="bg-primary text-white p-4 rounded-t-lg flex flex-row items-center justify-between">
           <div className="flex items-center space-x-2">
             <Bot className="w-5 h-5" />
-            <span className="font-semibold">{t("chatTitle")}</span>
+            <span className="font-semibold">{t("aiAssistant")}</span>
           </div>
           <Button
             variant="ghost"
