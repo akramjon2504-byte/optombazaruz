@@ -7,8 +7,11 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { useToast } from '@/hooks/use-toast';
-import { useLanguage } from '@/contexts/LanguageContext';
+import { useLanguage } from '@/lib/language-context';
 import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 import { apiRequest } from '@/lib/queryClient';
 import { 
@@ -20,8 +23,14 @@ import {
   Send,
   Bot,
   FileText,
-  TrendingUp
+  TrendingUp,
+  Plus,
+  Edit,
+  Trash2,
+  FolderPlus
 } from 'lucide-react';
+
+
 
 function AdminPanel() {
   const { toast } = useToast();
@@ -30,6 +39,40 @@ function AdminPanel() {
   const [selectedTab, setSelectedTab] = useState('dashboard');
   const [telegramMessage, setTelegramMessage] = useState('');
   const [blogTopic, setBlogTopic] = useState('');
+  
+  // Category form states
+  const [showCategoryDialog, setShowCategoryDialog] = useState(false);
+  const [editingCategory, setEditingCategory] = useState<any>(null);
+  const [categoryForm, setCategoryForm] = useState({
+    nameUz: '',
+    nameRu: '',
+    descriptionUz: '',
+    descriptionRu: '',
+    imageUrl: ''
+  });
+
+  // Product form states  
+  const [showProductDialog, setShowProductDialog] = useState(false);
+  const [editingProduct, setEditingProduct] = useState<any>(null);
+  const [productForm, setProductForm] = useState({
+    nameUz: '',
+    nameRu: '',
+    descriptionUz: '',
+    descriptionRu: '',
+    categoryId: 0,
+    price: 0,
+    originalPrice: 0,
+    imageUrl: '',
+    isHit: false,
+    isPromo: false,
+    stock: 0
+  });
+
+  // Marketing states
+  const [marketingType, setMarketingType] = useState('daily');
+  const [marketingTopic, setMarketingTopic] = useState('');
+
+
 
   // Fetch admin data
   const { data: stats } = useQuery({
@@ -42,6 +85,14 @@ function AdminPanel() {
 
   const { data: orders } = useQuery({
     queryKey: ['/api/admin/orders'],
+  });
+
+  const { data: categories } = useQuery({
+    queryKey: ['/api/categories'],
+  });
+
+  const { data: products } = useQuery({
+    queryKey: ['/api/products'],
   });
 
   // Send Telegram message
@@ -99,6 +150,240 @@ function AdminPanel() {
     }
   };
 
+  // Category mutations
+  const createCategoryMutation = useMutation({
+    mutationFn: async (categoryData: typeof categoryForm) => {
+      return apiRequest('/api/admin/categories', 'POST', categoryData);
+    },
+    onSuccess: () => {
+      toast({
+        title: language === 'uz' ? 'Muvaffaqiyat' : 'Успех',
+        description: language === 'uz' ? 'Kategoriya yaratildi' : 'Категория создана',
+      });
+      setShowCategoryDialog(false);
+      resetCategoryForm();
+      queryClient.invalidateQueries({ queryKey: ['/api/categories'] });
+    },
+    onError: (error: Error) => {
+      toast({
+        title: t('error'),
+        description: error.message,
+        variant: 'destructive',
+      });
+    },
+  });
+
+  const updateCategoryMutation = useMutation({
+    mutationFn: async ({ id, data }: { id: number; data: typeof categoryForm }) => {
+      return apiRequest(`/api/admin/categories/${id}`, 'PUT', data);
+    },
+    onSuccess: () => {
+      toast({
+        title: language === 'uz' ? 'Muvaffaqiyat' : 'Успех',
+        description: language === 'uz' ? 'Kategoriya yangilandi' : 'Категория обновлена',
+      });
+      setShowCategoryDialog(false);
+      resetCategoryForm();
+      queryClient.invalidateQueries({ queryKey: ['/api/categories'] });
+    },
+    onError: (error: Error) => {
+      toast({
+        title: t('error'),
+        description: error.message,
+        variant: 'destructive',
+      });
+    },
+  });
+
+  const deleteCategoryMutation = useMutation({
+    mutationFn: async (id: number) => {
+      return apiRequest(`/api/admin/categories/${id}`, 'DELETE');
+    },
+    onSuccess: () => {
+      toast({
+        title: language === 'uz' ? 'Muvaffaqiyat' : 'Успех',
+        description: language === 'uz' ? 'Kategoriya o\'chirildi' : 'Категория удалена',
+      });
+      queryClient.invalidateQueries({ queryKey: ['/api/categories'] });
+    },
+    onError: (error: Error) => {
+      toast({
+        title: t('error'),
+        description: error.message,
+        variant: 'destructive',
+      });
+    },
+  });
+
+  // Auto marketing mutation  
+  const autoMarketingMutation = useMutation({
+    mutationFn: async ({ type, topic }: { type: string; topic?: string }) => {
+      return apiRequest('/api/admin/auto-marketing', 'POST', { type, topic });
+    },
+    onSuccess: () => {
+      toast({
+        title: language === 'uz' ? 'Muvaffaqiyat' : 'Успех',
+        description: language === 'uz' ? 'AI xabar yaratildi va yuborildi' : 'AI сообщение создано и отправлено',
+      });
+      setMarketingTopic('');
+    },
+    onError: (error: Error) => {
+      toast({
+        title: t('error'),
+        description: error.message,
+        variant: 'destructive',
+      });
+    },
+  });
+
+  // Product mutations
+  const createProductMutation = useMutation({
+    mutationFn: async (productData: typeof productForm) => {
+      return apiRequest('/api/admin/products', 'POST', productData);
+    },
+    onSuccess: () => {
+      toast({
+        title: language === 'uz' ? 'Muvaffaqiyat' : 'Успех',
+        description: language === 'uz' ? 'Mahsulot yaratildi va marketing xabari yuborildi' : 'Продукт создан и маркетинговое сообщение отправлено',
+      });
+      setShowProductDialog(false);
+      resetProductForm();
+      queryClient.invalidateQueries({ queryKey: ['/api/products'] });
+    },
+    onError: (error: Error) => {
+      toast({
+        title: t('error'),
+        description: error.message,
+        variant: 'destructive',
+      });
+    },
+  });
+
+  const updateProductMutation = useMutation({
+    mutationFn: async ({ id, data }: { id: number; data: typeof productForm }) => {
+      return apiRequest(`/api/admin/products/${id}`, 'PUT', data);
+    },
+    onSuccess: () => {
+      toast({
+        title: language === 'uz' ? 'Muvaffaqiyat' : 'Успех',
+        description: language === 'uz' ? 'Mahsulot yangilandi' : 'Продукт обновлен',
+      });
+      setShowProductDialog(false);
+      resetProductForm();
+      queryClient.invalidateQueries({ queryKey: ['/api/products'] });
+    },
+    onError: (error: Error) => {
+      toast({
+        title: t('error'),
+        description: error.message,
+        variant: 'destructive',
+      });
+    },
+  });
+
+  const deleteProductMutation = useMutation({
+    mutationFn: async (id: number) => {
+      return apiRequest(`/api/admin/products/${id}`, 'DELETE');
+    },
+    onSuccess: () => {
+      toast({
+        title: language === 'uz' ? 'Muvaffaqiyat' : 'Успех',
+        description: language === 'uz' ? 'Mahsulot o\'chirildi' : 'Продукт удален',
+      });
+      queryClient.invalidateQueries({ queryKey: ['/api/products'] });
+    },
+    onError: (error: Error) => {
+      toast({
+        title: t('error'),
+        description: error.message,
+        variant: 'destructive',
+      });
+    },
+  });
+
+
+
+  // Helper functions
+  const resetCategoryForm = () => {
+    setCategoryForm({
+      nameUz: '',
+      nameRu: '',
+      descriptionUz: '',
+      descriptionRu: '',
+      imageUrl: ''
+    });
+    setEditingCategory(null);
+  };
+
+  const resetProductForm = () => {
+    setProductForm({
+      nameUz: '',
+      nameRu: '',
+      descriptionUz: '',
+      descriptionRu: '',
+      categoryId: 0,
+      price: 0,
+      originalPrice: 0,
+      imageUrl: '',
+      isHit: false,
+      isPromo: false,
+      stock: 0
+    });
+    setEditingProduct(null);
+  };
+
+  const handleEditCategory = (category: Category) => {
+    setEditingCategory(category);
+    setCategoryForm({
+      nameUz: category.nameUz,
+      nameRu: category.nameRu,
+      descriptionUz: category.descriptionUz || '',
+      descriptionRu: category.descriptionRu || '',
+      imageUrl: category.imageUrl || ''
+    });
+    setShowCategoryDialog(true);
+  };
+
+  const handleEditProduct = (product: Product) => {
+    setEditingProduct(product);
+    setProductForm({
+      nameUz: product.nameUz,
+      nameRu: product.nameRu,
+      descriptionUz: product.descriptionUz || '',
+      descriptionRu: product.descriptionRu || '',
+      categoryId: product.categoryId,
+      price: product.price,
+      originalPrice: product.originalPrice || 0,
+      imageUrl: product.imageUrl || '',
+      isHit: product.isHit || false,
+      isPromo: product.isPromo || false,
+      stock: product.stock
+    });
+    setShowProductDialog(true);
+  };
+
+  const handleSaveCategory = () => {
+    if (editingCategory) {
+      updateCategoryMutation.mutate({ id: editingCategory.id, data: categoryForm });
+    } else {
+      createCategoryMutation.mutate(categoryForm);
+    }
+  };
+
+  const handleSaveProduct = () => {
+    if (editingProduct) {
+      updateProductMutation.mutate({ id: editingProduct.id, data: productForm });
+    } else {
+      createProductMutation.mutate(productForm);
+    }
+  };
+
+  const handleAutoMarketing = () => {
+    if (marketingTopic.trim() || marketingType === 'daily') {
+      autoMarketingMutation.mutate({ type: marketingType, topic: marketingTopic || '' });
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <div className="border-b bg-white dark:bg-gray-800">
@@ -120,26 +405,34 @@ function AdminPanel() {
 
       <div className="container mx-auto px-4 py-6">
         <Tabs value={selectedTab} onValueChange={setSelectedTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-5">
+          <TabsList className="grid w-full grid-cols-7">
             <TabsTrigger value="dashboard" className="flex items-center gap-2">
               <BarChart3 className="h-4 w-4" />
               {t('dashboard')}
             </TabsTrigger>
+            <TabsTrigger value="categories" className="flex items-center gap-2">
+              <FolderPlus className="h-4 w-4" />
+              {language === 'uz' ? 'Kategoriyalar' : 'Категории'}
+            </TabsTrigger>
+            <TabsTrigger value="products" className="flex items-center gap-2">
+              <Package className="h-4 w-4" />
+              {language === 'uz' ? 'Mahsulotlar' : 'Продукты'}
+            </TabsTrigger>
             <TabsTrigger value="users" className="flex items-center gap-2">
               <Users className="h-4 w-4" />
-              {t('users')}
+              {language === 'uz' ? 'Foydalanuvchilar' : 'Пользователи'}
             </TabsTrigger>
             <TabsTrigger value="marketing" className="flex items-center gap-2">
               <Send className="h-4 w-4" />
-              {t('marketing')}
+              {language === 'uz' ? 'Marketing' : 'Маркетинг'}
             </TabsTrigger>
             <TabsTrigger value="blog" className="flex items-center gap-2">
               <FileText className="h-4 w-4" />
               {t('blog')}
             </TabsTrigger>
             <TabsTrigger value="orders" className="flex items-center gap-2">
-              <Package className="h-4 w-4" />
-              {t('orders')}
+              <MessageSquare className="h-4 w-4" />
+              {language === 'uz' ? 'Buyurtmalar' : 'Заказы'}
             </TabsTrigger>
           </TabsList>
 
@@ -203,6 +496,288 @@ function AdminPanel() {
             </div>
           </TabsContent>
 
+          <TabsContent value="categories" className="space-y-6">
+            <div className="flex justify-between items-center">
+              <h2 className="text-2xl font-bold">
+                {language === 'uz' ? 'Kategoriyalar' : 'Категории'}
+              </h2>
+              <Dialog open={showCategoryDialog} onOpenChange={setShowCategoryDialog}>
+                <DialogTrigger asChild>
+                  <Button onClick={() => { resetCategoryForm(); setShowCategoryDialog(true); }}>
+                    <Plus className="h-4 w-4 mr-2" />
+                    {language === 'uz' ? 'Yangi kategoriya' : 'Новая категория'}
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-[500px]">
+                  <DialogHeader>
+                    <DialogTitle>
+                      {editingCategory 
+                        ? (language === 'uz' ? 'Kategoriyani tahrirlash' : 'Редактировать категорию')
+                        : (language === 'uz' ? 'Yangi kategoriya' : 'Новая категория')
+                      }
+                    </DialogTitle>
+                  </DialogHeader>
+                  <div className="grid gap-4 py-4">
+                    <div className="grid grid-cols-4 items-center gap-4">
+                      <Label htmlFor="nameUz" className="text-right">
+                        {language === 'uz' ? 'Nom (O\'zbek)' : 'Название (Узбекский)'}
+                      </Label>
+                      <Input
+                        id="nameUz"
+                        value={categoryForm.nameUz}
+                        onChange={(e) => setCategoryForm({...categoryForm, nameUz: e.target.value})}
+                        className="col-span-3"
+                      />
+                    </div>
+                    <div className="grid grid-cols-4 items-center gap-4">
+                      <Label htmlFor="nameRu" className="text-right">
+                        {language === 'uz' ? 'Nom (Rus)' : 'Название (Русский)'}
+                      </Label>
+                      <Input
+                        id="nameRu"
+                        value={categoryForm.nameRu}
+                        onChange={(e) => setCategoryForm({...categoryForm, nameRu: e.target.value})}
+                        className="col-span-3"
+                      />
+                    </div>
+                    <div className="grid grid-cols-4 items-center gap-4">
+                      <Label htmlFor="descriptionUz" className="text-right">
+                        {language === 'uz' ? 'Tavsif (O\'zbek)' : 'Описание (Узбекский)'}
+                      </Label>
+                      <Textarea
+                        id="descriptionUz"
+                        value={categoryForm.descriptionUz}
+                        onChange={(e) => setCategoryForm({...categoryForm, descriptionUz: e.target.value})}
+                        className="col-span-3"
+                      />
+                    </div>
+                    <div className="grid grid-cols-4 items-center gap-4">
+                      <Label htmlFor="descriptionRu" className="text-right">
+                        {language === 'uz' ? 'Tavsif (Rus)' : 'Описание (Русский)'}
+                      </Label>
+                      <Textarea
+                        id="descriptionRu"
+                        value={categoryForm.descriptionRu}
+                        onChange={(e) => setCategoryForm({...categoryForm, descriptionRu: e.target.value})}
+                        className="col-span-3"
+                      />
+                    </div>
+                    <div className="grid grid-cols-4 items-center gap-4">
+                      <Label htmlFor="imageUrl" className="text-right">
+                        {language === 'uz' ? 'Rasm URL' : 'URL изображения'}
+                      </Label>
+                      <Input
+                        id="imageUrl"
+                        value={categoryForm.imageUrl}
+                        onChange={(e) => setCategoryForm({...categoryForm, imageUrl: e.target.value})}
+                        className="col-span-3"
+                      />
+                    </div>
+                  </div>
+                  <div className="flex justify-end space-x-2">
+                    <Button variant="outline" onClick={() => setShowCategoryDialog(false)}>
+                      {language === 'uz' ? 'Bekor qilish' : 'Отмена'}
+                    </Button>
+                    <Button onClick={handleSaveCategory} disabled={createCategoryMutation.isPending || updateCategoryMutation.isPending}>
+                      {createCategoryMutation.isPending || updateCategoryMutation.isPending 
+                        ? (language === 'uz' ? 'Saqlanmoqda...' : 'Сохранение...')
+                        : (language === 'uz' ? 'Saqlash' : 'Сохранить')
+                      }
+                    </Button>
+                  </div>
+                </DialogContent>
+              </Dialog>
+            </div>
+
+            <Card>
+              <CardContent className="p-6">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>ID</TableHead>
+                      <TableHead>{language === 'uz' ? 'Nom (O\'zbek)' : 'Название (Узбекский)'}</TableHead>
+                      <TableHead>{language === 'uz' ? 'Nom (Rus)' : 'Название (Русский)'}</TableHead>
+                      <TableHead>{language === 'uz' ? 'Amallar' : 'Действия'}</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {categories?.map((category: Category) => (
+                      <TableRow key={category.id}>
+                        <TableCell>{category.id}</TableCell>
+                        <TableCell>{category.nameUz}</TableCell>
+                        <TableCell>{category.nameRu}</TableCell>
+                        <TableCell>
+                          <div className="flex space-x-2">
+                            <Button 
+                              size="sm" 
+                              variant="outline"
+                              onClick={() => handleEditCategory(category)}
+                            >
+                              <Edit className="h-4 w-4" />
+                            </Button>
+                            <Button 
+                              size="sm" 
+                              variant="destructive"
+                              onClick={() => deleteCategoryMutation.mutate(category.id)}
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="products" className="space-y-6">
+            <div className="flex justify-between items-center">
+              <h2 className="text-2xl font-bold">
+                {language === 'uz' ? 'Mahsulotlar' : 'Продукты'}
+              </h2>
+              <Dialog open={showProductDialog} onOpenChange={setShowProductDialog}>
+                <DialogTrigger asChild>
+                  <Button onClick={() => { resetProductForm(); setShowProductDialog(true); }}>
+                    <Plus className="h-4 w-4 mr-2" />
+                    {language === 'uz' ? 'Yangi mahsulot' : 'Новый продукт'}
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-[600px] max-h-[80vh] overflow-y-auto">
+                  <DialogHeader>
+                    <DialogTitle>
+                      {editingProduct 
+                        ? (language === 'uz' ? 'Mahsulotni tahrirlash' : 'Редактировать продукт')
+                        : (language === 'uz' ? 'Yangi mahsulot' : 'Новый продукт')
+                      }
+                    </DialogTitle>
+                  </DialogHeader>
+                  <div className="grid gap-4 py-4">
+                    <div className="grid grid-cols-4 items-center gap-4">
+                      <Label htmlFor="productNameUz" className="text-right">
+                        {language === 'uz' ? 'Nom (O\'zbek)' : 'Название (Узбекский)'}
+                      </Label>
+                      <Input
+                        id="productNameUz"
+                        value={productForm.nameUz}
+                        onChange={(e) => setProductForm({...productForm, nameUz: e.target.value})}
+                        className="col-span-3"
+                      />
+                    </div>
+                    <div className="grid grid-cols-4 items-center gap-4">
+                      <Label htmlFor="productNameRu" className="text-right">
+                        {language === 'uz' ? 'Nom (Rus)' : 'Название (Русский)'}
+                      </Label>
+                      <Input
+                        id="productNameRu"
+                        value={productForm.nameRu}
+                        onChange={(e) => setProductForm({...productForm, nameRu: e.target.value})}
+                        className="col-span-3"
+                      />
+                    </div>
+                    <div className="grid grid-cols-4 items-center gap-4">
+                      <Label htmlFor="productCategory" className="text-right">
+                        {language === 'uz' ? 'Kategoriya' : 'Категория'}
+                      </Label>
+                      <Select value={productForm.categoryId.toString()} onValueChange={(value) => setProductForm({...productForm, categoryId: parseInt(value)})}>
+                        <SelectTrigger className="col-span-3">
+                          <SelectValue placeholder={language === 'uz' ? 'Kategoriya tanlang' : 'Выберите категорию'} />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {categories?.map((category: Category) => (
+                            <SelectItem key={category.id} value={category.id.toString()}>
+                              {language === 'uz' ? category.nameUz : category.nameRu}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="grid grid-cols-4 items-center gap-4">
+                      <Label htmlFor="productPrice" className="text-right">
+                        {language === 'uz' ? 'Narx (so\'m)' : 'Цена (сум)'}
+                      </Label>
+                      <Input
+                        id="productPrice"
+                        type="number"
+                        value={productForm.price}
+                        onChange={(e) => setProductForm({...productForm, price: parseInt(e.target.value) || 0})}
+                        className="col-span-3"
+                      />
+                    </div>
+                    <div className="grid grid-cols-4 items-center gap-4">
+                      <Label htmlFor="productStock" className="text-right">
+                        {language === 'uz' ? 'Soni' : 'Количество'}
+                      </Label>
+                      <Input
+                        id="productStock"
+                        type="number"
+                        value={productForm.stock}
+                        onChange={(e) => setProductForm({...productForm, stock: parseInt(e.target.value) || 0})}
+                        className="col-span-3"
+                      />
+                    </div>
+                  </div>
+                  <div className="flex justify-end space-x-2">
+                    <Button variant="outline" onClick={() => setShowProductDialog(false)}>
+                      {language === 'uz' ? 'Bekor qilish' : 'Отмена'}
+                    </Button>
+                    <Button onClick={handleSaveProduct} disabled={createProductMutation.isPending || updateProductMutation.isPending}>
+                      {createProductMutation.isPending || updateProductMutation.isPending 
+                        ? (language === 'uz' ? 'Saqlanmoqda...' : 'Сохранение...')
+                        : (language === 'uz' ? 'Saqlash' : 'Сохранить')
+                      }
+                    </Button>
+                  </div>
+                </DialogContent>
+              </Dialog>
+            </div>
+
+            <Card>
+              <CardContent className="p-6">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>ID</TableHead>
+                      <TableHead>{language === 'uz' ? 'Nom' : 'Название'}</TableHead>
+                      <TableHead>{language === 'uz' ? 'Narx' : 'Цена'}</TableHead>
+                      <TableHead>{language === 'uz' ? 'Soni' : 'Количество'}</TableHead>
+                      <TableHead>{language === 'uz' ? 'Amallar' : 'Действия'}</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {products?.map((product: Product) => (
+                      <TableRow key={product.id}>
+                        <TableCell>{product.id}</TableCell>
+                        <TableCell>{language === 'uz' ? product.nameUz : product.nameRu}</TableCell>
+                        <TableCell>{product.price?.toLocaleString()} so'm</TableCell>
+                        <TableCell>{product.stock}</TableCell>
+                        <TableCell>
+                          <div className="flex space-x-2">
+                            <Button 
+                              size="sm" 
+                              variant="outline"
+                              onClick={() => handleEditProduct(product)}
+                            >
+                              <Edit className="h-4 w-4" />
+                            </Button>
+                            <Button 
+                              size="sm" 
+                              variant="destructive"
+                              onClick={() => deleteProductMutation.mutate(product.id)}
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
           <TabsContent value="marketing" className="space-y-6">
             <Card>
               <CardHeader>
@@ -243,25 +818,74 @@ function AdminPanel() {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Bot className="h-5 w-5" />
-                  {language === 'uz' ? 'Avtomatik marketing' : 'Автоматический маркетинг'}
+                  {language === 'uz' ? 'Avtomatik AI marketing' : 'Автоматический AI маркетинг'}
                 </CardTitle>
               </CardHeader>
-              <CardContent>
-                <p className="text-muted-foreground mb-4">
+              <CardContent className="space-y-4">
+                <p className="text-muted-foreground">
                   {language === 'uz' 
-                    ? 'AI orqali kunlik marketing xabarlari avtomatik ravishda yuboriladi'
-                    : 'AI автоматически отправляет ежедневные маркетинговые сообщения'}
+                    ? 'Gemini 1.5 Flash AI orqali avtomatik marketing xabarlari yaratish va yuborish'
+                    : 'Автоматическое создание и отправка маркетинговых сообщений через Gemini 1.5 Flash AI'}
                 </p>
-                <div className="space-y-2">
+                
+                <div className="space-y-4">
+                  <div className="grid grid-cols-4 items-center gap-4">
+                    <Label htmlFor="marketingType" className="text-right">
+                      {language === 'uz' ? 'Marketing turi' : 'Тип маркетинга'}
+                    </Label>
+                    <Select value={marketingType} onValueChange={setMarketingType}>
+                      <SelectTrigger className="col-span-3">
+                        <SelectValue placeholder={language === 'uz' ? 'Tur tanlang' : 'Выберите тип'} />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="daily">{language === 'uz' ? 'Kunlik aksiya' : 'Ежедневная акция'}</SelectItem>
+                        <SelectItem value="product">{language === 'uz' ? 'Mahsulot tanishuvi' : 'Презентация продукта'}</SelectItem>
+                        <SelectItem value="seasonal">{language === 'uz' ? 'Mavsumiy aksiya' : 'Сезонная акция'}</SelectItem>
+                        <SelectItem value="custom">{language === 'uz' ? 'Maxsus xabar' : 'Особое сообщение'}</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  {(marketingType === 'product' || marketingType === 'seasonal' || marketingType === 'custom') && (
+                    <div className="grid grid-cols-4 items-center gap-4">
+                      <Label htmlFor="marketingTopic" className="text-right">
+                        {language === 'uz' ? 'Mavzu/Mahsulot' : 'Тема/Продукт'}
+                      </Label>
+                      <Input
+                        id="marketingTopic"
+                        value={marketingTopic}
+                        onChange={(e) => setMarketingTopic(e.target.value)}
+                        placeholder={language === 'uz' 
+                          ? 'Masalan: Polietilen paketlar' 
+                          : 'Например: Полиэтиленовые пакеты'}
+                        className="col-span-3"
+                      />
+                    </div>
+                  )}
+
+                  <Button 
+                    onClick={handleAutoMarketing}
+                    disabled={autoMarketingMutation.isPending}
+                    className="w-full"
+                  >
+                    {autoMarketingMutation.isPending 
+                      ? (language === 'uz' ? 'AI xabar yaratmoqda...' : 'AI создает сообщение...')
+                      : (language === 'uz' ? 'AI orqali xabar yaratish va yuborish' : 'Создать и отправить через AI')
+                    }
+                  </Button>
+                </div>
+
+                <div className="mt-6 space-y-2">
+                  <h4 className="font-medium">{language === 'uz' ? 'Avtomatik rejim' : 'Автоматический режим'}</h4>
                   <div className="flex items-center justify-between p-3 bg-green-50 dark:bg-green-900/20 rounded-lg">
                     <span className="text-sm">
-                      {language === 'uz' ? 'Ertalabki xabarlar' : 'Утренние сообщения'}
+                      {language === 'uz' ? 'Ertalabki AI xabarlar' : 'Утренние AI сообщения'}
                     </span>
                     <Badge variant="secondary">09:00</Badge>
                   </div>
                   <div className="flex items-center justify-between p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
                     <span className="text-sm">
-                      {language === 'uz' ? 'Kechqurun aksiyalar' : 'Вечерние акции'}
+                      {language === 'uz' ? 'Kechqurun AI aksiyalar' : 'Вечерние AI акции'}
                     </span>
                     <Badge variant="secondary">18:00</Badge>
                   </div>

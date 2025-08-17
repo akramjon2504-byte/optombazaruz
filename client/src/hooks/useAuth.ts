@@ -4,13 +4,14 @@ export function useAuth() {
   const { data: user, isLoading, error } = useQuery({
     queryKey: ["/api/auth/user"],
     retry: false,
+    refetchOnWindowFocus: false,
   });
 
   return {
     user,
     isLoading,
     isAuthenticated: !!user,
-    isAdmin: user?.isAdmin || false,
+    isAdmin: (user as any)?.isAdmin || false,
     error,
   };
 }

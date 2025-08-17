@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { useLanguage } from "@/contexts/LanguageContext";
+import { useLanguage } from "@/lib/language-context";
 import { useCart } from "@/hooks/use-cart";
 import { Heart, ShoppingCart, Star, Truck, Shield, Clock, ArrowLeft } from "lucide-react";
 import { Link } from "wouter";

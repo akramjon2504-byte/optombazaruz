@@ -1,16 +1,15 @@
-import type { Express } from "express";
+import type { Express, Request, Response, NextFunction } from "express";
 import { createServer, type Server } from "http";
 import session from "express-session";
 import connectPg from "connect-pg-simple";
 import { storage } from "./storage";
 import { authService } from "./services/auth";
-import { insertUserSchema } from "@shared/schema";
+import { insertUserSchema, insertCategorySchema, insertProductSchema, insertCartItemSchema, insertWishlistItemSchema, insertChatMessageSchema, insertOrderSchema, insertPaymentSchema } from "@shared/schema";
 import { setupAuth, isAuthenticated } from "./replitAuth";
 import { generateChatResponse } from "./services/gemini";
 import { blogService } from "./services/blog";
 import { telegramService } from "./services/telegram";
 import { seedDatabase } from "./seedData";
-import { insertProductSchema, insertCartItemSchema, insertWishlistItemSchema, insertChatMessageSchema, insertOrderSchema, insertPaymentSchema } from "@shared/schema";
 import { PaymentService } from "./services/payment";
 import { randomUUID } from "crypto";
 
@@ -40,14 +39,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
   await seedDatabase();
 
   // Define middleware functions
-  const requireAuth = async (req: any, res: Response, next: NextFunction) => {
+  const requireAuth = async (req: Request & { user?: any }, res: Response, next: NextFunction) => {
     if (!req.user) {
       return res.status(401).json({ message: 'Authentication required' });
     }
     next();
   };
 
-  const requireAdmin = async (req: any, res: Response, next: NextFunction) => {
+  const requireAdmin = async (req: Request & { user?: any }, res: Response, next: NextFunction) => {
     const user = await storage.getUser(req.user.id);
     if (!user?.isAdmin) {
       return res.status(403).json({ message: 'Admin access required' });
@@ -185,6 +184,242 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.error('Get user error:', error);
       res.status(500).json({ message: 'Server error' });
     }
+  });
+
+  // Categories CRUD routes
+  app.get('/api/categories', async (req, res) => {
+    try {
+      const categories = await storage.getCategories();
+      res.json(categories);
+    } catch (error) {
+      console.error('Get categories error:', error);
+      res.status(500).json({ message: 'Server error' });
+    }
+  });
+
+  app.post('/api/admin/categories', requireAuth, requireAdmin, async (req, res) => {
+    try {
+      const validatedData = insertCategorySchema.parse(req.body);
+      const category = await storage.createCategory(validatedData);
+      
+      // Send notification to Telegram about new category
+      try {
+        const message = `🎯 Yangi kategoriya qo'shildi!\n\n📂 ${category.nameUz}\n📂 ${category.nameRu}\n\nOptomBazar.uz - eng yaxshi mahsulotlar!`;
+        await telegramService.sendToChannel(message);
+      } catch (telegramError) {
+        console.log('Telegram notification failed:', telegramError);
+      }
+      
+      res.status(201).json(category);
+    } catch (error) {
+      console.error('Create category error:', error);
+      res.status(400).json({ message: error instanceof Error ? error.message : 'Kategoriya yaratishda xatolik' });
+    }
+  });
+
+  app.put('/api/admin/categories/:id', requireAuth, requireAdmin, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const validatedData = insertCategorySchema.parse(req.body);
+      const category = await storage.updateCategory(id, validatedData);
+      res.json(category);
+    } catch (error) {
+      console.error('Update category error:', error);
+      res.status(400).json({ message: error instanceof Error ? error.message : 'Kategoriya yangilashda xatolik' });
+    }
+  });
+
+  app.delete('/api/admin/categories/:id', requireAuth, requireAdmin, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      await storage.deleteCategory(id);
+      res.json({ success: true });
+    } catch (error) {
+      console.error('Delete category error:', error);
+      res.status(500).json({ message: 'Kategoriya o\'chirishda xatolik' });
+    }
+  });
+
+  // Products CRUD routes
+  app.get('/api/products', async (req, res) => {
+    try {
+      const { categoryId, isHit, isPromo, search } = req.query;
+      const filters = {
+        categoryId: categoryId as string,
+        isHit: isHit === 'true' ? true : isHit === 'false' ? false : undefined,
+        isPromo: isPromo === 'true' ? true : isPromo === 'false' ? false : undefined,
+        search: search as string
+      };
+      
+      const products = await storage.getProducts(filters);
+      res.json(products);
+    } catch (error) {
+      console.error('Get products error:', error);
+      res.status(500).json({ message: 'Server error' });
+    }
+  });
+
+  app.post('/api/admin/products', requireAuth, requireAdmin, async (req, res) => {
+    try {
+      const validatedData = insertProductSchema.parse(req.body);
+      const product = await storage.createProduct(validatedData);
+      
+      // Send notification to Telegram about new product with Gemini generated marketing
+      try {
+        const marketingMessage = await generateChatResponse(
+          `Yangi mahsulot OptomBazar.uz da qo'shildi: ${product.nameUz}. Bu mahsulot uchun qisqa marketing xabari yoz, faqat o'zbek tilida. Narxi: ${product.price} so'm. Emoji ishlatgin va jozibali qiling.`
+        );
+        await telegramService.sendToChannel(marketingMessage);
+      } catch (error) {
+        console.log('Marketing message generation failed:', error);
+        // Fallback message
+        const fallbackMessage = `🎉 Yangi mahsulot!\n\n${product.nameUz}\n💰 Narx: ${product.price} so'm\n\nOptomBazar.uz - eng yaxshi mahsulotlar!`;
+        await telegramService.sendToChannel(fallbackMessage);
+      }
+      
+      res.status(201).json(product);
+    } catch (error) {
+      console.error('Create product error:', error);
+      res.status(400).json({ message: error instanceof Error ? error.message : 'Mahsulot yaratishda xatolik' });
+    }
+  });
+
+  app.put('/api/admin/products/:id', requireAuth, requireAdmin, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const validatedData = insertProductSchema.parse(req.body);
+      const product = await storage.updateProduct(id, validatedData);
+      res.json(product);
+    } catch (error) {
+      console.error('Update product error:', error);
+      res.status(400).json({ message: error instanceof Error ? error.message : 'Mahsulot yangilashda xatolik' });
+    }
+  });
+
+  app.delete('/api/admin/products/:id', requireAuth, requireAdmin, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      await storage.deleteProduct(id);
+      res.json({ success: true });
+    } catch (error) {
+      console.error('Delete product error:', error);
+      res.status(500).json({ message: 'Mahsulot o\'chirishda xatolik' });
+    }
+  });
+
+  // Admin login endpoint
+  app.post('/api/admin/login', async (req, res) => {
+    try {
+      const { username, password } = req.body;
+      
+      // Check credentials
+      if (username === 'Admin' && password === 'GIsobot201415*') {
+        // Set session
+        req.session.isAdmin = true;
+        req.session.user = { username: 'Admin', isAdmin: true };
+        
+        res.json({ success: true, user: { username: 'Admin', isAdmin: true } });
+      } else {
+        res.status(401).json({ message: 'Noto\'g\'ri username yoki parol' });
+      }
+    } catch (error) {
+      console.error('Admin login error:', error);
+      res.status(500).json({ message: 'Server xatosi' });
+    }
+  });
+
+  // Auto Marketing API endpoint
+  app.post('/api/admin/auto-marketing', requireAuth, requireAdmin, async (req, res) => {
+    try {
+      const { type, topic } = req.body;
+      
+      let prompt = '';
+      
+      switch (type) {
+        case 'daily':
+          prompt = `OptomBazar.uz uchun kunlik aksiya xabari yoz. O'zbek tilida, qisqa va jozibali, emoji bilan. Optom savdo va chegirmalar haqida.`;
+          break;
+        case 'product':
+          prompt = `OptomBazar.uz da ${topic} mahsuloti uchun marketing xabari yoz. O'zbek tilida, mahsulot afzalliklarini ko'rsating, emoji bilan.`;
+          break;
+        case 'seasonal':
+          prompt = `OptomBazar.uz uchun ${topic} mavzusida mavsumiy aksiya xabari yoz. O'zbek tilida, mavsumiy maxsus takliflar haqida.`;
+          break;
+        case 'custom':
+          prompt = `OptomBazar.uz uchun ${topic} haqida marketing xabari yoz. O'zbek tilida, jozibali va emoji bilan.`;
+          break;
+        default:
+          prompt = `OptomBazar.uz uchun yangi aksiya xabari yoz. O'zbek tilida, qisqa va jozibali.`;
+      }
+      
+      // Generate marketing message using Gemini
+      const marketingMessage = await generateChatResponse(prompt);
+      
+      // Send to Telegram channel
+      await telegramService.sendToChannel(marketingMessage);
+      
+      res.json({ 
+        success: true, 
+        message: marketingMessage,
+        description: 'AI marketing xabari yaratildi va yuborildi'
+      });
+    } catch (error) {
+      console.error('Auto marketing error:', error);
+      res.status(500).json({ message: 'AI marketing xabarini yaratishda xatolik' });
+    }
+  });
+
+  // Auto marketing endpoint - Gemini generates and sends marketing messages
+  app.post('/api/admin/marketing/auto', requireAuth, requireAdmin, async (req, res) => {
+    try {
+      const { type, topic } = req.body;
+      
+      let prompt = '';
+      switch (type) {
+        case 'daily':
+          prompt = `OptomBazar.uz uchun kunlik aksiya haqida marketing xabari yoz. O'zbek tilida, emoji bilan, jozibali qiling.`;
+          break;
+        case 'product':
+          prompt = `OptomBazar.uz dagi ${topic} mahsuloti haqida marketing xabari yoz. O'zbek tilida, emoji bilan, sotuvni oshiruvchi qiling.`;
+          break;
+        case 'seasonal':
+          prompt = `OptomBazar.uz uchun ${topic} mavsumi aksiyasi haqida marketing xabari yoz. O'zbek tilida, emoji bilan, jozibali qiling.`;
+          break;
+        default:
+          prompt = `OptomBazar.uz uchun umumiy marketing xabari yoz: ${topic}. O'zbek tilida, emoji bilan, jozibali qiling.`;
+      }
+      
+      const marketingMessage = await generateChatResponse(prompt);
+      const success = await telegramService.sendToChannel(marketingMessage);
+      
+      if (success) {
+        res.json({ success: true, message: marketingMessage });
+      } else {
+        res.status(400).json({ message: 'Marketing xabari yuborilmadi' });
+      }
+    } catch (error) {
+      console.error('Auto marketing error:', error);
+      res.status(500).json({ message: 'Marketing yaratishda xatolik' });
+    }
+  });
+
+  // Check user auth status
+  app.get('/api/auth/user', (req, res) => {
+    if (req.session?.isAdmin) {
+      res.json(req.session.user);
+    } else {
+      res.status(401).json({ message: 'Not authenticated' });
+    }
+  });
+
+  // Admin logout
+  app.post('/api/admin/logout', (req, res) => {
+    req.session.destroy((err) => {
+      if (err) {
+        return res.status(500).json({ message: 'Logout xatosi' });
+      }
+      res.json({ success: true });
+    });
   });
 
   // Auth middleware for legacy routes

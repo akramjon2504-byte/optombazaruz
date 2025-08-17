@@ -1,4 +1,4 @@
-import { useLanguage } from '@/contexts/LanguageContext';
+import { useLanguage } from '@/lib/language-context';
 import { LANGUAGES } from '@shared/languages';
 import { Button } from '@/components/ui/button';
 import {

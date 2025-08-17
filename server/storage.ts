@@ -24,16 +24,21 @@ export interface IStorage {
 
   // Categories
   getCategories(): Promise<Category[]>;
+  getAllCategories(): Promise<Category[]>;
   getCategory(id: string): Promise<Category | undefined>;
   getCategoryBySlug(slug: string): Promise<Category | undefined>;
   createCategory(category: InsertCategory): Promise<Category>;
+  updateCategory(id: number, category: Partial<Category>): Promise<Category>;
+  deleteCategory(id: number): Promise<void>;
 
   // Products
   getProducts(filters?: { categoryId?: string; isHit?: boolean; isPromo?: boolean; search?: string }): Promise<Product[]>;
+  getAllProducts(): Promise<Product[]>;
   getProduct(id: string): Promise<Product | undefined>;
   getProductBySlug(slug: string): Promise<Product | undefined>;
   createProduct(product: InsertProduct): Promise<Product>;
-  updateProduct(id: string, updates: Partial<Product>): Promise<Product | undefined>;
+  updateProduct(id: number, updates: Partial<Product>): Promise<Product>;
+  deleteProduct(id: number): Promise<void>;
 
   // Cart
   getCartItems(sessionId?: string, userId?: string): Promise<(CartItem & { product: Product })[]>;
@@ -147,6 +152,23 @@ export class DatabaseStorage implements IStorage {
     return newCategory;
   }
 
+  async getAllCategories(): Promise<Category[]> {
+    return await db.select().from(categories).orderBy(desc(categories.createdAt));
+  }
+
+  async updateCategory(id: number, updates: Partial<Category>): Promise<Category> {
+    const [updatedCategory] = await db
+      .update(categories)
+      .set(updates)
+      .where(eq(categories.id, id.toString()))
+      .returning();
+    return updatedCategory;
+  }
+
+  async deleteCategory(id: number): Promise<void> {
+    await db.delete(categories).where(eq(categories.id, id.toString()));
+  }
+
   // Products
   async getProducts(filters?: { categoryId?: string; isHit?: boolean; isPromo?: boolean; search?: string }): Promise<Product[]> {
     const conditions = [eq(products.isActive, true)];
@@ -195,13 +217,21 @@ export class DatabaseStorage implements IStorage {
     return newProduct;
   }
 
-  async updateProduct(id: string, updates: Partial<Product>): Promise<Product | undefined> {
+  async updateProduct(id: number, updates: Partial<Product>): Promise<Product> {
     const [updatedProduct] = await db
       .update(products)
       .set(updates)
-      .where(eq(products.id, id))
+      .where(eq(products.id, id.toString()))
       .returning();
     return updatedProduct;
+  }
+
+  async getAllProducts(): Promise<Product[]> {
+    return await db.select().from(products).orderBy(desc(products.createdAt));
+  }
+
+  async deleteProduct(id: number): Promise<void> {
+    await db.delete(products).where(eq(products.id, id.toString()));
   }
 
   // Cart
