@@ -1,13 +1,30 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
+import { setupAuth, isAuthenticated } from "./replitAuth";
 import { generateChatResponse } from "./services/gemini";
 import { blogService } from "./services/blog";
 import { telegramService } from "./services/telegram";
-import { insertProductSchema, insertCartItemSchema, insertWishlistItemSchema, insertChatMessageSchema } from "@shared/schema";
+import { insertProductSchema, insertCartItemSchema, insertWishlistItemSchema, insertChatMessageSchema, insertOrderSchema, insertPaymentSchema } from "@shared/schema";
+import { PaymentService } from "./services/payment";
 import { randomUUID } from "crypto";
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Auth middleware
+  await setupAuth(app);
+
+  // Auth routes
+  app.get('/api/auth/user', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const user = await storage.getUser(userId);
+      res.json(user);
+    } catch (error) {
+      console.error("Error fetching user:", error);
+      res.status(500).json({ message: "Failed to fetch user" });
+    }
+  });
+
   // Categories
   app.get("/api/categories", async (req, res) => {
     try {
@@ -260,6 +277,87 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
     } catch (error) {
       res.status(500).json({ message: "Failed to send promotion" });
+    }
+  });
+
+  // Payment Methods
+  app.get("/api/payment-methods", (req, res) => {
+    res.json(PaymentService.getPaymentMethods());
+  });
+
+  app.get("/api/payment/bank-details", async (req, res) => {
+    try {
+      const bankDetails = await PaymentService.getBankTransferDetails();
+      res.json(bankDetails);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch bank details" });
+    }
+  });
+
+  // Orders
+  app.post("/api/orders", async (req, res) => {
+    try {
+      const orderData = req.body;
+      orderData.sessionId = req.sessionID;
+      
+      if (req.user && (req.user as any).claims) {
+        orderData.userId = (req.user as any).claims.sub;
+      }
+
+      const orderId = await PaymentService.createOrder(orderData);
+      res.json({ orderId, message: "Order created successfully" });
+    } catch (error) {
+      console.error("Order creation error:", error);
+      res.status(500).json({ message: "Failed to create order" });
+    }
+  });
+
+  app.get("/api/orders", isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const orders = await storage.getUserOrders(userId);
+      res.json(orders);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch orders" });
+    }
+  });
+
+  app.get("/api/orders/:id", isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const order = await storage.getOrder(req.params.id);
+      
+      if (!order || order.userId !== userId) {
+        return res.status(404).json({ message: "Order not found" });
+      }
+      
+      res.json(order);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch order" });
+    }
+  });
+
+  // Process QR Card Payment
+  app.post("/api/payment/qr-card", async (req, res) => {
+    try {
+      const { orderId, cardNumber } = req.body;
+      
+      if (!orderId || !cardNumber) {
+        return res.status(400).json({ message: "Order ID and card number are required" });
+      }
+
+      const success = await PaymentService.processQRCardPayment(orderId, cardNumber);
+      
+      if (success) {
+        res.json({ message: "Payment processed successfully" });
+      } else {
+        res.status(400).json({ message: "Payment processing failed" });
+      }
+    } catch (error) {
+      console.error("Payment error:", error);
+      res.status(500).json({ 
+        message: error instanceof Error ? error.message : "Payment processing failed" 
+      });
     }
   });
 

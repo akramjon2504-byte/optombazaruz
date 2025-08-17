@@ -7,16 +7,7 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-// Session configuration
-app.use(session({
-  secret: process.env.SESSION_SECRET || 'optombazar-secret-key',
-  resave: false,
-  saveUninitialized: true,
-  cookie: { 
-    secure: false, // Set to true in production with HTTPS
-    maxAge: 1000 * 60 * 60 * 24 * 7 // 7 days
-  }
-}));
+// Session configuration will be handled by setupAuth in routes
 
 app.use((req, res, next) => {
   const start = Date.now();
