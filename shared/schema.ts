@@ -283,24 +283,3 @@ export const insertCustomerInsightSchema = createInsertSchema(customerInsights).
 
 export type InsertAnalyticsEvent = z.infer<typeof insertAnalyticsEventSchema>;
 export type InsertCustomerInsight = z.infer<typeof insertCustomerInsightSchema>;
-
-export type InsertBlogPost = z.infer<typeof insertBlogPostSchema>;
-export type BlogPost = typeof blogPosts.$inferSelect;
-
-export type InsertChatMessage = z.infer<typeof insertChatMessageSchema>;
-export type ChatMessage = typeof chatMessages.$inferSelect;
-
-export type InsertPromoTimer = z.infer<typeof insertPromoTimerSchema>;
-export type PromoTimer = typeof promoTimers.$inferSelect;
-
-export type InsertOrder = z.infer<typeof insertOrderSchema>;
-export type Order = typeof orders.$inferSelect;
-
-export type InsertPayment = z.infer<typeof insertPaymentSchema>;
-export type Payment = typeof payments.$inferSelect;
-
-export type InsertAnalyticsEvent = z.infer<typeof insertAnalyticsEventSchema>;
-export type AnalyticsEvent = typeof analyticsEvents.$inferSelect;
-
-export type InsertCustomerInsight = z.infer<typeof insertCustomerInsightSchema>;
-export type CustomerInsight = typeof customerInsights.$inferSelect;

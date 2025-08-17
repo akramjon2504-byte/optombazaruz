@@ -87,6 +87,25 @@ export interface Translations {
   error: Translation;
   noResults: Translation;
   tryAgain: Translation;
+
+  // Auth extended
+  success: Translation;
+  loginSuccess: Translation;
+  firstName: Translation;
+  lastName: Translation;
+  confirmPassword: Translation;
+  password: Translation;
+  
+  // Admin panel
+  dashboard: Translation;
+  users: Translation;
+  orders: Translation;
+  analytics: Translation;
+  settings: Translation;
+  totalUsers: Translation;
+  totalOrders: Translation;
+  monthlySales: Translation;
+  totalMessages: Translation;
 }
 
 export const translations: Translations = {
@@ -161,5 +180,24 @@ export const translations: Translations = {
   loading: { uz: "Yuklanmoqda...", ru: "Загрузка..." },
   error: { uz: "Xatolik yuz berdi", ru: "Произошла ошибка" },
   noResults: { uz: "Natija topilmadi", ru: "Результаты не найдены" },
-  tryAgain: { uz: "Qayta urinish", ru: "Попробовать снова" }
+  tryAgain: { uz: "Qayta urinish", ru: "Попробовать снова" },
+
+  // Auth extended
+  success: { uz: "Muvaffaqiyat", ru: "Успешно" },
+  loginSuccess: { uz: "Muvaffaqiyatli kirildi", ru: "Успешно вошли" },
+  firstName: { uz: "Ism", ru: "Имя" },
+  lastName: { uz: "Familiya", ru: "Фамилия" },
+  confirmPassword: { uz: "Parolni tasdiqlang", ru: "Подтвердите пароль" },
+  password: { uz: "Parol", ru: "Пароль" },
+  
+  // Admin panel
+  dashboard: { uz: "Boshqaruv paneli", ru: "Панель управления" },
+  users: { uz: "Foydalanuvchilar", ru: "Пользователи" },
+  orders: { uz: "Buyurtmalar", ru: "Заказы" },
+  analytics: { uz: "Tahlil", ru: "Аналитика" },
+  settings: { uz: "Sozlamalar", ru: "Настройки" },
+  totalUsers: { uz: "Jami foydalanuvchilar", ru: "Всего пользователей" },
+  totalOrders: { uz: "Jami buyurtmalar", ru: "Всего заказов" },
+  monthlySales: { uz: "Oylik savdo", ru: "Месячные продажи" },
+  totalMessages: { uz: "Jami xabarlar", ru: "Всего сообщений" }
 };

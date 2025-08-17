@@ -29,7 +29,7 @@ const registerSchema = z.object({
 
 type RegisterFormData = z.infer<typeof registerSchema>;
 
-export function Register() {
+function Register() {
   const [, setLocation] = useLocation();
   const { toast } = useToast();
   const { t, language } = useLanguage();
@@ -283,3 +283,5 @@ export function Register() {
     </div>
   );
 }
+
+export default Register;

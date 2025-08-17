@@ -8,7 +8,7 @@ import ProductGrid from "@/components/product/product-grid";
 import ChatWidget from "@/components/ai/chat-widget";
 import MarketingBanner from "@/components/telegram/marketing-banner";
 import DiscountTimer from "@/components/promo/discount-timer";
-import { useLanguage } from "@/hooks/use-language";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
 import { Bot, Truck, Award, Headphones } from "lucide-react";
 

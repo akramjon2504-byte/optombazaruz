@@ -3,7 +3,7 @@ import { Link } from "wouter";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { useLanguage } from "@/hooks/use-language";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { useCart } from "@/hooks/use-cart";
 import { Heart, ShoppingCart, Star } from "lucide-react";
 import { cn } from "@/lib/utils";

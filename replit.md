@@ -1,87 +1,94 @@
-# OptomBazar - Uzbekistan Wholesale Marketplace
+# OptomBazar.uz - E-commerce Platform
 
-## Overview
+## Project Overview
+OptomBazar.uz is a full-stack e-commerce platform for wholesale and retail commerce in Uzbekistan. The application supports both Uzbek and Russian languages and includes comprehensive features for product catalog, cart management, user authentication, admin panel, and payment processing.
 
-OptomBazar is a modern e-commerce platform built for the Uzbekistan wholesale market, recreating the original OptomBazar.uz website with enhanced functionality. The application serves as a comprehensive marketplace where businesses can browse and purchase wholesale products across multiple categories including polyethylene bags, disposable tableware, home goods, electronics, clothing, household chemicals, office supplies, and party supplies. The platform features a modern React frontend with shadcn/ui components, an Express.js backend API, and integrates AI-powered chat assistance and marketing automation through Telegram and Google's Gemini AI.
+## Architecture
+- **Frontend**: React + TypeScript + Vite + Tailwind CSS + shadcn/ui
+- **Backend**: Express.js + TypeScript + Drizzle ORM
+- **Database**: PostgreSQL
+- **Authentication**: Session-based with support for Google OAuth
+- **Payment**: Stripe integration
+- **Communication**: Telegram bot integration
+- **State Management**: TanStack Query (React Query v5)
+- **Routing**: Wouter for client-side routing
 
-## Recent Changes (January 2025)
+## Key Features
+- Multi-language support (Uzbek/Russian)
+- Product catalog with categories, search, and filtering
+- Shopping cart and wishlist functionality
+- User authentication (email/password and Google OAuth)
+- Admin panel for product and order management
+- Payment processing with Stripe
+- Telegram bot for customer communication
+- Blog system with AI content generation
+- Analytics and customer insights
 
-✓ Migrated from PHP-based Moguta CMS to modern React/Node.js stack
-✓ Imported real product categories and catalog structure from original OptomBazar.uz sitemap
-✓ Fixed critical API routing bugs in ProductGrid component 
-✓ Integrated authentic Uzbekistan wholesale market data and product listings
-✓ Added support for Russian language product names and descriptions matching original site
-✓ Enhanced with modern features: AI chat, Telegram marketing, QR card payments
-✓ Implemented secure Replit Auth authentication system with Google OAuth
-✓ Created comprehensive payment system supporting QR cards, bank transfers, and cash delivery
-✓ Built admin panel with AI-powered blog generation and analytics dashboard
-✓ Established real PostgreSQL database integration with Drizzle ORM
-✓ Completed full Replit-to-production migration with Render.com deployment configuration
-✓ Set up proper OAuth callback URL handling for production environment
-✓ Integrated session-based authentication with PostgreSQL session storage
-✓ Configured comprehensive multilingual support (Uzbek/Russian) throughout entire platform
+## Project Structure
+```
+/
+├── client/               # React frontend
+│   ├── src/
+│   │   ├── components/   # Reusable UI components
+│   │   ├── pages/        # Page components
+│   │   ├── hooks/        # Custom React hooks
+│   │   ├── lib/          # Utilities and helpers
+│   │   └── contexts/     # React contexts
+├── server/               # Express backend
+│   ├── routes.ts         # API routes
+│   ├── db.ts            # Database connection
+│   ├── storage.ts       # Data access layer
+│   └── services/        # Business logic services
+├── shared/               # Shared types and schemas
+│   ├── schema.ts        # Database schema and types
+│   └── languages.ts     # Language definitions
+└── migrations/           # Database migrations
+```
+
+## Database Schema
+The application uses PostgreSQL with the following main tables:
+- `users` - User accounts and profiles
+- `categories` - Product categories with multilingual names
+- `products` - Product catalog with pricing and inventory
+- `cart_items` - Shopping cart items
+- `orders` - Customer orders and order items
+- `reviews` - Product reviews and ratings
+- `blog_posts` - Blog content
+- `analytics_events` - User interaction tracking
+
+## Environment Variables
+- `DATABASE_URL` - PostgreSQL connection string
+- `STRIPE_SECRET_KEY` - Stripe API key for payments
+- `STRIPE_PUBLISHABLE_KEY` - Stripe public key
+- `TELEGRAM_BOT_TOKEN` - Telegram bot token
+- `GOOGLE_CLIENT_ID` - Google OAuth client ID
+- `GOOGLE_CLIENT_SECRET` - Google OAuth client secret
+- `OPENAI_API_KEY` - OpenAI API key for content generation
 
 ## User Preferences
+- Architecture: Modern full-stack JavaScript with TypeScript
+- Database: PostgreSQL with Drizzle ORM
+- UI Framework: React with shadcn/ui components
+- Styling: Tailwind CSS with responsive design
+- Code Style: TypeScript with strict type checking
+- Security: Session-based authentication with proper CSRF protection
 
-Preferred communication style: Simple, everyday language.
+## Recent Changes
+- **Migration Completed**: Successfully migrated from Replit Agent to standard Replit environment
+- **Database Setup**: PostgreSQL database provisioned and tables created
+- **Dependencies**: All required packages installed and configured
+- **Build System**: Vite configuration working with proper aliases
+- **Server**: Express server running on port 5000 with both API and static file serving
 
-## System Architecture
+## Deployment
+The application is configured to run on Replit with:
+- Single port deployment (port 5000) serving both frontend and backend
+- Automatic database migrations on startup
+- Environment variable configuration
+- Production build optimization
 
-### Frontend Architecture
-- **Framework**: React 18 with TypeScript using Vite as the build tool
-- **UI Library**: shadcn/ui components built on Radix UI primitives
-- **Styling**: Tailwind CSS with custom design tokens for consistent theming
-- **State Management**: TanStack Query (React Query) for server state management
-- **Routing**: Wouter for lightweight client-side routing
-- **Language Support**: Built-in internationalization supporting Uzbek and Russian languages
-
-### Backend Architecture
-- **Runtime**: Node.js with Express.js framework
-- **Language**: TypeScript with ES modules
-- **Database ORM**: Drizzle ORM for type-safe database operations
-- **Schema Validation**: Zod schemas integrated with Drizzle for runtime validation
-- **Session Management**: PostgreSQL-based session storage using connect-pg-simple
-
-### Database Design
-The application uses PostgreSQL with the following core entities:
-- **Users**: Authentication and user profile management
-- **Categories**: Hierarchical product categorization system
-- **Products**: Core product catalog with multilingual content
-- **Cart/Wishlist**: Shopping cart and wishlist functionality
-- **Reviews**: Product review and rating system
-- **Blog**: Content management for AI-generated blog posts
-- **Chat**: AI chat conversation history
-
-### AI Integration
-- **Chat Assistant**: Google Gemini AI integration for customer support
-- **Content Generation**: Automated blog post generation using Gemini
-- **Marketing**: AI-powered promotional content creation
-
-### Development Workflow
-- **Hot Reload**: Vite development server with HMR
-- **Type Safety**: Full TypeScript coverage across frontend and backend
-- **Database Migrations**: Drizzle Kit for schema management
-- **Build Process**: Separate builds for client (Vite) and server (esbuild)
-
-## External Dependencies
-
-### Database
-- **Neon Database**: Serverless PostgreSQL database service via `@neondatabase/serverless`
-- **Drizzle ORM**: Type-safe PostgreSQL operations with migration support
-
-### AI Services
-- **Google Gemini AI**: Natural language processing for chat assistance and content generation via `@google/genai`
-
-### Communication
-- **Telegram Bot API**: Marketing automation and customer notifications (dynamically imported)
-
-### UI Framework
-- **Radix UI**: Comprehensive set of accessible UI primitives
-- **Tailwind CSS**: Utility-first CSS framework with custom design system
-- **shadcn/ui**: Pre-built component library built on Radix UI
-
-### Development Tools
-- **Vite**: Frontend build tool with development server
-- **esbuild**: Fast JavaScript bundler for server builds
-- **TypeScript**: Type checking and compilation
-- **Replit Integration**: Development environment integration with cartographer and error overlay plugins
+## Next Steps
+- Application is ready for use and development
+- All core features are functional
+- Database is seeded with sample data
+- Ready for deployment to production

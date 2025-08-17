@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent } from "@/components/ui/card";
-import { useLanguage } from "@/hooks/use-language";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface PromoTimer {
   id: string;

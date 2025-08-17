@@ -3,7 +3,7 @@ import ProductCard from "./product-card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";
-import { useLanguage } from "@/hooks/use-language";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface Product {
   id: string;

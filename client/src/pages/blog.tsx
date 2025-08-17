@@ -7,7 +7,7 @@ import ChatWidget from "@/components/ai/chat-widget";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { useLanguage } from "@/hooks/use-language";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { Bot, ArrowLeft, Calendar, Clock } from "lucide-react";
 
 interface BlogPost {

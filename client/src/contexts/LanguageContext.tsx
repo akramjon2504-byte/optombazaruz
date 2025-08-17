@@ -1,10 +1,11 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { Language, detectLanguage, getTranslation, translations } from '@shared/languages';
+import { Language, detectLanguage } from '@shared/languages';
+import { translations, Translations } from '@/lib/translations';
 
 interface LanguageContextType {
   language: Language;
   setLanguage: (lang: Language) => void;
-  t: (key: keyof typeof translations) => string;
+  t: (key: keyof Translations) => string;
 }
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
@@ -32,7 +33,10 @@ export function LanguageProvider({ children }: LanguageProviderProps) {
       : 'OptomBazar.uz - Оптовая торговая платформа Узбекистана';
   }, [language]);
 
-  const t = (key: keyof typeof translations) => getTranslation(key, language);
+  const t = (key: keyof Translations) => {
+    const translation = translations[key];
+    return translation ? translation[language] : key;
+  };
 
   return (
     <LanguageContext.Provider value={{ language, setLanguage, t }}>

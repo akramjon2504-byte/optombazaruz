@@ -23,7 +23,7 @@ import {
   TrendingUp
 } from 'lucide-react';
 
-export function AdminPanel() {
+function AdminPanel() {
   const { toast } = useToast();
   const { t, language } = useLanguage();
   const queryClient = useQueryClient();
@@ -370,3 +370,5 @@ export function AdminPanel() {
     </div>
   );
 }
+
+export default AdminPanel;

@@ -22,7 +22,7 @@ const loginSchema = z.object({
 
 type LoginFormData = z.infer<typeof loginSchema>;
 
-export function Login() {
+function Login() {
   const [, setLocation] = useLocation();
   const { toast } = useToast();
   const { t, language } = useLanguage();
@@ -197,3 +197,5 @@ export function Login() {
     </div>
   );
 }
+
+export default Login;
