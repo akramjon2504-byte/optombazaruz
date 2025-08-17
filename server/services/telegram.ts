@@ -227,6 +227,53 @@ ${excerpt}
 
     console.log('✅ Telegram scheduled marketing posts started (every 6 hours)');
   }
+
+  // Legacy compatibility method
+  async sendToChannel(message: string, options?: { parse_mode?: 'HTML' | 'Markdown'; disable_web_page_preview?: boolean }) {
+    if (!this.isInitialized || !this.bot) {
+      console.log('Telegram bot not initialized, skipping channel message');
+      return false;
+    }
+
+    try {
+      await this.bot.sendMessage(this.channelId, message, options);
+      console.log('✅ Message sent to Telegram channel');
+      return true;
+    } catch (error) {
+      console.error('Failed to send message to Telegram channel:', error);
+      return false;
+    }
+  }
+
+  // Legacy compatibility method
+  async sendWelcomeMessage(userId: number) {
+    if (!this.isInitialized || !this.bot) {
+      console.log('Telegram bot not initialized, skipping welcome message');
+      return;
+    }
+
+    try {
+      const welcomeMessage = `
+🎉 Xush kelibsiz OptomBazar.uz ga!
+
+🛒 O'zbekistondagi eng yirik optom savdo platformasi
+💰 Eng yaxshi narxlar va sifatli mahsulotlar
+🚚 Tez yetkazib berish butun mamlakat bo'ylab
+📞 24/7 qo'llab-quvvatlash
+
+Saytimiz: https://optombazar.uz
+`;
+
+      await this.bot.sendMessage(userId, welcomeMessage, {
+        parse_mode: 'HTML',
+        disable_web_page_preview: false
+      });
+      
+      console.log('✅ Welcome message sent to user:', userId);
+    } catch (error) {
+      console.error('Failed to send welcome message:', error);
+    }
+  }
 }
 
 export const telegramService = new TelegramService();

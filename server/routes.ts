@@ -8,6 +8,7 @@ import { insertUserSchema, insertCategorySchema, insertProductSchema, insertCart
 import { setupAuth, isAuthenticated } from "./replitAuth";
 import { generateChatResponse } from "./services/gemini";
 import { blogService } from "./services/blog";
+import { telegramService } from "./services/telegram";
 import telegramRoutes from "./routes/telegram";
 import { seedDatabase } from "./seedData";
 import { PaymentService } from "./services/payment";
