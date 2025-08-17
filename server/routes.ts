@@ -322,12 +322,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const { username, password } = req.body;
       
       // Check credentials
-      if (username === 'Admin' && password === 'GIsobot201415*') {
+      if (username === 'Akramjon' && password === 'GIsobot201415*') {
         // Set session
         (req.session as any).isAdmin = true;
-        (req.session as any).user = { username: 'Admin', isAdmin: true };
+        (req.session as any).user = { username: 'Akramjon', isAdmin: true };
         
-        res.json({ success: true, user: { username: 'Admin', isAdmin: true } });
+        res.json({ success: true, user: { username: 'Akramjon', isAdmin: true } });
       } else {
         res.status(401).json({ message: 'Noto\'g\'ri username yoki parol' });
       }
