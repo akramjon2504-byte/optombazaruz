@@ -59,29 +59,33 @@ export class BlogService {
       const uzPrompt = `
 "${topicUz}" mavzusida professional blog maqola yozing. Maqola:
 
+MUHIM: Matnda hech qanday belgilar ishlatmang (* ** __ - va boshqalar)
+Oddiy matn formatida yozing, faqat paragraf ajratish uchun bo'sh qator qoldiring.
+
 1. O'zbek tilida yozilsin
 2. 1000-1500 so'z hajmida bo'lsin
 3. Praktik maslahatlar bersin
 4. OptomBazar.uz ni taklif etsin
-5. SEO optimallashtirilgan bo'lsin
+5. SEO va copywriting uchun optimallashtirilgan bo'lsin
 6. Qiziqarli va foydali bo'lsin
+7. Hech qanday formatlovchi belgilar ishlatmang
 
 Struktura:
 - Qiziqarli sarlavha
 - Qisqa excerpt (150 so'z)
-- Batafsil kontent (asosiy qism)
+- Batafsil kontent (asosiy qism, oddiy matn)
 - Xulosa
 
 Format: JSON
 {
   "title": "Sarlavha",
   "excerpt": "Qisqa tavsif", 
-  "content": "Batafsil kontent"
+  "content": "Batafsil kontent - faqat oddiy matn"
 }
       `;
 
       const uzResult = await ai.models.generateContent({
-        model: "gemini-2.5-flash",
+        model: "gemini-1.5-flash",
         contents: uzPrompt,
       });
       const uzText = uzResult.text || "";
@@ -90,29 +94,33 @@ Format: JSON
       const ruPrompt = `
 Напишите профессиональную статью для блога на тему "${topicRu}". Статья должна:
 
+ВАЖНО: Не используйте никаких символов форматирования (* ** __ - и другие)
+Пишите в формате простого текста, оставляя только пустые строки для разделения абзацев.
+
 1. Быть на русском языке
 2. Объемом 1000-1500 слов
 3. Содержать практические советы
 4. Рекомендовать OptomBazar.uz
-5. Быть SEO-оптимизированной
+5. Быть SEO и копирайтинг оптимизированной
 6. Быть интересной и полезной
+7. Не использовать никаких символов форматирования
 
 Структура:
 - Интересный заголовок
 - Краткое описание (150 слов)
-- Подробный контент (основная часть)
+- Подробный контент (основная часть, простой текст)
 - Заключение
 
 Формат: JSON
 {
   "title": "Заголовок",
   "excerpt": "Краткое описание",
-  "content": "Подробный контент"
+  "content": "Подробный контент - только простой текст"
 }
       `;
 
       const ruResult = await ai.models.generateContent({
-        model: "gemini-2.5-flash",
+        model: "gemini-1.5-flash",
         contents: ruPrompt,
       });
       const ruText = ruResult.text || "";

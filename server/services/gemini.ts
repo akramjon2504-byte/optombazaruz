@@ -126,8 +126,11 @@ export async function generateMarketingContent(type: 'telegram' | 'social', prod
     const prompt = `OptomBazar.uz uchun ${type} marketing kontenti yarating.
     Mahsulotlar: ${productList}
     
+    MUHIM: Formatlovchi belgilar ishlatmang (* ** __ - va boshqalar).
+    Faqat oddiy matn, emoji va hashtag ishlatishingiz mumkin.
+    
     Kontent qiziqarli, professional va harakatga undovchi bo'lsin.
-    Emoji va hashtag ishlatishingiz mumkin.
+    SEO va copywriting uchun optimallashtirilgan bo'lsin.
     O'zbek va rus tillarini aralashtiring.`;
 
     const response = await ai.models.generateContent({

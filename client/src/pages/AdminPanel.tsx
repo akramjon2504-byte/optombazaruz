@@ -665,7 +665,7 @@ function AdminPanel() {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {categories?.map((category: Category) => (
+                    {(categories as Category[])?.map((category: Category) => (
                       <TableRow key={category.id}>
                         <TableCell>{category.id}</TableCell>
                         <TableCell>{category.nameUz}</TableCell>
@@ -749,7 +749,7 @@ function AdminPanel() {
                           <SelectValue placeholder={language === 'uz' ? 'Kategoriya tanlang' : 'Выберите категорию'} />
                         </SelectTrigger>
                         <SelectContent>
-                          {categories?.map((category: Category) => (
+                          {(categories as Category[])?.map((category: Category) => (
                             <SelectItem key={category.id} value={category.id}>
                               {language === 'uz' ? category.nameUz : category.nameRu}
                             </SelectItem>
@@ -882,7 +882,7 @@ function AdminPanel() {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {products?.map((product: Product) => (
+                    {(products as Product[])?.map((product: Product) => (
                       <TableRow key={product.id}>
                         <TableCell>{product.id}</TableCell>
                         <TableCell>{language === 'uz' ? product.nameUz : product.nameRu}</TableCell>
@@ -1073,7 +1073,7 @@ function AdminPanel() {
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  {users?.map((user: any) => (
+                  {(users as any[])?.map((user: any) => (
                     <div key={user.id} className="flex items-center justify-between p-4 border rounded-lg">
                       <div>
                         <p className="font-medium">{user.firstName} {user.lastName}</p>
@@ -1101,7 +1101,7 @@ function AdminPanel() {
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  {orders?.map((order: any) => (
+                  {(orders as any[])?.map((order: any) => (
                     <div key={order.id} className="flex items-center justify-between p-4 border rounded-lg">
                       <div>
                         <p className="font-medium">#{order.orderNumber}</p>

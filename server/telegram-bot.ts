@@ -72,21 +72,25 @@ Admin buyruqlari:
       const prompt = `
 O'zbekiston optom bozori uchun marketing post yarating. Post quyidagi talablarga mos bo'lsin:
 
+MUHIM: Matnda formatlovchi belgilar ishlatmang (* ** __ - va boshqalar)
+Faqat oddiy matn, emoji va hashtag ishlatishingiz mumkin.
+
 1. O'zbek tilida bo'lsin
 2. Optom savdo haqida bo'lsin
 3. Qiziqarli va jalb qiluvchi bo'lsin
-4. Emoji ishlatilsin
+4. Emoji ishlatilsin (lekin yulduzcha belgilarsiz)
 5. Call-to-action bo'lsin
 6. OptomBazar.uz saytini targ'ib qilsin
+7. SEO va copywriting uchun optimallashtirilgan bo'lsin
 
 Format:
 - Sarlavha (qisqa va diqqatni tortuvchi)
-- Kontent (200-300 so'z)
+- Kontent (200-300 so'z, oddiy matn)
 - Hashtag (#optombazar #uzbekistan #wholesale)
       `;
 
       const response = await this.ai.models.generateContent({
-        model: "gemini-2.5-flash",
+        model: "gemini-1.5-flash",
         contents: prompt,
       });
 
@@ -146,7 +150,7 @@ Hashteglar: #optombazar #biznes #uzbekistan
       `;
 
       const response = await this.ai.models.generateContent({
-        model: "gemini-2.5-flash",
+        model: "gemini-1.5-flash",
         contents: prompt,
       });
 

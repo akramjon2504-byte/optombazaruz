@@ -308,7 +308,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.put('/api/admin/products/:id', requireAdmin, async (req, res) => {
     try {
-      const id = parseInt(req.params.id);
+      const id = req.params.id; // Use string ID for consistency  
       const validatedData = insertProductSchema.parse(req.body);
       const product = await storage.updateProduct(id, validatedData);
       res.json(product);
