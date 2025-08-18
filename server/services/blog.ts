@@ -127,13 +127,14 @@ class BlogService {
     setInterval(async () => {
       try {
         await this.generateDailyBlog();
-        console.log('✅ Scheduled blog post generated');
+        console.log('✅ Scheduled blog post generated and sent to Telegram');
       } catch (error) {
         console.error('Failed to generate scheduled blog post:', error);
       }
     }, 2 * 60 * 60 * 1000); // 2 hours
 
     console.log('✅ Blog generation scheduled (every 2 hours, 12 posts daily)');
+    console.log('📱 Telegram posts: 2 per day (blog posts sent to channel)');
   }
 }
 

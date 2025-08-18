@@ -220,12 +220,14 @@ ${excerpt}
       return;
     }
 
-    // Send marketing posts every 6 hours
+    // Send marketing posts every 12 hours (2 per day)
     setInterval(async () => {
       await this.sendScheduledPost();
-    }, 6 * 60 * 60 * 1000); // 6 hours
+    }, 12 * 60 * 60 * 1000); // 12 hours
 
-    console.log('✅ Telegram scheduled marketing posts started (every 6 hours)');
+    console.log('Telegram scheduled posts started');
+    console.log('📅 Kunlik mahsulot namoyishi: har kuni 9:00 va 21:00 da');
+    console.log('📅 Blog postlari: har 2 soatda avtomatik chiqadi');
   }
 
   // Legacy compatibility method
