@@ -107,6 +107,16 @@ Bu to'liq funksional elektron tijorat veb-ilovasi bo'lib, Replit Agent muhitidan
   - ✅ Blog service va gemini service professional talablar bilan yangilandi
   - ✅ AI-generated content endi to'liq professional formatda
 
+- **2024-08-18**: AI Chat Widget User Registration System
+  - ✅ Chat widget-da foydalanuvchi registratsiyasi talab qilinadi
+  - ✅ Ism va telefon raqam kiritish majburiy qilindi  
+  - ✅ Chat API foydalanuvchi ma'lumotlarini saqlaydi
+  - ✅ Admin panel-ga "Chat Xabarlari" tabi qo'shildi
+  - ✅ Barcha chat xabarlarini admin panelda ko'rish mumkin
+  - ✅ Chat messages database-ga userName va userPhone bilan saqlanadi
+  - ✅ AI javob berishda foydalanuvchi kontekstini ishlatadi
+  - ✅ Translation key xatolari tuzatildi (aiAssistant)
+
 ## Database Schema
 - Users, categories, products, cart/wishlist items
 - Orders and payments system

@@ -95,6 +95,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Admin chat messages endpoint
+  app.get('/api/admin/chat-messages', requireAdmin, async (req, res) => {
+    try {
+      const messages = await storage.getAllChatMessages();
+      res.json(messages);
+    } catch (error) {
+      console.error('Admin chat messages error:', error);
+      res.status(500).json({ message: 'Server error' });
+    }
+  });
+
   app.get('/api/admin/users', requireAdmin, async (req, res) => {
     try {
       const users = await storage.getAllUsers();
@@ -721,26 +732,33 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/chat", async (req, res) => {
     try {
-      const { sessionId, message } = req.body;
+      const { sessionId, userName, userPhone, message } = req.body;
       
       if (!sessionId || !message) {
         return res.status(400).json({ message: "SessionId and message are required" });
       }
 
-      // Store user message
+      // Store user message with user info
       await storage.createChatMessage({
         sessionId,
+        userName,
+        userPhone,
         message,
         response: null,
         isFromUser: true
       });
 
-      // Generate AI response
-      const response = await generateChatResponse(message);
+      // Generate AI response with user context
+      const contextPrompt = userName ? 
+        `Foydalanuvchi: ${userName} (${userPhone}). Savol: ${message}` : 
+        message;
+      const response = await generateChatResponse(contextPrompt);
 
       // Store AI response
       const aiMessage = await storage.createChatMessage({
         sessionId,
+        userName,
+        userPhone,
         message: response,
         response: null,
         isFromUser: false

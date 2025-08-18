@@ -109,6 +109,8 @@ export const chatMessages = pgTable("chat_messages", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   sessionId: text("session_id").notNull(),
   userId: varchar("user_id"),
+  userName: text("user_name"),
+  userPhone: text("user_phone"),
   message: text("message").notNull(),
   response: text("response"),
   isFromUser: boolean("is_from_user").notNull(),

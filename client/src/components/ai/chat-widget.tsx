@@ -18,6 +18,9 @@ interface ChatMessage {
 export default function ChatWidget() {
   const { t } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
+  const [showUserForm, setShowUserForm] = useState(true);
+  const [userName, setUserName] = useState("");
+  const [userPhone, setUserPhone] = useState("");
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
       id: "1",
@@ -40,11 +43,16 @@ export default function ChatWidget() {
 
   const chatMutation = useMutation({
     mutationFn: async (message: string) => {
-      const response = await apiRequest("POST", "/api/chat", {
-        sessionId: sessionId.current,
-        message,
+      const response = await apiRequest(`/api/chat`, {
+        method: 'POST',
+        body: {
+          sessionId: sessionId.current,
+          userName,
+          userPhone,
+          message,
+        },
       });
-      return response.json();
+      return response;
     },
     onSuccess: (data) => {
       setMessages((prev) => [
@@ -70,10 +78,25 @@ export default function ChatWidget() {
     },
   });
 
+  const handleUserFormSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (userName.trim() && userPhone.trim()) {
+      setShowUserForm(false);
+      setMessages([
+        {
+          id: "1",
+          message: `Salom ${userName}! Men OptomBazar.uz ning AI yordamchisiman. Sizga qanday yordam bera olaman?`,
+          isFromUser: false,
+          timestamp: new Date(),
+        },
+      ]);
+    }
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!currentMessage.trim() || chatMutation.isPending) return;
+    if (!currentMessage.trim() || chatMutation.isPending || showUserForm) return;
 
     const userMessage = currentMessage.trim();
     setCurrentMessage("");
@@ -133,8 +156,42 @@ export default function ChatWidget() {
         </CardHeader>
 
         <CardContent className="p-0 flex flex-col h-full">
-          {/* Messages */}
-          <div className="flex-1 overflow-y-auto p-4 space-y-3" data-testid="chat-messages">
+          {showUserForm ? (
+            // User Info Form
+            <div className="p-4 space-y-4">
+              <div className="text-center">
+                <h3 className="font-semibold text-lg">Ma'lumotlaringizni kiriting</h3>
+                <p className="text-sm text-gray-600">Sizga yaxshiroq yordam berish uchun</p>
+              </div>
+              <form onSubmit={handleUserFormSubmit} className="space-y-3">
+                <Input
+                  value={userName}
+                  onChange={(e) => setUserName(e.target.value)}
+                  placeholder="Ismingiz"
+                  required
+                  data-testid="input-username"
+                />
+                <Input
+                  value={userPhone}
+                  onChange={(e) => setUserPhone(e.target.value)}
+                  placeholder="+998 90 123 45 67"
+                  required
+                  data-testid="input-phone"
+                />
+                <Button
+                  type="submit"
+                  className="w-full"
+                  disabled={!userName.trim() || !userPhone.trim()}
+                  data-testid="button-start-chat"
+                >
+                  Chat boshlash
+                </Button>
+              </form>
+            </div>
+          ) : (
+            <>
+              {/* Messages */}
+              <div className="flex-1 overflow-y-auto p-4 space-y-3" data-testid="chat-messages">
             {messages.map((message) => (
               <div
                 key={message.id}
@@ -170,10 +227,10 @@ export default function ChatWidget() {
             )}
             
             <div ref={messagesEndRef} />
-          </div>
+              </div>
 
-          {/* Input */}
-          <form onSubmit={handleSubmit} className="p-4 border-t">
+              {/* Input */}
+              <form onSubmit={handleSubmit} className="p-4 border-t">
             <div className="flex space-x-2">
               <Input
                 value={currentMessage}
@@ -191,8 +248,10 @@ export default function ChatWidget() {
               >
                 <Send className="w-4 h-4" />
               </Button>
-            </div>
-          </form>
+              </div>
+            </form>
+            </>
+          )}
         </CardContent>
       </Card>
     </div>

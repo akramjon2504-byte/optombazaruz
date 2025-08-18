@@ -172,6 +172,7 @@ export const translations = {
   sendMessage: { uz: "Xabar yuborish", ru: "Отправить сообщение" },
   closeChat: { uz: "Chatni yopish", ru: "Закрыть чат" },
   openChat: { uz: "Chatni ochish", ru: "Открыть чат" },
+  aiAssistant: { uz: "AI Yordamchi", ru: "AI Помощник" },
   
   // Error messages
   noResults: { uz: "Hech qanday mahsulot topilmadi", ru: "Ничего не найдено" },

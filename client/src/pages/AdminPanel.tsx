@@ -43,6 +43,16 @@ interface Product {
   isPromo: boolean;
   stock: number;
 }
+
+interface ChatMessage {
+  id: string;
+  sessionId: string;
+  userName?: string;
+  userPhone?: string;
+  message: string;
+  isFromUser: boolean;
+  createdAt: string;
+}
 import { 
   Users, 
   Package, 
@@ -126,6 +136,11 @@ function AdminPanel() {
 
   const { data: products = [] } = useQuery({
     queryKey: ['/api/products'],
+  });
+
+  const { data: chatMessages = [], isLoading: isLoadingChatMessages } = useQuery({
+    queryKey: ['/api/admin/chat-messages'],
+    enabled: selectedTab === 'chat'
   });
 
   // Send Telegram message
@@ -446,7 +461,7 @@ function AdminPanel() {
 
       <div className="container mx-auto px-4 py-6">
         <Tabs value={selectedTab} onValueChange={setSelectedTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-3 md:grid-cols-7 gap-1">
+          <TabsList className="grid w-full grid-cols-3 md:grid-cols-8 gap-1">
             <TabsTrigger value="dashboard" className="flex items-center gap-1 md:gap-2 text-xs md:text-sm">
               <BarChart3 className="h-3 w-3 md:h-4 md:w-4" />
               <span className="hidden md:inline">{t('dashboard')}</span>
@@ -467,6 +482,11 @@ function AdminPanel() {
               <span className="hidden md:inline">{language === 'uz' ? 'Foydalanuvchilar' : 'Пользователи'}</span>
               <span className="md:hidden">👥</span>
             </TabsTrigger>
+            <TabsTrigger value="chat" className="flex items-center gap-1 md:gap-2 text-xs md:text-sm">
+              <MessageSquare className="h-3 w-3 md:h-4 md:w-4" />
+              <span className="hidden md:inline">{language === 'uz' ? 'Chat Xabarlari' : 'Чат Сообщения'}</span>
+              <span className="md:hidden">💬</span>
+            </TabsTrigger>
             <TabsTrigger value="marketing" className="flex items-center gap-1 md:gap-2 text-xs md:text-sm">
               <Send className="h-3 w-3 md:h-4 md:w-4" />
               <span className="hidden md:inline">{language === 'uz' ? 'Marketing' : 'Маркетинг'}</span>
@@ -478,7 +498,7 @@ function AdminPanel() {
               <span className="md:hidden">📝</span>
             </TabsTrigger>
             <TabsTrigger value="orders" className="flex items-center gap-1 md:gap-2 text-xs md:text-sm">
-              <MessageSquare className="h-3 w-3 md:h-4 md:w-4" />
+              <Bot className="h-3 w-3 md:h-4 md:w-4" />
               <span className="hidden md:inline">{language === 'uz' ? 'Buyurtmalar' : 'Заказы'}</span>
               <span className="md:hidden">🛒</span>
             </TabsTrigger>
@@ -1121,6 +1141,45 @@ function AdminPanel() {
                       </div>
                     </div>
                   ))}
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="chat" className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>
+                  {language === 'uz' ? 'Chat Xabarlari' : 'Чат Сообщения'}
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4 max-h-96 overflow-y-auto">
+                  {isLoadingChatMessages ? (
+                    <div className="text-center py-4">{t('loading')}</div>
+                  ) : (
+                    (chatMessages as ChatMessage[])?.map((message: ChatMessage) => (
+                      <div key={message.id} className="p-4 border rounded-lg space-y-2">
+                        <div className="flex justify-between items-start">
+                          <div>
+                            {message.userName && (
+                              <p className="font-semibold">{message.userName}</p>
+                            )}
+                            {message.userPhone && (
+                              <p className="text-sm text-muted-foreground">{message.userPhone}</p>
+                            )}
+                          </div>
+                          <Badge variant={message.isFromUser ? "default" : "secondary"}>
+                            {message.isFromUser ? "Foydalanuvchi" : "AI"}
+                          </Badge>
+                        </div>
+                        <p className="text-sm">{message.message}</p>
+                        <p className="text-xs text-muted-foreground">
+                          {new Date(message.createdAt).toLocaleString()}
+                        </p>
+                      </div>
+                    ))
+                  )}
                 </div>
               </CardContent>
             </Card>
