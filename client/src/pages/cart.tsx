@@ -70,7 +70,7 @@ export default function Cart() {
   });
 
   const removeItemMutation = useMutation({
-    mutationFn: (itemId: string) => apiRequest("DELETE", `/api/cart/${itemId}`),
+    mutationFn: (itemId: string) => apiRequest(`/api/cart/${itemId}`, "DELETE"),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/cart"] });
       toast({
@@ -82,19 +82,32 @@ export default function Cart() {
 
   const updateQuantityMutation = useMutation({
     mutationFn: ({ itemId, quantity }: { itemId: string; quantity: number }) =>
-      apiRequest("PATCH", `/api/cart/${itemId}`, { quantity }),
+      apiRequest(`/api/cart/${itemId}`, "PUT", { quantity }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/cart"] });
     },
   });
 
   const checkoutMutation = useMutation({
-    mutationFn: () => apiRequest("POST", "/api/orders", {
+    mutationFn: () => apiRequest("/api/orders", "POST", {
       items: cartItems.map((item: CartItem) => ({
         productId: item.productId,
         quantity: item.quantity,
         price: item.product.price
-      }))
+      })),
+      paymentMethod: "cash_delivery", // Default to cash on delivery
+      totalAmount: calculateTotal(),
+      shippingAddress: {
+        fullName: "Mijoz",
+        phone: "+998",
+        address: "Yetkazish manzili",
+        city: "Toshkent"
+      },
+      customerInfo: {
+        name: "Mijoz",
+        phone: "+998",
+        email: "mijoz@example.com"
+      }
     }),
     onSuccess: (data: any) => {
       setOrderId(data.orderId);
@@ -120,7 +133,7 @@ export default function Cart() {
 
   const calculateTotal = () => {
     return cartItems.reduce((total: number, item: CartItem) => 
-      total + (item.product.price * item.quantity), 0
+      total + (parseFloat(item.product.price) * item.quantity), 0
     );
   };
 
@@ -197,7 +210,7 @@ export default function Cart() {
                           {language === 'uz' ? item.product.nameUz : item.product.nameRu}
                         </h3>
                         <p className="text-lg font-bold">
-                          {item.product.price.toLocaleString()} {t.sum}
+                          {parseFloat(item.product.price).toLocaleString()} {t.sum}
                         </p>
                       </div>
                       
@@ -251,7 +264,7 @@ export default function Cart() {
                     {cartItems.map((item: CartItem) => (
                       <div key={item.id} className="flex justify-between text-sm">
                         <span>{item.quantity}x {language === 'uz' ? item.product.nameUz : item.product.nameRu}</span>
-                        <span>{(item.product.price * item.quantity).toLocaleString()} {t.sum}</span>
+                        <span>{(parseFloat(item.product.price) * item.quantity).toLocaleString()} {t.sum}</span>
                       </div>
                     ))}
                   </div>
