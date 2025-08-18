@@ -79,6 +79,20 @@ function AdminPanel() {
   const [telegramMessage, setTelegramMessage] = useState('');
   const [blogTopic, setBlogTopic] = useState('');
   
+  // Blog editing states
+  const [showBlogEditDialog, setShowBlogEditDialog] = useState(false);
+  const [editingBlog, setEditingBlog] = useState<any | null>(null);
+  const [blogEditForm, setBlogEditForm] = useState({
+    titleUz: '',
+    titleRu: '',
+    contentUz: '',
+    contentRu: '',
+    excerpt: '',
+    imageUrl: '',
+    slug: '',
+    isPublished: true
+  });
+  
   // Category form states
   const [showCategoryDialog, setShowCategoryDialog] = useState(false);
   const [editingCategory, setEditingCategory] = useState<Category | null>(null);
@@ -220,6 +234,8 @@ function AdminPanel() {
         description: language === 'uz' ? 'Blog maqola yangilandi' : 'Статья блога обновлена',
       });
       queryClient.invalidateQueries({ queryKey: ['/api/admin/blog'] });
+      setShowBlogEditDialog(false);
+      setEditingBlog(null);
     },
     onError: (error: Error) => {
       toast({
@@ -250,6 +266,31 @@ function AdminPanel() {
       });
     },
   });
+
+  // Handle blog edit functions
+  const handleEditBlog = (blog: any) => {
+    setEditingBlog(blog);
+    setBlogEditForm({
+      titleUz: blog.titleUz,
+      titleRu: blog.titleRu,
+      contentUz: blog.contentUz,
+      contentRu: blog.contentRu,
+      excerpt: blog.excerpt || '',
+      imageUrl: blog.imageUrl || '',
+      slug: blog.slug,
+      isPublished: blog.isPublished
+    });
+    setShowBlogEditDialog(true);
+  };
+
+  const handleSaveBlogEdit = () => {
+    if (editingBlog) {
+      updateBlogPostMutation.mutate({
+        id: editingBlog.id,
+        updates: blogEditForm
+      });
+    }
+  };
 
   const handleSendTelegram = () => {
     if (telegramMessage.trim()) {
@@ -1218,6 +1259,14 @@ function AdminPanel() {
                           </TableCell>
                           <TableCell>
                             <div className="flex items-center space-x-2">
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() => handleEditBlog(post)}
+                              >
+                                <Edit className="h-4 w-4 mr-1" />
+                                {language === 'uz' ? 'Tahrirlash' : 'Редактировать'}
+                              </Button>
                               <Button 
                                 size="sm" 
                                 variant="outline"
@@ -1351,6 +1400,129 @@ function AdminPanel() {
           </TabsContent>
         </Tabs>
       </div>
+
+      {/* Blog Edit Dialog */}
+      <Dialog open={showBlogEditDialog} onOpenChange={setShowBlogEditDialog}>
+        <DialogContent className="sm:max-w-[800px] max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>
+              {language === 'uz' ? 'Blog maqolasini tahrirlash' : 'Редактировать статью блога'}
+            </DialogTitle>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="titleUz">
+                  {language === 'uz' ? 'Sarlavha (O\'zbek)' : 'Заголовок (Узбекский)'}
+                </Label>
+                <Input
+                  id="titleUz"
+                  value={blogEditForm.titleUz}
+                  onChange={(e) => setBlogEditForm({...blogEditForm, titleUz: e.target.value})}
+                  placeholder={language === 'uz' ? 'Maqola sarlavhasi...' : 'Заголовок статьи...'}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="titleRu">
+                  {language === 'uz' ? 'Sarlavha (Rus)' : 'Заголовок (Русский)'}
+                </Label>
+                <Input
+                  id="titleRu"
+                  value={blogEditForm.titleRu}
+                  onChange={(e) => setBlogEditForm({...blogEditForm, titleRu: e.target.value})}
+                  placeholder={language === 'uz' ? 'Maqola sarlavhasi...' : 'Заголовок статьи...'}
+                />
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="excerpt">
+                {language === 'uz' ? 'Qisqacha tavsif' : 'Краткое описание'}
+              </Label>
+              <Textarea
+                id="excerpt"
+                value={blogEditForm.excerpt}
+                onChange={(e) => setBlogEditForm({...blogEditForm, excerpt: e.target.value})}
+                placeholder={language === 'uz' ? 'Maqola haqida qisqacha...' : 'Кратко о статье...'}
+                rows={2}
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="imageUrl">
+                  {language === 'uz' ? 'Rasm URL' : 'URL изображения'}
+                </Label>
+                <Input
+                  id="imageUrl"
+                  value={blogEditForm.imageUrl}
+                  onChange={(e) => setBlogEditForm({...blogEditForm, imageUrl: e.target.value})}
+                  placeholder="https://example.com/image.jpg"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="slug">Slug</Label>
+                <Input
+                  id="slug"
+                  value={blogEditForm.slug}
+                  onChange={(e) => setBlogEditForm({...blogEditForm, slug: e.target.value})}
+                  placeholder="maqola-slug"
+                />
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="contentUz">
+                {language === 'uz' ? 'Matn (O\'zbek)' : 'Текст (Узбекский)'}
+              </Label>
+              <Textarea
+                id="contentUz"
+                value={blogEditForm.contentUz}
+                onChange={(e) => setBlogEditForm({...blogEditForm, contentUz: e.target.value})}
+                placeholder={language === 'uz' ? 'Maqola matni...' : 'Текст статьи...'}
+                rows={8}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="contentRu">
+                {language === 'uz' ? 'Matn (Rus)' : 'Текст (Русский)'}
+              </Label>
+              <Textarea
+                id="contentRu"
+                value={blogEditForm.contentRu}
+                onChange={(e) => setBlogEditForm({...blogEditForm, contentRu: e.target.value})}
+                placeholder={language === 'uz' ? 'Maqola matni...' : 'Текст статьи...'}
+                rows={8}
+              />
+            </div>
+
+            <div className="flex items-center space-x-2">
+              <input
+                type="checkbox"
+                id="isPublished"
+                checked={blogEditForm.isPublished}
+                onChange={(e) => setBlogEditForm({...blogEditForm, isPublished: e.target.checked})}
+                className="rounded"
+              />
+              <Label htmlFor="isPublished">
+                {language === 'uz' ? 'Maqolani chop etish' : 'Опубликовать статью'}
+              </Label>
+            </div>
+          </div>
+          <div className="flex justify-end space-x-2">
+            <Button variant="outline" onClick={() => setShowBlogEditDialog(false)}>
+              {language === 'uz' ? 'Bekor qilish' : 'Отмена'}
+            </Button>
+            <Button onClick={handleSaveBlogEdit} disabled={updateBlogPostMutation.isPending}>
+              {updateBlogPostMutation.isPending 
+                ? (language === 'uz' ? 'Saqlanmoqda...' : 'Сохранение...')
+                : (language === 'uz' ? 'Saqlash' : 'Сохранить')
+              }
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
