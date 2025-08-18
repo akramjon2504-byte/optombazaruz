@@ -143,6 +143,11 @@ function AdminPanel() {
     enabled: selectedTab === 'chat'
   });
 
+  const { data: blogPosts = [], isLoading: isLoadingBlogPosts } = useQuery({
+    queryKey: ['/api/admin/blog'],
+    enabled: selectedTab === 'blog'
+  });
+
   // Send Telegram message
   const telegramMutation = useMutation({
     mutationFn: async (message: string) => {
@@ -167,15 +172,75 @@ function AdminPanel() {
   // Generate blog post
   const blogMutation = useMutation({
     mutationFn: async (topic: string) => {
-      return apiRequest('/api/admin/blog/generate', 'POST', { topic });
+      return apiRequest('/api/admin/generate-blog-post', 'POST', { topic });
+    },
+    onSuccess: (data) => {
+      // Auto-save generated blog post
+      saveBlogPostMutation.mutate(data);
+    },
+    onError: (error: Error) => {
+      toast({
+        title: t('error'),
+        description: error.message,
+        variant: 'destructive',
+      });
+    },
+  });
+
+  // Save blog post
+  const saveBlogPostMutation = useMutation({
+    mutationFn: async (blogPost: any) => {
+      return apiRequest('/api/admin/blog', 'POST', blogPost);
     },
     onSuccess: () => {
       toast({
         title: t('success'),
-        description: language === 'uz' ? 'Blog maqolasi yaratildi' : 'Блог статья создана',
+        description: language === 'uz' ? 'Blog maqola saqlandi' : 'Статья блога сохранена',
       });
       setBlogTopic('');
-      queryClient.invalidateQueries({ queryKey: ['/api/blog'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/admin/blog'] });
+    },
+    onError: (error: Error) => {
+      toast({
+        title: t('error'),
+        description: error.message,
+        variant: 'destructive',
+      });
+    },
+  });
+
+  // Update blog post status
+  const updateBlogPostMutation = useMutation({
+    mutationFn: async ({ id, updates }: { id: string, updates: any }) => {
+      return apiRequest(`/api/admin/blog/${id}`, 'PATCH', updates);
+    },
+    onSuccess: () => {
+      toast({
+        title: t('success'),
+        description: language === 'uz' ? 'Blog maqola yangilandi' : 'Статья блога обновлена',
+      });
+      queryClient.invalidateQueries({ queryKey: ['/api/admin/blog'] });
+    },
+    onError: (error: Error) => {
+      toast({
+        title: t('error'),
+        description: error.message,
+        variant: 'destructive',
+      });
+    },
+  });
+
+  // Delete blog post
+  const deleteBlogPostMutation = useMutation({
+    mutationFn: async (id: string) => {
+      return apiRequest(`/api/admin/blog/${id}`, 'DELETE');
+    },
+    onSuccess: () => {
+      toast({
+        title: t('success'),
+        description: language === 'uz' ? 'Blog maqola o\'chirildi' : 'Статья блога удалена',
+      });
+      queryClient.invalidateQueries({ queryKey: ['/api/admin/blog'] });
     },
     onError: (error: Error) => {
       toast({
@@ -1051,6 +1116,7 @@ function AdminPanel() {
           </TabsContent>
 
           <TabsContent value="blog" className="space-y-6">
+            {/* AI Blog Generator */}
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
@@ -1075,13 +1141,112 @@ function AdminPanel() {
                 </div>
                 <Button 
                   onClick={handleGenerateBlog}
-                  disabled={blogMutation.isPending || !blogTopic.trim()}
+                  disabled={blogMutation.isPending || saveBlogPostMutation.isPending || !blogTopic.trim()}
                   className="w-full"
                   data-testid="button-generate-blog"
                 >
-                  {blogMutation.isPending ? t('loading') : 
+                  {(blogMutation.isPending || saveBlogPostMutation.isPending) ? 
+                    (language === 'uz' ? 'AI maqola yaratmoqda...' : 'AI создает статью...') :
                     (language === 'uz' ? 'AI orqali maqola yaratish' : 'Создать статью через AI')}
                 </Button>
+              </CardContent>
+            </Card>
+
+            {/* Blog Posts List */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <FileText className="h-5 w-5" />
+                  {language === 'uz' ? 'Blog maqolalari' : 'Статьи блога'}
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                {isLoadingBlogPosts ? (
+                  <div className="flex justify-center items-center py-8">
+                    <div className="text-sm text-muted-foreground">
+                      {language === 'uz' ? 'Maqolalar yuklanmoqda...' : 'Загрузка статей...'}
+                    </div>
+                  </div>
+                ) : (blogPosts as any[]).length === 0 ? (
+                  <div className="text-center py-8">
+                    <p className="text-muted-foreground">
+                      {language === 'uz' ? 'Hali blog maqolalari yo\'q' : 'Пока нет статей блога'}
+                    </p>
+                  </div>
+                ) : (
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>{language === 'uz' ? 'Sarlavha' : 'Заголовок'}</TableHead>
+                        <TableHead>{language === 'uz' ? 'Holat' : 'Статус'}</TableHead>
+                        <TableHead>{language === 'uz' ? 'AI yaratgan' : 'Создано AI'}</TableHead>
+                        <TableHead>{language === 'uz' ? 'Sana' : 'Дата'}</TableHead>
+                        <TableHead>{language === 'uz' ? 'Harakatlar' : 'Действия'}</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {(blogPosts as any[]).map((post: any) => (
+                        <TableRow key={post.id}>
+                          <TableCell className="font-medium">
+                            <div>
+                              <p className="font-semibold">{post.titleUz}</p>
+                              <p className="text-sm text-muted-foreground">{post.titleRu}</p>
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            <Badge variant={post.isPublished ? 'default' : 'secondary'}>
+                              {post.isPublished 
+                                ? (language === 'uz' ? 'Chop etilgan' : 'Опубликовано')
+                                : (language === 'uz' ? 'Qoralama' : 'Черновик')
+                              }
+                            </Badge>
+                          </TableCell>
+                          <TableCell>
+                            {post.isAiGenerated ? (
+                              <Badge variant="outline" className="text-blue-600">
+                                <Bot className="h-3 w-3 mr-1" />
+                                AI
+                              </Badge>
+                            ) : (
+                              <Badge variant="outline" className="text-gray-600">
+                                {language === 'uz' ? 'Qo\'lda' : 'Ручное'}
+                              </Badge>
+                            )}
+                          </TableCell>
+                          <TableCell className="text-sm text-muted-foreground">
+                            {new Date(post.createdAt).toLocaleDateString()}
+                          </TableCell>
+                          <TableCell>
+                            <div className="flex items-center space-x-2">
+                              <Button 
+                                size="sm" 
+                                variant="outline"
+                                onClick={() => updateBlogPostMutation.mutate({ 
+                                  id: post.id, 
+                                  updates: { isPublished: !post.isPublished } 
+                                })}
+                                disabled={updateBlogPostMutation.isPending}
+                              >
+                                {post.isPublished 
+                                  ? (language === 'uz' ? 'Yashirish' : 'Скрыть')
+                                  : (language === 'uz' ? 'Chop etish' : 'Опубликовать')
+                                }
+                              </Button>
+                              <Button 
+                                size="sm" 
+                                variant="destructive"
+                                onClick={() => deleteBlogPostMutation.mutate(post.id)}
+                                disabled={deleteBlogPostMutation.isPending}
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </Button>
+                            </div>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                )}
               </CardContent>
             </Card>
           </TabsContent>

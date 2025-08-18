@@ -129,6 +129,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  app.delete('/api/admin/products/:id', requireAdmin, async (req, res) => {
+    try {
+      const id = req.params.id;
+      await storage.deleteProduct(id);
+      res.json({ success: true });
+    } catch (error) {
+      console.error('Delete product error:', error);
+      res.status(400).json({ message: error instanceof Error ? error.message : 'Mahsulot o\'chirishda xatolik' });
+    }
+  });
+
   app.get('/api/admin/users', requireAdmin, async (req, res) => {
     try {
       const users = await storage.getAllUsers();
