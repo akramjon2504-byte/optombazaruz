@@ -1,9 +1,9 @@
 import { GoogleGenAI } from "@google/genai";
 
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || "" });
+const ai = new GoogleGenAI({ apiKey: process.env.GOOGLE_API_KEY || "" });
 
-if (!process.env.GEMINI_API_KEY) {
-  console.warn('⚠️ GEMINI_API_KEY not found. AI features will be disabled.');
+if (!process.env.GOOGLE_API_KEY) {
+  console.warn('⚠️ GOOGLE_API_KEY not found. AI features will be disabled.');
 } else {
   console.log('✅ Gemini API initialized successfully');
 }
