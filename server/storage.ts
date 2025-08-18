@@ -28,8 +28,8 @@ export interface IStorage {
   getCategory(id: string): Promise<Category | undefined>;
   getCategoryBySlug(slug: string): Promise<Category | undefined>;
   createCategory(category: InsertCategory): Promise<Category>;
-  updateCategory(id: number, category: Partial<Category>): Promise<Category>;
-  deleteCategory(id: number): Promise<void>;
+  updateCategory(id: string, category: Partial<Category>): Promise<Category>;
+  deleteCategory(id: string): Promise<void>;
 
   // Products
   getProducts(filters?: { categoryId?: string; isHit?: boolean; isPromo?: boolean; search?: string }): Promise<Product[]>;
@@ -37,8 +37,8 @@ export interface IStorage {
   getProduct(id: string): Promise<Product | undefined>;
   getProductBySlug(slug: string): Promise<Product | undefined>;
   createProduct(product: InsertProduct): Promise<Product>;
-  updateProduct(id: number, updates: Partial<Product>): Promise<Product>;
-  deleteProduct(id: number): Promise<void>;
+  updateProduct(id: string, updates: Partial<Product>): Promise<Product>;
+  deleteProduct(id: string): Promise<void>;
 
   // Cart
   getCartItems(sessionId?: string, userId?: string): Promise<(CartItem & { product: Product })[]>;
@@ -156,17 +156,17 @@ export class DatabaseStorage implements IStorage {
     return await db.select().from(categories);
   }
 
-  async updateCategory(id: number, updates: Partial<Category>): Promise<Category> {
+  async updateCategory(id: string, updates: Partial<Category>): Promise<Category> {
     const [updatedCategory] = await db
       .update(categories)
       .set(updates)
-      .where(eq(categories.id, id.toString()))
+      .where(eq(categories.id, id))
       .returning();
     return updatedCategory;
   }
 
-  async deleteCategory(id: number): Promise<void> {
-    await db.delete(categories).where(eq(categories.id, id.toString()));
+  async deleteCategory(id: string): Promise<void> {
+    await db.delete(categories).where(eq(categories.id, id));
   }
 
   // Products
@@ -217,11 +217,11 @@ export class DatabaseStorage implements IStorage {
     return newProduct;
   }
 
-  async updateProduct(id: number, updates: Partial<Product>): Promise<Product> {
+  async updateProduct(id: string, updates: Partial<Product>): Promise<Product> {
     const [updatedProduct] = await db
       .update(products)
       .set(updates)
-      .where(eq(products.id, id.toString()))
+      .where(eq(products.id, id))
       .returning();
     return updatedProduct;
   }
@@ -230,8 +230,8 @@ export class DatabaseStorage implements IStorage {
     return await db.select().from(products).orderBy(desc(products.createdAt));
   }
 
-  async deleteProduct(id: number): Promise<void> {
-    await db.delete(products).where(eq(products.id, id.toString()));
+  async deleteProduct(id: string): Promise<void> {
+    await db.delete(products).where(eq(products.id, id));
   }
 
   // Cart
