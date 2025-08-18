@@ -30,6 +30,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Seed database with real OptomBazar.uz data
   await seedDatabase();
 
+  // Health check endpoint for Render deployment
+  app.get('/api/health', (req, res) => {
+    res.status(200).json({ 
+      status: 'healthy', 
+      timestamp: new Date().toISOString(),
+      service: 'OptomBazar API'
+    });
+  });
+
   // Define middleware functions
   const requireAuth = async (req: Request & { user?: any; session?: any }, res: Response, next: NextFunction) => {
     // Check session for admin login

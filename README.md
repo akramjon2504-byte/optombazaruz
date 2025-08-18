@@ -1,187 +1,242 @@
-# OptomBazar.uz - O'zbekistonning Eng Yirik Optom Bozori
+# OptomBazar - O'zbekistonda Optom Savdo Platformasi
 
-![OptomBazar Logo](https://optombazar.uz/favicon.ico)
+## Loyiha Haqida
 
-## 📋 Loyiha Haqida
+OptomBazar.uz - bu zamonaviy optom savdo elektron tijorat platformasi bo'lib, O'zbekiston bozoriga mo'ljallangan. Loyiha React, TypeScript, Express.js va PostgreSQL texnologiyalari asosida qurilgan.
 
-OptomBazar.uz - O'zbekistonda eng katta va ishonchli optom savdo platformasi. Bu loyiha to'liq funksional elektron tijorat veb-ilovasi bo'lib, ikki tilda (o'zbek va rus) qo'llab-quvvatlaydi.
+## ✨ Asosiy Xususiyatlar
 
-## 🚀 Asosiy Xususiyatlar
+### 🛒 E-tijorat Funksiyalari
+- Mahsulotlar katalogi (20+ mahsulot, 8 kategoriya)
+- Qidiruv va filtrlash tizimi
+- Savatcha va buyurtma berish
+- Foydalanuvchi autentifikatsiyasi
+- Sevimli mahsulotlar ro'yxati
 
-### 💼 E-tijorat Funksiyalari
-- ✅ Ko'p tilli qo'llab-quvvatlash (O'zbek/Rus)
-- ✅ Mahsulot katalogi va kategoriyalar
-- ✅ Qidiruv va filtr tizimi
-- ✅ Savatcha va buyurtma berish
-- ✅ Foydalanuvchi autentifikatsiyasi
-- ✅ Admin panel va boshqaruv tizimi
+### 🌐 Ko'p Tilli Qo'llab-quvvatlash
+- O'zbek tili (asosiy)
+- Rus tili
+- Til almashtirish imkoniyati
 
-### 🤖 AI-Powered Funksiyalar
-- ✅ Telegram bot (@optombazaruzb) marketing avtomatizatsiyasi
-- ✅ Gemini 2.5 Flash API orqali kontent generatsiyasi
-- ✅ Avtomatik blog postlari (kuniga 12 ta)
-- ✅ AI chat widget mijozlar uchun
-- ✅ Marketing postlari avtomatizatsiyasi
+### 🤖 AI Integratsiya
+- Gemini 1.5 Flash API orqali kontent yaratish
+- Avtomatik blog postlari (kuniga 12 ta)
+- AI chat widget
+- Marketing kontent generatsiyasi
 
-### 📱 Mobil Responsive
-- ✅ To'liq mobil optimizatsiya
-- ✅ Adaptive dizayn
-- ✅ Touch-friendly interfeys
+### 📱 Telegram Bot
+- @optombazaruzb bot integratsiyasi
+- Avtomatik marketing postlar
+- Admin boshqaruv paneli
 
-## 🛠 Texnik Arxitektura
+### 📊 Admin Panel
+- Mahsulotlarni boshqarish
+- Kategoriyalarni boshqarish
+- Buyurtmalarni kuzatish
+- Foydalanuvchilar boshqaruvi
+
+## 🏗️ Texnik Arxitektura
 
 ### Frontend
-- **Framework**: React 18 + TypeScript
-- **Build Tool**: Vite
-- **Styling**: TailwindCSS + shadcn/ui
-- **State Management**: TanStack Query + React Context
-- **Routing**: Wouter
+- **React 18** + TypeScript
+- **Vite** - build tool
+- **TailwindCSS** + shadcn/ui komponentlari
+- **TanStack Query** - server state boshqaruvi
+- **Wouter** - routing
+- **Framer Motion** - animatsiyalar
 
 ### Backend
-- **Runtime**: Node.js + Express.js
-- **Language**: TypeScript
-- **Database**: PostgreSQL
-- **ORM**: Drizzle ORM
-- **Authentication**: Passport.js (session-based)
+- **Express.js** + TypeScript
+- **Passport.js** - autentifikatsiya
+- **Session-based auth** - xavfsizlik
 
-### AI va Bot Integration
-- **AI Model**: Google Gemini 2.5 Flash
-- **Telegram Bot**: @optombazaruzb
-- **Content Generation**: Avtomatik blog va marketing postlari
+### Ma'lumotlar Bazasi
+- **PostgreSQL** - asosiy ma'lumotlar bazasi
+- **Drizzle ORM** - ma'lumotlar bazasi boshqaruvi
+- Xavfsiz migratsiyalar
+
+### AI va Integratsiyalar
+- **Google Gemini 1.5 Flash** - AI kontent yaratish
+- **Telegram Bot API** - marketing avtomatizatsiyasi
+- **Node-telegram-bot-api** - bot kutubxonasi
 
 ## 📦 O'rnatish va Ishga Tushirish
 
 ### Talablar
-- Node.js 18+
-- PostgreSQL database
-- Telegram Bot Token (ixtiyoriy)
-- Gemini API Key (ixtiyoriy)
+- Node.js 20+
+- PostgreSQL 14+
+- npm yoki yarn
 
-### Loyihani Ishga Tushirish
+### Mahalliy Rivojlantirish
 
-1. **Dependencies o'rnatish:**
+1. **Repositoriyani klonlang:**
+```bash
+git clone <repository-url>
+cd optombazar
+```
+
+2. **Bog'liqliklarni o'rnating:**
 ```bash
 npm install
 ```
 
-2. **Database sozlash:**
+3. **Environment o'zgaruvchilarini sozlang:**
+```bash
+# .env fayli yarating va quyidagi qiymatlarni qo'shing:
+DATABASE_URL=postgresql://username:password@localhost:5432/optombazar
+GOOGLE_API_KEY=your_google_api_key
+```
+
+4. **Ma'lumotlar bazasini sozlang:**
 ```bash
 npm run db:push
 ```
 
-3. **Serverni ishga tushirish:**
+5. **Loyihani ishga tushiring:**
 ```bash
 npm run dev
 ```
 
 Loyiha http://localhost:5000 da ochiladi.
 
-## 🗂 Katalog Tuzilishi
+## 🚀 Production Deploy (Render)
+
+### Avtomatik Deploy
+1. Repository ni GitHub ga push qiling
+2. Render.com da yangi Web Service yarating
+3. GitHub repository ni bog'lang
+4. Quyidagi sozlamalarni kiriting:
+
+### Environment Variables
+```
+DATABASE_URL=your_postgresql_connection_string
+GOOGLE_API_KEY=your_google_api_key
+NODE_ENV=production
+```
+
+### Build Settings
+- **Build Command:** `npm run build`
+- **Start Command:** `npm run start`
+- **Node Version:** 20
+
+### Database
+- Render PostgreSQL add-on qo'shing
+- DATABASE_URL avtomatik o'rnatiladi
+
+## 📁 Fayl Tuzilishi
 
 ```
+optombazar/
 ├── client/                 # Frontend (React)
 │   ├── src/
-│   │   ├── components/    # UI komponentlar
+│   │   ├── components/    # UI komponentlari
 │   │   ├── pages/         # Sahifalar
-│   │   ├── contexts/      # React Context
-│   │   └── hooks/         # Custom hooks
+│   │   ├── hooks/         # Custom hooks
+│   │   └── lib/           # Utilities
 ├── server/                # Backend (Express)
-│   ├── routes.ts         # API routes
-│   ├── storage.ts        # Database layer
-│   └── index.ts          # Server entry point
-├── shared/               # Umumiy kod
-│   ├── schema.ts         # Database schema
-│   └── languages.ts      # Til sozlamalari
+│   ├── routes/           # API endpoints
+│   ├── services/         # Business logic
+│   └── storage.ts        # Ma'lumotlar bazasi
+├── shared/               # Umumiy tiplar
 └── README.md            # Bu fayl
 ```
 
-## 📊 Ma'lumotlar Bazasi
+## 🔧 Development Scriptlari
 
-### Asosiy Jadvallar
-- `users` - Foydalanuvchilar
-- `categories` - Mahsulot kategoriyalari
-- `products` - Mahsulotlar
-- `cart_items` - Savatcha elementlari
-- `orders` - Buyurtmalar
-- `blog_posts` - Blog postlari
+```bash
+# Loyihani ishga tushirish (development)
+npm run dev
 
-## 🌐 API Endpoints
+# Production uchun build qilish
+npm run build
 
-### Autentifikatsiya
-- `POST /api/auth/login` - Kirish
-- `POST /api/auth/register` - Ro'yxatdan o'tish
-- `GET /api/auth/user` - Foydalanuvchi ma'lumotlari
+# Production serverni ishga tushirish
+npm run start
 
-### Mahsulotlar
-- `GET /api/products` - Barcha mahsulotlar
-- `GET /api/products/:id` - Bitta mahsulot
-- `POST /api/products` - Yangi mahsulot (admin)
+# TypeScript tekshirish
+npm run check
 
-### Kategoriyalar
-- `GET /api/categories` - Barcha kategoriyalar
-- `POST /api/categories` - Yangi kategoriya (admin)
-
-### Savatcha
-- `GET /api/cart` - Savatcha
-- `POST /api/cart` - Savatga qo'shish
-- `DELETE /api/cart/:id` - Savatdan o'chirish
-
-## 🎨 Dizayn Tizimi
-
-### Ranglar
-- **Primary**: Ko'k (`#2563eb`)
-- **Secondary**: Kulrang
-- **Accent**: Yashil (`#16a34a`)
-- **Warning**: Sariq
-- **Error**: Qizil
-
-### Shriftlar
-- **Asosiy**: Inter, system fonts
-- **O'lchamlar**: 12px dan 48px gacha
-
-## 🔧 Konfiguratsiya
-
-### Muhit O'zgaruvchilari
-```env
-DATABASE_URL=postgresql://...
-GEMINI_API_KEY=your_gemini_key
-TELEGRAM_BOT_TOKEN=your_bot_token
-NODE_ENV=development
+# Ma'lumotlar bazasi migratsiyasi
+npm run db:push
 ```
 
-## 📈 Performance va Optimizatsiya
+## ✅ Bajarilgan Ishlar
 
-- ✅ Code splitting
-- ✅ Image lazy loading
-- ✅ API response caching
-- ✅ Database indexes
-- ✅ CSS optimization
+### Replit Agent dan Replit Migratsiya
+- [x] PostgreSQL ma'lumotlar bazasi yaratildi
+- [x] Barcha dependencies o'rnatildi
+- [x] TypeScript xatolari tuzatildi
+- [x] Database schema deploy qilindi
+- [x] Server 5000 portda ishlamoqda
 
-## 🔒 Xavfsizlik
+### AI va Automation
+- [x] Gemini 1.5 Flash API integratsiyasi
+- [x] Telegram bot (@optombazaruzb) konfiguratsiyasi
+- [x] Avtomatik blog generation (12 posts/day)
+- [x] Marketing posts automation (har 6 soatda)
 
-- ✅ Session-based authentication
-- ✅ CSRF himoyasi
-- ✅ Input validation
-- ✅ SQL injection himoyasi
-- ✅ Rate limiting
+### UI va UX
+- [x] Mobil responsive dizayn
+- [x] O'zbek/Rus tillari qo'llab-quvvatlash
+- [x] Admin panel autentifikatsiya
+- [x] Mahsulot katalogi va savatcha
 
-## 📱 Kontakt Ma'lumotlari
+## 📋 Keyingi Bosqichlar
 
-- **Telefon**: +998 99 644 84 44
-- **Telegram**: [@optombazaruzb](https://t.me/optombazaruzb)
-- **Telegram Bot**: [@optombazaruzb](https://t.me/optombazaruzbot)
-- **Veb-sayt**: [optombazar.uz](https://optombazar.uz)
+### 2-Bosqich: Mahsulot Katalogi Kengaytirish
+- [ ] Optombazar.uz dan mahsulotlar import
+- [ ] Mahsulot rasmlari optimizatsiya
+- [ ] Kategoriyalar tuzilishini yaxshilash
+- [ ] Narxlarni so'm valyutasida ko'rsatish
 
-## 🤝 Qo'llab-quvvatlash
+### 3-Bosqich: To'lov va Yetkazib Berish
+- [ ] Click/Payme to'lov tizimlari
+- [ ] Naqd to'lov opsiyasi
+- [ ] Yetkazib berish kalkulatori
+- [ ] SMS bildirishnomalar
 
-Texnik yordam va savol-javoblar uchun:
-- Telegram: [@optombazaruzb](https://t.me/optombazaruzb)
-- 24/7 qo'llab-quvvatlash
+### 4-Bosqich: Marketing va SEO
+- [ ] SEO optimizatsiya
+- [ ] Google Analytics integratsiyasi
+- [ ] Meta tags va Open Graph
+- [ ] Sitemap yaratish
 
-## 📄 Litsenziya
+### 5-Bosqich: Analytics va Hisobotlar
+- [ ] Sotuvlar statistikasi
+- [ ] Foydalanuvchilar analytics
+- [ ] Admin dashboard
+- [ ] Excel/PDF export
 
-© 2024 OptomBazar.uz. Barcha huquqlar himoyalangan.
+## 🛠️ Texnik Xususiyatlar
+
+### Xavfsizlik
+- Session-based authentication
+- CSRF himoya
+- SQL injection himoya (Drizzle ORM)
+- Environment variables xavfsizligi
+
+### Performance
+- Lazy loading komponentlari
+- Image optimization
+- Database indexing
+- CDN tayyor struktura
+
+### Monitoring
+- Error logging
+- API response vaqti
+- Database performance
+- Telegram bot monitoring
+
+## 📞 Kontakt Ma'lumotlari
+
+- **Telefon:** +998 99 644 84 44
+- **Telegram:** @optombazaruzb
+- **Website:** OptomBazar.uz
+
+## 📝 License
+
+Bu loyiha MIT litsenziyasi ostida tarqatiladi.
 
 ---
 
-**OptomBazar.uz** - O'zbekistonning eng ishonchli optom savdo platformasi! 🛍️
+**OptomBazar.uz** - O'zbekiston optom savdo sohasining raqamli kelajagi!
