@@ -189,7 +189,7 @@ export const translations = {
   
   // Product detail page
   quantity: { uz: "Miqdor", ru: "Количество" },
-  inStock: { uz: "Omborda", ru: "В наличии" },
+  inStockDetail: { uz: "Omborda", ru: "В наличии" },
   pieces: { uz: "dona", ru: "штук" },
   backToCatalog: { uz: "Katalogga qaytish", ru: "Вернуться к каталогу" },
   description: { uz: "Tavsif", ru: "Описание" },

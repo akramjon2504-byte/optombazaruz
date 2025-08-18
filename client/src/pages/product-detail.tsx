@@ -273,7 +273,7 @@ export default function ProductDetail() {
                   </Button>
                 </div>
                 <span className="text-sm text-gray-500">
-                  ({t("inStock")}: {product.stock} {t("pieces")})
+                  ({t("inStockDetail")}: {product.stock} {t("pieces")})
                 </span>
               </div>
 
