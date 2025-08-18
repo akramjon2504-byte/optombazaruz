@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -5,6 +6,7 @@ import Header from "@/components/layout/header";
 import Navigation from "@/components/layout/navigation";
 import Footer from "@/components/layout/footer";
 import ProductGrid from "@/components/product/product-grid";
+import AdvancedSearch from "@/components/search/advanced-search";
 import ChatWidget from "@/components/ai/chat-widget";
 import MarketingBanner from "@/components/telegram/marketing-banner";
 import DiscountTimer from "@/components/promo/discount-timer";
@@ -36,14 +38,25 @@ interface BlogPost {
 
 export default function Home() {
   const { language, t } = useLanguage();
+  const [searchFilters, setSearchFilters] = useState({});
 
   const { data: categories = [] } = useQuery<Category[]>({
     queryKey: ["/api/categories"],
+    staleTime: 30 * 60 * 1000, // 30 minutes
+    cacheTime: 60 * 60 * 1000, // 1 hour
+    refetchOnWindowFocus: false,
   });
 
   const { data: blogPosts = [] } = useQuery<BlogPost[]>({
     queryKey: ["/api/blog?limit=3"],
+    staleTime: 10 * 60 * 1000, // 10 minutes
+    cacheTime: 30 * 60 * 1000, // 30 minutes
+    refetchOnWindowFocus: false,
   });
+
+  const handleSearch = (filters: any) => {
+    setSearchFilters(filters);
+  };
 
   const getCategoryProductCount = (slug: string) => {
     const counts: Record<string, number> = {
@@ -64,56 +77,88 @@ export default function Home() {
       <Header />
       <Navigation />
 
-      {/* Hero Section */}
-      <section className="gradient-bg text-white py-8 md:py-16">
-        <div className="container mx-auto px-4">
-          <div className="grid md:grid-cols-2 gap-6 md:gap-12 items-center">
-            <div className="text-center md:text-left">
-              <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-4 md:mb-6 leading-tight" data-testid="text-hero-title">
+      {/* Modern Hero Section */}
+      <section className="hero-gradient text-white py-16 md:py-24 relative overflow-hidden">
+        {/* Animated background elements */}
+        <div className="absolute inset-0 overflow-hidden">
+          <div className="float-element absolute top-20 left-10 w-20 h-20 bg-white/10 rounded-full blur-xl"></div>
+          <div className="float-element absolute top-40 right-20 w-32 h-32 bg-white/5 rounded-full blur-2xl"></div>
+          <div className="float-element absolute bottom-20 left-1/4 w-16 h-16 bg-white/10 rounded-full blur-lg"></div>
+        </div>
+        
+        <div className="container mx-auto px-4 relative z-10">
+          <div className="grid md:grid-cols-2 gap-8 md:gap-16 items-center">
+            <div className="text-center md:text-left stagger-children">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight bg-clip-text text-transparent bg-gradient-to-r from-white to-blue-100" data-testid="text-hero-title">
                 {t("heroTitle")}
-              </h2>
-              <p className="text-sm sm:text-base md:text-lg lg:text-xl mb-6 md:mb-8 text-blue-100 leading-relaxed" data-testid="text-hero-subtitle">
+              </h1>
+              <p className="text-lg md:text-xl lg:text-2xl mb-8 text-blue-100 leading-relaxed font-light" data-testid="text-hero-subtitle">
                 {t("heroSubtitle")}
               </p>
-              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center md:justify-start">
+              <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
                 <Link href="/catalog">
                   <Button 
-                    size="default"
-                    className="w-full sm:w-auto bg-white text-primary hover:bg-gray-100 px-6 py-3"
+                    size="lg"
+                    className="w-full sm:w-auto bg-white text-primary hover:bg-blue-50 hover:scale-105 transition-all duration-300 px-8 py-4 rounded-full font-semibold shadow-lg hover:shadow-xl"
                     data-testid="button-view-catalog"
                   >
                     {t("viewCatalogBtn")}
                   </Button>
                 </Link>
                 <Button 
-                  size="default"
+                  size="lg"
                   variant="outline" 
-                  className="w-full sm:w-auto border-2 border-white text-white hover:bg-white hover:text-primary px-6 py-3"
+                  className="w-full sm:w-auto border-2 border-white/50 text-white hover:bg-white/10 hover:border-white hover:scale-105 transition-all duration-300 px-8 py-4 rounded-full font-semibold backdrop-blur-sm"
                   data-testid="button-ai-assistant"
                 >
+                  <Bot className="w-5 h-5 mr-2" />
                   {t("aiAssistantBtn")}
                 </Button>
               </div>
             </div>
-            <div className="relative mt-8 md:mt-0">
-              <div className="bg-white/20 rounded-xl p-4 md:p-8 backdrop-blur-sm">
-                <div className="grid grid-cols-2 gap-3 md:gap-4">
-                  <div className="bg-white/30 h-16 md:h-20 rounded-lg flex items-center justify-center">
-                    <Bot className="w-6 h-6 md:w-8 md:h-8 text-white" />
+            
+            <div className="relative mt-8 md:mt-0 animate-scaleIn">
+              <div className="card-gradient rounded-2xl p-8 shadow-2xl">
+                <div className="grid grid-cols-2 gap-6">
+                  <div className="bg-gradient-to-br from-blue-500/20 to-purple-500/20 h-24 rounded-xl flex items-center justify-center hover:scale-110 transition-transform duration-300 cursor-pointer group">
+                    <Bot className="w-8 h-8 text-white group-hover:scale-110 transition-transform duration-300" />
                   </div>
-                  <div className="bg-white/30 h-16 md:h-20 rounded-lg flex items-center justify-center">
-                    <Truck className="w-6 h-6 md:w-8 md:h-8 text-white" />
+                  <div className="bg-gradient-to-br from-green-500/20 to-blue-500/20 h-24 rounded-xl flex items-center justify-center hover:scale-110 transition-transform duration-300 cursor-pointer group">
+                    <Truck className="w-8 h-8 text-white group-hover:scale-110 transition-transform duration-300" />
                   </div>
-                  <div className="bg-white/30 h-16 md:h-20 rounded-lg flex items-center justify-center">
-                    <Award className="w-6 h-6 md:w-8 md:h-8 text-white" />
+                  <div className="bg-gradient-to-br from-yellow-500/20 to-orange-500/20 h-24 rounded-xl flex items-center justify-center hover:scale-110 transition-transform duration-300 cursor-pointer group">
+                    <Award className="w-8 h-8 text-white group-hover:scale-110 transition-transform duration-300" />
                   </div>
-                  <div className="bg-white/30 h-16 md:h-20 rounded-lg flex items-center justify-center">
-                    <Headphones className="w-6 h-6 md:w-8 md:h-8 text-white" />
+                  <div className="bg-gradient-to-br from-purple-500/20 to-pink-500/20 h-24 rounded-xl flex items-center justify-center hover:scale-110 transition-transform duration-300 cursor-pointer group">
+                    <Headphones className="w-8 h-8 text-white group-hover:scale-110 transition-transform duration-300" />
+                  </div>
+                </div>
+                
+                {/* Stats display */}
+                <div className="mt-8 grid grid-cols-3 gap-4 text-center">
+                  <div className="text-white">
+                    <div className="text-2xl font-bold">500+</div>
+                    <div className="text-sm text-blue-200">Mahsulotlar</div>
+                  </div>
+                  <div className="text-white">
+                    <div className="text-2xl font-bold">24/7</div>
+                    <div className="text-sm text-blue-200">Qo'llab-quvvatlash</div>
+                  </div>
+                  <div className="text-white">
+                    <div className="text-2xl font-bold">AI</div>
+                    <div className="text-sm text-blue-200">Yordamchi</div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* Advanced Search Section */}
+      <section className="py-8 bg-gradient-to-b from-blue-50 to-white dark:from-gray-900 dark:to-gray-800">
+        <div className="container mx-auto px-4">
+          <AdvancedSearch onSearch={handleSearch} />
         </div>
       </section>
 

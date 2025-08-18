@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
+import { useState, useRef, useEffect } from "react";
 import ProductCard from "./product-card";
-import { Skeleton } from "@/components/ui/skeleton";
+import ProductSkeleton from "./product-skeleton";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -30,10 +31,19 @@ interface ProductGridProps {
   };
   limit?: number;
   className?: string;
+  enableLazyLoading?: boolean;
 }
 
-export default function ProductGrid({ filters, limit, className }: ProductGridProps) {
+export default function ProductGrid({ 
+  filters, 
+  limit, 
+  className, 
+  enableLazyLoading = true 
+}: ProductGridProps) {
   const { t } = useLanguage();
+  const [visibleCount, setVisibleCount] = useState(enableLazyLoading ? 8 : undefined);
+  const [isIntersecting, setIsIntersecting] = useState(false);
+  const loadMoreRef = useRef<HTMLDivElement>(null);
 
   // Build query parameters string
   let queryString = "/api/products";
@@ -53,20 +63,47 @@ export default function ProductGrid({ filters, limit, className }: ProductGridPr
 
   const { data: products = [], isLoading, error } = useQuery<Product[]>({
     queryKey,
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    cacheTime: 30 * 60 * 1000, // 30 minutes
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
   });
 
-  const displayProducts = limit ? products.slice(0, limit) : products;
+  // Intersection Observer for lazy loading
+  useEffect(() => {
+    if (!enableLazyLoading || !loadMoreRef.current) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsIntersecting(entry.isIntersecting);
+      },
+      { threshold: 0.1 }
+    );
+
+    observer.observe(loadMoreRef.current);
+    return () => observer.disconnect();
+  }, [enableLazyLoading]);
+
+  // Load more products when intersection is detected
+  useEffect(() => {
+    if (isIntersecting && visibleCount && visibleCount < products.length) {
+      setTimeout(() => {
+        setVisibleCount(prev => (prev ? Math.min(prev + 8, products.length) : 8));
+      }, 300);
+    }
+  }, [isIntersecting, visibleCount, products.length]);
+
+  const displayProducts = limit 
+    ? products.slice(0, limit) 
+    : enableLazyLoading && visibleCount 
+      ? products.slice(0, visibleCount)
+      : products;
 
   if (isLoading) {
     return (
-      <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 ${className}`}>
+      <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 ${className} stagger-children`}>
         {Array.from({ length: 8 }, (_, i) => (
-          <div key={i} className="space-y-3">
-            <Skeleton className="h-48 w-full" />
-            <Skeleton className="h-4 w-3/4" />
-            <Skeleton className="h-4 w-1/2" />
-            <Skeleton className="h-8 w-full" />
-          </div>
+          <ProductSkeleton key={i} />
         ))}
       </div>
     );
@@ -95,10 +132,29 @@ export default function ProductGrid({ filters, limit, className }: ProductGridPr
   }
 
   return (
-    <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 ${className}`} data-testid="product-grid">
-      {displayProducts.map((product) => (
-        <ProductCard key={product.id} product={product} />
-      ))}
+    <div className="space-y-6">
+      <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 ${className} stagger-children`} data-testid="product-grid">
+        {displayProducts.map((product, index) => (
+          <div 
+            key={product.id} 
+            className="animate-fadeInUp"
+            style={{ animationDelay: `${(index % 8) * 0.1}s` }}
+          >
+            <ProductCard product={product} />
+          </div>
+        ))}
+      </div>
+      
+      {/* Lazy loading trigger and loading indicator */}
+      {enableLazyLoading && products.length > (visibleCount || 0) && (
+        <div ref={loadMoreRef} className="flex justify-center py-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 w-full">
+            {Array.from({ length: 4 }, (_, i) => (
+              <ProductSkeleton key={`loading-${i}`} />
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
