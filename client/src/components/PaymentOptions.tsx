@@ -141,7 +141,7 @@ export function PaymentOptions({ orderId, totalAmount, onPaymentSuccess }: Payme
                       </div>
                       <div className="flex justify-between">
                         <span>Karta egasi:</span>
-                        <span className="font-semibold">OptomBazar.uz</span>
+                        <span className="font-semibold">Akram Farmonov</span>
                       </div>
                       <div className="flex justify-between">
                         <span>Bank:</span>

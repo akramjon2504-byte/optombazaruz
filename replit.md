@@ -110,6 +110,15 @@ Bu to'liq funksional elektron tijorat veb-ilovasi bo'lib, Replit Agent muhitidan
   - ✅ Savatcha to'liq funksional va tayyor foydalanish uchun
   - ✅ Barcha LSP diagnostics xatolari bartaraf etildi
 
+- **2024-08-18**: QR Code Payment System and Quantity Input Enhancement
+  - ✅ QR kod to'lov tizimi qo'shildi (karta: 5614 6822 1912 1078)
+  - ✅ Karta egasi: Akram Farmonov
+  - ✅ QR kod rasmi to'lov sahifasida ko'rsatiladi
+  - ✅ Miqdor inputi yaxshilandi - raqam yozish mumkin
+  - ✅ Savatcha va mahsulot sahifasida direct number input
+  - ✅ Plus/minus tugmalar va input validatsiya ishlaydi
+  - ✅ Humo/UzCard to'lov tizimi integratsiyasi
+
 - **2024-08-18**: AI Blog Generation Professional Writing Enhancement
   - ✅ Blog yozishda markdown belgilar (* ** __ -) to'liq olib tashlandi
   - ✅ Professional copywriting va jurnalistik uslub joriy qilindi
