@@ -5,6 +5,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 import { ThemeProvider } from "@/contexts/ThemeContext";
+import MobileBottomNav from "@/components/layout/mobile-bottom-nav";
 import { useAuth } from "@/hooks/useAuth";
 import { Skeleton } from "@/components/ui/skeleton";
 import NotFound from "@/pages/not-found";
@@ -14,6 +15,7 @@ import ProductDetail from "@/pages/product-detail";
 import Blog from "@/pages/blog";
 import Contact from "@/pages/contact";
 import Cart from "@/pages/cart";
+import Wishlist from "@/pages/wishlist";
 import AdminPanel from "@/pages/AdminPanel";
 import Login from "@/pages/Login";
 import Register from "@/pages/Register";
@@ -48,6 +50,7 @@ function AuthRouter() {
       </Route>
       <Route path="/contact" component={Contact} />
       <Route path="/cart" component={Cart} />
+      <Route path="/wishlist" component={Wishlist} />
       <Route path="/delivery" component={Delivery} />
       <Route path="/help" component={Help} />
       
@@ -78,6 +81,7 @@ function App() {
         <LanguageProvider>
           <TooltipProvider>
             <AuthRouter />
+            <MobileBottomNav />
             <Toaster />
           </TooltipProvider>
         </LanguageProvider>

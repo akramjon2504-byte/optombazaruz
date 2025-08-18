@@ -260,6 +260,18 @@
 .stagger-children > *:nth-child(5) { animation-delay: 0.5s; }
 .stagger-children > *:nth-child(6) { animation-delay: 0.6s; }
 
+/* Mobile bottom navigation styles */
+.safe-area-pb {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* Add bottom padding to main content to avoid overlap with mobile nav */
+@media (max-width: 767px) {
+  body {
+    padding-bottom: 80px !important; /* Height of mobile bottom nav */
+  }
+}
+
 :root {
   --background: hsl(0, 0%, 100%);
   --foreground: hsl(210, 25%, 7.8431%);
