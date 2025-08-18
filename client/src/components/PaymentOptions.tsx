@@ -128,9 +128,7 @@ export function PaymentOptions({ orderId, totalAmount, onPaymentSuccess }: Payme
                     onChange={(e) => setQrCardNumber(e.target.value)}
                     maxLength={19}
                   />
-                  <p className="text-sm text-muted-foreground">
-                    16 raqamli QR kart raqamingizni kiriting
-                  </p>
+                  <p className="text-sm text-muted-foreground">Kartaga pul tashlab chekini telegram orqali adminga yuboring</p>
                 </div>
               </CardContent>
             </Card>
