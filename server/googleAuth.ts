@@ -4,14 +4,16 @@ import type { Express } from "express";
 import { storage } from "./storage";
 
 export function setupGoogleAuth(app: Express) {
-  // Google OAuth Strategy
-  passport.use(new GoogleStrategy({
-    clientID: process.env.GOOGLE_CLIENT_ID || "",
-    clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
-    callbackURL: process.env.NODE_ENV === 'production' 
-      ? `https://${process.env.REPL_SLUG}.${process.env.REPL_OWNER}.repl.co/api/auth/google/callback`
-      : "http://localhost:5000/api/auth/google/callback"
-  },
+  // Only setup Google OAuth if credentials are available
+  if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
+    // Google OAuth Strategy
+    passport.use(new GoogleStrategy({
+      clientID: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      callbackURL: process.env.NODE_ENV === 'production' 
+        ? `https://${process.env.REPL_SLUG}.${process.env.REPL_OWNER}.repl.co/api/auth/google/callback`
+        : "http://localhost:5000/api/auth/google/callback"
+    },
   async (accessToken, refreshToken, profile, done) => {
     try {
       // Check if user already exists
@@ -42,29 +44,41 @@ export function setupGoogleAuth(app: Express) {
     } catch (error) {
       return done(error, undefined);
     }
-  }));
+    }));
 
-  // Google Auth Routes
-  app.get("/api/auth/google", 
-    passport.authenticate("google", { 
-      scope: ["profile", "email"] 
-    })
-  );
+    // Google Auth Routes
+    app.get("/api/auth/google", 
+      passport.authenticate("google", { 
+        scope: ["profile", "email"] 
+      })
+    );
 
-  app.get("/api/auth/google/callback",
-    passport.authenticate("google", { failureRedirect: "/login" }),
-    (req, res) => {
-      // Store user in session
-      const user = req.user as any;
-      if (user) {
-        const session = req.session as any;
-        session.userId = user.id;
-        session.isAdmin = user.isAdmin;
-        session.user = user;
+    app.get("/api/auth/google/callback",
+      passport.authenticate("google", { failureRedirect: "/login" }),
+      (req, res) => {
+        // Store user in session
+        const user = req.user as any;
+        if (user) {
+          const session = req.session as any;
+          session.userId = user.id;
+          session.isAdmin = user.isAdmin;
+          session.user = user;
+        }
+        
+        // Successful authentication, redirect to home page
+        res.redirect("/");
       }
-      
-      // Successful authentication, redirect to home page
-      res.redirect("/");
-    }
-  );
+    );
+  } else {
+    console.log("⚠️ Google OAuth credentials not configured. Google authentication will be disabled.");
+    
+    // Provide placeholder routes that return appropriate messages
+    app.get("/api/auth/google", (req, res) => {
+      res.status(501).json({ message: "Google authentication not configured" });
+    });
+    
+    app.get("/api/auth/google/callback", (req, res) => {
+      res.redirect("/login?error=google_not_configured");
+    });
+  }
 }
