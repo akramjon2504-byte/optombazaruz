@@ -15,9 +15,22 @@ interface PaymentOptionsProps {
   onPaymentSuccess: () => void;
 }
 
+interface CustomerInfo {
+  fullName: string;
+  phone: string;
+  address: string;
+}
+
 export function PaymentOptions({ orderId, totalAmount, onPaymentSuccess }: PaymentOptionsProps) {
   const [paymentMethod, setPaymentMethod] = useState<string>("qr_card");
   const [qrCardNumber, setQrCardNumber] = useState("");
+  const [senderName, setSenderName] = useState("");
+  const [transferAmount, setTransferAmount] = useState("");
+  const [customerInfo, setCustomerInfo] = useState<CustomerInfo>({
+    fullName: "",
+    phone: "",
+    address: ""
+  });
   const [bankDetails, setBankDetails] = useState({
     accountNumber: "",
     bankName: "",
@@ -29,23 +42,34 @@ export function PaymentOptions({ orderId, totalAmount, onPaymentSuccess }: Payme
   const handlePayment = async () => {
     setIsProcessing(true);
 
+    // Validate customer info
+    if (!customerInfo.fullName.trim() || !customerInfo.phone.trim() || !customerInfo.address.trim()) {
+      toast({
+        title: "Xato",
+        description: "Barcha shaxsiy ma'lumotlarni to'ldiring",
+        variant: "destructive"
+      });
+      setIsProcessing(false);
+      return;
+    }
+
     try {
       let endpoint = "";
-      let payload: any = { orderId };
+      let payload: any = { orderId, customerInfo };
 
       switch (paymentMethod) {
         case "qr_card":
-          if (!qrCardNumber.trim()) {
+          if (!qrCardNumber.trim() || !senderName.trim() || !transferAmount.trim()) {
             toast({
               title: "Xato",
-              description: "QR kart raqamini kiriting",
+              description: "Barcha to'lov ma'lumotlarini kiriting",
               variant: "destructive"
             });
             setIsProcessing(false);
             return;
           }
           endpoint = "/api/payment/qr-card";
-          payload = { ...payload, qrCardNumber };
+          payload = { ...payload, qrCardNumber, senderName, transferAmount };
           break;
 
         case "bank_transfer":
@@ -105,6 +129,47 @@ export function PaymentOptions({ orderId, totalAmount, onPaymentSuccess }: Payme
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
+        {/* Customer Information */}
+        <Card className="bg-blue-50 dark:bg-blue-950/20">
+          <CardHeader>
+            <CardTitle className="text-lg">Mijoz ma'lumotlari</CardTitle>
+            <CardDescription>Buyurtma uchun zarur ma'lumotlar</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="fullName">To'liq ism</Label>
+                <Input
+                  id="fullName"
+                  placeholder="Ismingizni kiriting"
+                  value={customerInfo.fullName}
+                  onChange={(e) => setCustomerInfo({...customerInfo, fullName: e.target.value})}
+                  required
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="phone">Telefon raqam</Label>
+                <Input
+                  id="phone"
+                  placeholder="+998 90 123 45 67"
+                  value={customerInfo.phone}
+                  onChange={(e) => setCustomerInfo({...customerInfo, phone: e.target.value})}
+                  required
+                />
+              </div>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="address">Manzil</Label>
+              <Input
+                id="address"
+                placeholder="To'liq manzilingizni kiriting"
+                value={customerInfo.address}
+                onChange={(e) => setCustomerInfo({...customerInfo, address: e.target.value})}
+                required
+              />
+            </div>
+          </CardContent>
+        </Card>
         <RadioGroup value={paymentMethod} onValueChange={setPaymentMethod}>
           {/* QR Card Payment */}
           <div className="flex items-center space-x-2">
@@ -160,8 +225,30 @@ export function PaymentOptions({ orderId, totalAmount, onPaymentSuccess }: Payme
                     onChange={(e) => setQrCardNumber(e.target.value)}
                     maxLength={19}
                   />
-                    <p className="text-xs text-muted-foreground">
-                      Kartaga pul tashlash chekini telegram orqali adminga yuboring
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="senderName">Kimning nomidan o'tkazildi</Label>
+                        <Input
+                          id="senderName"
+                          placeholder="Jo'natuvchi ismi"
+                          value={senderName}
+                          onChange={(e) => setSenderName(e.target.value)}
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="transferAmount">Necha pul o'tkazildi</Label>
+                        <Input
+                          id="transferAmount"
+                          placeholder="10000 so'm"
+                          value={transferAmount}
+                          onChange={(e) => setTransferAmount(e.target.value)}
+                        />
+                      </div>
+                    </div>
+                    
+                    <p className="text-xs text-muted-foreground bg-yellow-50 dark:bg-yellow-950/20 p-2 rounded">
+                      💡 Kartaga pul tashlash chekini telegram orqali @optombazaruzb adminga yuboring
                     </p>
                   </div>
                 </div>
