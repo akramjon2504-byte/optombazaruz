@@ -7,6 +7,7 @@ import Navigation from "@/components/layout/navigation";
 import Footer from "@/components/layout/footer";
 import ProductGrid from "@/components/product/product-grid";
 import AdvancedSearch from "@/components/search/advanced-search";
+import AIRecommendations from "@/components/recommendations/ai-recommendations";
 import ChatWidget from "@/components/ai/chat-widget";
 import MarketingBanner from "@/components/telegram/marketing-banner";
 import DiscountTimer from "@/components/promo/discount-timer";
@@ -241,6 +242,13 @@ export default function Home() {
           </div>
           
           <ProductGrid filters={{ isHit: true }} limit={4} />
+        </div>
+      </section>
+
+      {/* AI Recommendations */}
+      <section className="py-16 bg-white">
+        <div className="container mx-auto px-4">
+          <AIRecommendations />
         </div>
       </section>
 
