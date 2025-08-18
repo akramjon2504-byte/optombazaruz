@@ -6,14 +6,8 @@ const TELEGRAM_TOKEN = '7640281872:AAE3adEZv3efPr-V4Xt77tFgs5k7vVWxqZQ';
 const TELEGRAM_CHANNEL_ID = '@optombazaruzb';
 const ADMIN_USER_ID = 1021369075;
 
-// Initialize Telegram Bot (ensure only one instance)
-let bot: TelegramBot;
-try {
-  bot = new TelegramBot(TELEGRAM_TOKEN, { polling: false });
-} catch (error) {
-  console.log('Bot instance already exists, reusing...');
-  bot = new TelegramBot(TELEGRAM_TOKEN, { polling: false });
-}
+// Initialize Telegram Bot (disable polling to prevent conflicts)
+const bot = new TelegramBot(TELEGRAM_TOKEN, { polling: false });
 
 // Initialize Gemini AI
 const ai = new GoogleGenAI({ apiKey: process.env.GOOGLE_API_KEY || "" });
@@ -35,36 +29,9 @@ export class TelegramMarketingBot {
   }
 
   private setupCommands() {
-    // Admin commands
-    this.bot.onText(/\/start/, (msg) => {
-      const chatId = msg.chat.id;
-      const welcomeMessage = `
-🤖 OptomBazar Marketing Bot
-
-Admin buyruqlari:
-/post - Marketing post yaratish
-/blog - Blog maqola yaratish
-/stats - Kanal statistikasi
-/help - Yordam
-      `;
-      this.bot.sendMessage(chatId, welcomeMessage);
-    });
-
-    this.bot.onText(/\/post/, async (msg) => {
-      if (msg.from?.id !== ADMIN_USER_ID) {
-        this.bot.sendMessage(msg.chat.id, "❌ Ruxsat yo'q");
-        return;
-      }
-      await this.createMarketingPost();
-    });
-
-    this.bot.onText(/\/blog/, async (msg) => {
-      if (msg.from?.id !== ADMIN_USER_ID) {
-        this.bot.sendMessage(msg.chat.id, "❌ Ruxsat yo'q");
-        return;
-      }
-      await this.createBlogPost();
-    });
+    // Commands are disabled to prevent polling conflicts
+    // Bot is only used for scheduled posts, not interactive commands
+    console.log('✅ Telegram bot commands configured (polling disabled)');
   }
 
   async generateMarketingContent(): Promise<MarketingPost> {

@@ -43,14 +43,11 @@ export default function ChatWidget() {
 
   const chatMutation = useMutation({
     mutationFn: async (message: string) => {
-      const response = await apiRequest(`/api/chat`, {
-        method: 'POST',
-        body: {
-          sessionId: sessionId.current,
-          userName,
-          userPhone,
-          message,
-        },
+      const response = await apiRequest(`/api/chat`, 'POST', {
+        sessionId: sessionId.current,
+        userName,
+        userPhone,
+        message,
       });
       return response;
     },
