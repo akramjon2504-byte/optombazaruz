@@ -106,6 +106,23 @@ export interface Translations {
   totalOrders: Translation;
   monthlySales: Translation;
   totalMessages: Translation;
+
+  // PWA
+  installApp: Translation;
+  installAppDescription: Translation;
+  faster: Translation;
+  offline: Translation;
+  appLike: Translation;
+  installing: Translation;
+  install: Translation;
+  later: Translation;
+  offlineMode: Translation;
+  willSyncWhenOnline: Translation;
+  enableNotifications: Translation;
+  notificationsDescription: Translation;
+  notificationsEnabled: Translation;
+  notificationsNotSupported: Translation;
+  enable: Translation;
 }
 
 export const translations: Translations = {
@@ -199,5 +216,22 @@ export const translations: Translations = {
   totalUsers: { uz: "Jami foydalanuvchilar", ru: "Всего пользователей" },
   totalOrders: { uz: "Jami buyurtmalar", ru: "Всего заказов" },
   monthlySales: { uz: "Oylik savdo", ru: "Месячные продажи" },
-  totalMessages: { uz: "Jami xabarlar", ru: "Всего сообщений" }
+  totalMessages: { uz: "Jami xabarlar", ru: "Всего сообщений" },
+
+  // PWA
+  installApp: { uz: "Ilovani o'rnatish", ru: "Установить приложение" },
+  installAppDescription: { uz: "Telefonda app kabi ishlatish uchun", ru: "Для использования как приложение на телефоне" },
+  faster: { uz: "Tezroq", ru: "Быстрее" },
+  offline: { uz: "Offline", ru: "Оффлайн" },
+  appLike: { uz: "App kabi", ru: "Как приложение" },
+  installing: { uz: "O'rnatilmoqda...", ru: "Устанавливается..." },
+  install: { uz: "O'rnatish", ru: "Установить" },
+  later: { uz: "Keyinroq", ru: "Позже" },
+  offlineMode: { uz: "Internet aloqasi yo'q - offline rejimda ishlayapti", ru: "Нет интернета - работает в оффлайн режиме" },
+  willSyncWhenOnline: { uz: "Internet qaytganda sinxronlashadi", ru: "Синхронизируется при подключении к интернету" },
+  enableNotifications: { uz: "Bildirishnomalarni yoqing", ru: "Включить уведомления" },
+  notificationsDescription: { uz: "Aksiyalar va yangiliklar haqida birinchi bo'lib bilib oling", ru: "Узнавайте первыми об акциях и новостях" },
+  notificationsEnabled: { uz: "Bildirishnomalar yoqildi! Aksiyalardan birinchi bo'lib xabardor bo'ling.", ru: "Уведомления включены! Будьте первыми в курсе акций." },
+  notificationsNotSupported: { uz: "Bildirishnomalar qo'llab-quvvatlanmaydi", ru: "Уведомления не поддерживаются" },
+  enable: { uz: "Yoqish", ru: "Включить" }
 };

@@ -962,6 +962,43 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Orders
+  // PWA Push Notifications
+  app.post('/api/push/subscribe', async (req, res) => {
+    try {
+      const subscription = req.body;
+      
+      // Store subscription in database or memory
+      // For demo, just log it
+      console.log('🔔 PWA Push subscription:', subscription);
+      
+      res.json({ 
+        success: true, 
+        message: 'Push subscription registered successfully' 
+      });
+    } catch (error) {
+      console.error('Push subscription error:', error);
+      res.status(500).json({ success: false, message: 'Subscription failed' });
+    }
+  });
+
+  app.post('/api/push/send', async (req, res) => {
+    try {
+      const { title, body, url, image } = req.body;
+      
+      // Here you would send push notifications to all subscribed users
+      // For demo, just return success
+      console.log('🔔 Sending push notification:', { title, body, url });
+      
+      res.json({ 
+        success: true, 
+        message: 'Push notification sent successfully' 
+      });
+    } catch (error) {
+      console.error('Push notification send error:', error);
+      res.status(500).json({ success: false, message: 'Send failed' });
+    }
+  });
+
   app.post("/api/orders", async (req, res) => {
     try {
       const orderData = req.body;

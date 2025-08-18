@@ -8,6 +8,9 @@ import ProductGrid from "@/components/product/product-grid";
 import ChatWidget from "@/components/ai/chat-widget";
 import MarketingBanner from "@/components/telegram/marketing-banner";
 import DiscountTimer from "@/components/promo/discount-timer";
+import InstallPrompt from "@/components/pwa/install-prompt";
+import OfflineBanner from "@/components/pwa/offline-banner";
+import PushNotifications from "@/components/pwa/push-notifications";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
 import { Bot, Truck, Award, Headphones } from "lucide-react";
@@ -299,6 +302,9 @@ export default function Home() {
       <Footer />
       <ChatWidget />
       <MarketingBanner />
+      <InstallPrompt />
+      <PushNotifications />
+      <OfflineBanner className="fixed top-0 left-0 right-0 z-40" />
     </div>
   );
 }
