@@ -23,7 +23,7 @@ export default function Header() {
     <header className="bg-white shadow-lg sticky top-0 z-50">
       <div className="container mx-auto px-4">
         {/* Top bar */}
-        <div className="flex justify-between items-center py-2 text-sm border-b border-gray-200">
+        <div className="hidden md:flex justify-between items-center py-2 text-sm border-b border-gray-200">
           <div className="flex items-center space-x-4">
             <span className="text-gray-600 flex items-center">
               <Phone className="w-4 h-4 mr-1" />
@@ -77,23 +77,23 @@ export default function Header() {
         </div>
 
         {/* Main header */}
-        <div className="flex items-center justify-between py-4">
+        <div className="flex items-center justify-between py-3 md:py-4">
           {/* Logo */}
           <Link href="/">
             <div className="flex items-center cursor-pointer" data-testid="link-home">
-              <div className="bg-primary text-white px-4 py-2 rounded-lg font-bold text-2xl">
+              <div className="bg-primary text-white px-3 md:px-4 py-2 rounded-lg font-bold text-lg md:text-2xl">
                 OB
               </div>
-              <div className="ml-3">
-                <h1 className="font-bold text-2xl text-gray-900">OptomBazar</h1>
-                <p className="text-sm text-gray-600">{language === "uz" ? "O'zbekistonning optom bozori" : "Оптовый рынок Узбекистана"}</p>
+              <div className="ml-2 md:ml-3">
+                <h1 className="font-bold text-lg md:text-2xl text-gray-900">OptomBazar</h1>
+                <p className="text-xs md:text-sm text-gray-600 hidden sm:block">{language === "uz" ? "O'zbekistonning optom bozori" : "Оптовый рынок Узбекистана"}</p>
               </div>
             </div>
           </Link>
 
           {/* Search bar */}
-          <form onSubmit={handleSearch} className="flex-1 max-w-2xl mx-8">
-            <div className="relative">
+          <form onSubmit={handleSearch} className="hidden md:flex flex-1 max-w-2xl mx-4 lg:mx-8">
+            <div className="relative w-full">
               <Input
                 type="text"
                 placeholder={t("searchPlaceholder")}
@@ -114,13 +114,40 @@ export default function Header() {
           </form>
 
           {/* Cart and actions */}
-          <div className="flex items-center space-x-6">
+          <div className="flex items-center space-x-3 md:space-x-6">
+            {/* Mobile language switcher */}
+            <div className="flex md:hidden items-center space-x-1">
+              <button
+                onClick={() => setLanguage("uz")}
+                className={`px-2 py-1 text-xs font-semibold transition-colors ${
+                  language === "uz"
+                    ? "text-primary border-b-2 border-primary"
+                    : "text-gray-600 hover:text-primary"
+                }`}
+                data-testid="button-language-uz-mobile"
+              >
+                UZ
+              </button>
+              <span className="text-gray-400">|</span>
+              <button
+                onClick={() => setLanguage("ru")}
+                className={`px-2 py-1 text-xs font-semibold transition-colors ${
+                  language === "ru"
+                    ? "text-primary border-b-2 border-primary"
+                    : "text-gray-600 hover:text-primary"
+                }`}
+                data-testid="button-language-ru-mobile"
+              >
+                RU
+              </button>
+            </div>
+            
             <button
-              className="relative hover:text-primary transition-colors"
+              className="relative hover:text-primary transition-colors md:block hidden"
               data-testid="button-wishlist"
             >
-              <Heart className="w-6 h-6" />
-              <span className="absolute -top-2 -right-2 bg-discount text-white rounded-full text-xs w-5 h-5 flex items-center justify-center">
+              <Heart className="w-5 h-5 md:w-6 md:h-6" />
+              <span className="absolute -top-2 -right-2 bg-discount text-white rounded-full text-xs w-4 h-4 md:w-5 md:h-5 flex items-center justify-center">
                 3
               </span>
             </button>
@@ -130,16 +157,16 @@ export default function Header() {
                 className="relative hover:text-primary transition-colors"
                 data-testid="button-cart"
               >
-                <ShoppingCart className="w-6 h-6" />
+                <ShoppingCart className="w-5 h-5 md:w-6 md:h-6" />
                 {cartCount > 0 && (
-                  <span className="absolute -top-2 -right-2 bg-primary text-white rounded-full text-xs w-5 h-5 flex items-center justify-center">
+                  <span className="absolute -top-2 -right-2 bg-primary text-white rounded-full text-xs w-4 h-4 md:w-5 md:h-5 flex items-center justify-center">
                     {cartCount}
                   </span>
                 )}
               </button>
             </Link>
             
-            <div className="text-right">
+            <div className="text-right hidden md:block">
               <p className="text-sm text-gray-600">{t("cart")}:</p>
               <p className="font-bold text-lg" data-testid="text-cart-total">
                 {parseFloat(cartTotal).toLocaleString()} сум

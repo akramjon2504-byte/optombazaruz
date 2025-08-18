@@ -62,50 +62,50 @@ export default function Home() {
       <Navigation />
 
       {/* Hero Section */}
-      <section className="gradient-bg text-white py-16">
+      <section className="gradient-bg text-white py-8 md:py-16">
         <div className="container mx-auto px-4">
-          <div className="grid md:grid-cols-2 gap-12 items-center">
-            <div>
-              <h2 className="text-5xl font-bold mb-6" data-testid="text-hero-title">
+          <div className="grid md:grid-cols-2 gap-6 md:gap-12 items-center">
+            <div className="text-center md:text-left">
+              <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-4 md:mb-6 leading-tight" data-testid="text-hero-title">
                 {t("heroTitle")}
               </h2>
-              <p className="text-xl mb-8 text-blue-100" data-testid="text-hero-subtitle">
+              <p className="text-sm sm:text-base md:text-lg lg:text-xl mb-6 md:mb-8 text-blue-100 leading-relaxed" data-testid="text-hero-subtitle">
                 {t("heroSubtitle")}
               </p>
-              <div className="flex space-x-4">
+              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center md:justify-start">
                 <Link href="/catalog">
                   <Button 
-                    size="lg" 
-                    className="bg-white text-primary hover:bg-gray-100"
+                    size="default"
+                    className="w-full sm:w-auto bg-white text-primary hover:bg-gray-100 px-6 py-3"
                     data-testid="button-view-catalog"
                   >
                     {t("viewCatalogBtn")}
                   </Button>
                 </Link>
                 <Button 
-                  size="lg" 
+                  size="default"
                   variant="outline" 
-                  className="border-2 border-white text-white hover:bg-white hover:text-primary"
+                  className="w-full sm:w-auto border-2 border-white text-white hover:bg-white hover:text-primary px-6 py-3"
                   data-testid="button-ai-assistant"
                 >
                   {t("aiAssistantBtn")}
                 </Button>
               </div>
             </div>
-            <div className="relative">
-              <div className="bg-white/20 rounded-xl p-8 backdrop-blur-sm">
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="bg-white/30 h-20 rounded-lg flex items-center justify-center">
-                    <Bot className="w-8 h-8 text-white" />
+            <div className="relative mt-8 md:mt-0">
+              <div className="bg-white/20 rounded-xl p-4 md:p-8 backdrop-blur-sm">
+                <div className="grid grid-cols-2 gap-3 md:gap-4">
+                  <div className="bg-white/30 h-16 md:h-20 rounded-lg flex items-center justify-center">
+                    <Bot className="w-6 h-6 md:w-8 md:h-8 text-white" />
                   </div>
-                  <div className="bg-white/30 h-20 rounded-lg flex items-center justify-center">
-                    <Truck className="w-8 h-8 text-white" />
+                  <div className="bg-white/30 h-16 md:h-20 rounded-lg flex items-center justify-center">
+                    <Truck className="w-6 h-6 md:w-8 md:h-8 text-white" />
                   </div>
-                  <div className="bg-white/30 h-20 rounded-lg flex items-center justify-center">
-                    <Award className="w-8 h-8 text-white" />
+                  <div className="bg-white/30 h-16 md:h-20 rounded-lg flex items-center justify-center">
+                    <Award className="w-6 h-6 md:w-8 md:h-8 text-white" />
                   </div>
-                  <div className="bg-white/30 h-20 rounded-lg flex items-center justify-center">
-                    <Headphones className="w-8 h-8 text-white" />
+                  <div className="bg-white/30 h-16 md:h-20 rounded-lg flex items-center justify-center">
+                    <Headphones className="w-6 h-6 md:w-8 md:h-8 text-white" />
                   </div>
                 </div>
               </div>
@@ -117,10 +117,10 @@ export default function Home() {
       {/* Quick Categories */}
       <section className="py-12 bg-white">
         <div className="container mx-auto px-4">
-          <h3 className="text-3xl font-bold text-center mb-10" data-testid="text-main-categories">
+          <h3 className="text-2xl md:text-3xl font-bold text-center mb-8 md:mb-10" data-testid="text-main-categories">
             {t("mainCategories")}
           </h3>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 md:gap-6">
             {categories.map((category, index) => {
               const categoryName = language === "uz" ? category.nameUz : category.nameRu;
               const productCount = getCategoryProductCount(category.slug);
@@ -136,20 +136,20 @@ export default function Home() {
               return (
                 <Link key={category.id} href={`/catalog?category=${category.slug}`}>
                   <div className="text-center hover-lift cursor-pointer group" data-testid={`category-${category.slug}`}>
-                    <div className={`rounded-full p-6 mb-4 transition-all ${colors[index % colors.length]}`}>
+                    <div className={`rounded-full p-4 md:p-6 mb-3 md:mb-4 transition-all ${colors[index % colors.length]}`}>
                       {/* Category icons */}
-                      {index === 0 && <div className="text-3xl">🛍️</div>}
-                      {index === 1 && <div className="text-3xl">🍽️</div>}
-                      {index === 2 && <div className="text-3xl">🏠</div>}
-                      {index === 3 && <div className="text-3xl">📱</div>}
-                      {index === 4 && <div className="text-3xl">👕</div>}
-                      {index === 5 && <div className="text-3xl">🧴</div>}
-                      {index === 6 && <div className="text-3xl">📝</div>}
-                      {index === 7 && <div className="text-3xl">🎉</div>}
-                      {index > 7 && <div className="text-3xl">📦</div>}
+                      {index === 0 && <div className="text-2xl md:text-3xl">🛍️</div>}
+                      {index === 1 && <div className="text-2xl md:text-3xl">🍽️</div>}
+                      {index === 2 && <div className="text-2xl md:text-3xl">🏠</div>}
+                      {index === 3 && <div className="text-2xl md:text-3xl">📱</div>}
+                      {index === 4 && <div className="text-2xl md:text-3xl">👕</div>}
+                      {index === 5 && <div className="text-2xl md:text-3xl">🧴</div>}
+                      {index === 6 && <div className="text-2xl md:text-3xl">📝</div>}
+                      {index === 7 && <div className="text-2xl md:text-3xl">🎉</div>}
+                      {index > 7 && <div className="text-2xl md:text-3xl">📦</div>}
                     </div>
-                    <h4 className="font-semibold text-gray-900 mb-1">{categoryName}</h4>
-                    <p className="text-sm text-gray-500">{productCount}+ {t("products")}</p>
+                    <h4 className="font-semibold text-gray-900 mb-1 text-sm md:text-base leading-tight">{categoryName}</h4>
+                    <p className="text-xs md:text-sm text-gray-500">{productCount}+ {t("products")}</p>
                   </div>
                 </Link>
               );
