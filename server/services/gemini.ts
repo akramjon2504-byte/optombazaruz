@@ -42,8 +42,15 @@ export interface BlogPostContent {
 
 export async function generateBlogPost(topic: string, category?: string): Promise<BlogPostContent> {
   try {
-    const prompt = `Optom savdo sohasida "${topic}" mavzusida blog maqolasi yarating.
+    const prompt = `Optom savdo sohasida "${topic}" mavzusida professional blog maqolasi yarating.
     ${category ? `Kategoriya: ${category}` : ""}
+    
+    MUHIM TALABLAR:
+    - Hech qanday markdown belgilar ishlatmang (* ** __ - va hokazo)
+    - Faqat oddiy matn formatida yozing
+    - Professional copywriting uslubida
+    - Jurnalistik va akademik yozuv tarzida
+    - Paragraflar orasida faqat bo'sh qator qoldiring
     
     Maqola professional, foydali va SEO optimallashtirilgan bo'lishi kerak.
     O'zbek va rus tillarida yozing.
@@ -52,8 +59,8 @@ export async function generateBlogPost(topic: string, category?: string): Promis
     {
       "titleUz": "O'zbek tilidagi sarlavha",
       "titleRu": "Русский заголовок", 
-      "contentUz": "O'zbek tilidagi to'liq matn (kamida 500 so'z)",
-      "contentRu": "Полный текст на русском (минимум 500 слов)",
+      "contentUz": "O'zbek tilidagi to'liq matn (kamida 500 so'z) - faqat oddiy matn",
+      "contentRu": "Полный текст на русском (минимум 500 слов) - только обычный текст",
       "excerpt": "Qisqa tavsif (150 belgigacha)",
       "slug": "url-uchun-slug"
     }`;
@@ -126,12 +133,16 @@ export async function generateMarketingContent(type: 'telegram' | 'social', prod
     const prompt = `OptomBazar.uz uchun ${type} marketing kontenti yarating.
     Mahsulotlar: ${productList}
     
-    MUHIM: Formatlovchi belgilar ishlatmang (* ** __ - va boshqalar).
-    Faqat oddiy matn, emoji va hashtag ishlatishingiz mumkin.
+    MUHIM TALABLAR:
+    - Hech qanday markdown yoki formatlovchi belgilar ishlatmang (* ** __ - # va boshqalar)
+    - Professional copywriting va marketing uslubida
+    - Faqat oddiy matn, emoji va hashtag
+    - Jurnalistik va professional yozuv tarzida
+    - Akademik darajadagi marketing matn
     
-    Kontent qiziqarli, professional va harakatga undovchi bo'lsin.
-    SEO va copywriting uchun optimallashtirilgan bo'lsin.
-    O'zbek va rus tillarini aralashtiring.`;
+    Kontent professional, qiziqarli va harakatga undovchi bo'lsin.
+    SEO va copywriting standartlari bo'yicha optimallashtirilgan.
+    O'zbek va rus tillarini professional tarzda aralashtiring.`;
 
     const response = await ai.models.generateContent({
       model: "gemini-1.5-flash",

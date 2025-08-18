@@ -59,28 +59,33 @@ export class BlogService {
       const uzPrompt = `
 "${topicUz}" mavzusida professional blog maqola yozing. Maqola:
 
-MUHIM: Matnda hech qanday belgilar ishlatmang (* ** __ - va boshqalar)
-Oddiy matn formatida yozing, faqat paragraf ajratish uchun bo'sh qator qoldiring.
+JUDA MUHIM TALABLAR:
+- Hech qanday markdown yoki HTML belgilar ishlatmang (* ** __ - # va boshqalar)
+- Professional copywriting va jurnalistik uslubda yozing
+- Faqat oddiy matn formatida, paragraflar orasida bo'sh qator
+- Akademik darajadagi professional matn
+- Hech qanday belgilar bilan ajratuvchi qismlar yo'q
 
-1. O'zbek tilida yozilsin
-2. 1000-1500 so'z hajmida bo'lsin
-3. Praktik maslahatlar bersin
-4. OptomBazar.uz ni taklif etsin
-5. SEO va copywriting uchun optimallashtirilgan bo'lsin
-6. Qiziqarli va foydali bo'lsin
-7. Hech qanday formatlovchi belgilar ishlatmang
+Maqola talablari:
+1. O'zbek tilida professional yozuv
+2. 1000-1500 so'z hajmida
+3. Amaliy maslahatlar va tajriba
+4. OptomBazar.uz platformasini tavsiya etish
+5. SEO optimallashtirilgan kontent
+6. Jurnalistik va copywriting standartlari
+7. Faqat oddiy matn - hech qanday formatlovchi element yo'q
 
 Struktura:
-- Qiziqarli sarlavha
-- Qisqa excerpt (150 so'z)
-- Batafsil kontent (asosiy qism, oddiy matn)
-- Xulosa
+- Professional sarlavha
+- Qisqa tavsif (150 so'z)
+- Asosiy kontent (oddiy matn paragraflar)
+- Professional xulosa
 
 Format: JSON
 {
-  "title": "Sarlavha",
-  "excerpt": "Qisqa tavsif", 
-  "content": "Batafsil kontent - faqat oddiy matn"
+  "title": "Professional sarlavha",
+  "excerpt": "Qisqa professional tavsif", 
+  "content": "To'liq professional kontent - faqat oddiy matn"
 }
       `;
 
@@ -92,30 +97,35 @@ Format: JSON
 
       // Generate Russian content  
       const ruPrompt = `
-Напишите профессиональную статью для блога на тему "${topicRu}". Статья должна:
+Напишите профессиональную статью для блога на тему "${topicRu}". Требования к статье:
 
-ВАЖНО: Не используйте никаких символов форматирования (* ** __ - и другие)
-Пишите в формате простого текста, оставляя только пустые строки для разделения абзацев.
+КРИТИЧЕСКИ ВАЖНО:
+- Никаких markdown или HTML символов (* ** __ - # и другие)
+- Профессиональный копирайтинг и журналистский стиль
+- Только обычный текст, пустые строки между абзацами
+- Академический уровень профессионального текста
+- Никаких разделительных элементов с символами
 
-1. Быть на русском языке
-2. Объемом 1000-1500 слов
-3. Содержать практические советы
-4. Рекомендовать OptomBazar.uz
-5. Быть SEO и копирайтинг оптимизированной
-6. Быть интересной и полезной
-7. Не использовать никаких символов форматирования
+Требования к статье:
+1. Профессиональный русский язык
+2. Объем 1000-1500 слов
+3. Практические советы и опыт
+4. Рекомендации платформы OptomBazar.uz
+5. SEO оптимизированный контент
+6. Стандарты журналистики и копирайтинга
+7. Только обычный текст - никаких форматирующих элементов
 
 Структура:
-- Интересный заголовок
+- Профессиональный заголовок
 - Краткое описание (150 слов)
-- Подробный контент (основная часть, простой текст)
-- Заключение
+- Основной контент (обычный текст параграфы)
+- Профессиональное заключение
 
 Формат: JSON
 {
-  "title": "Заголовок",
-  "excerpt": "Краткое описание",
-  "content": "Подробный контент - только простой текст"
+  "title": "Профессиональный заголовок",
+  "excerpt": "Краткое профессиональное описание",
+  "content": "Полный профессиональный контент - только обычный текст"
 }
       `;
 
@@ -176,7 +186,6 @@ Format: JSON
       const generated = await this.generateBlogPost();
       
       const blogPost: InsertBlogPost = {
-        id: nanoid(),
         titleUz: generated.titleUz,
         titleRu: generated.titleRu,
         contentUz: generated.contentUz,
@@ -184,11 +193,7 @@ Format: JSON
         excerpt: generated.excerpt,
         slug: generated.slug,
         imageUrl: `https://picsum.photos/800/400?random=${Date.now()}`, // Placeholder image
-        category: generated.category,
-        tags: generated.tags,
-        isPublished: true,
-        createdAt: new Date(),
-        updatedAt: new Date()
+        isPublished: true
       };
 
       const savedPost = await storage.createBlogPost(blogPost);
