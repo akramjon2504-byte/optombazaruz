@@ -910,6 +910,76 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Reviews API
+  app.get('/api/products/:productId/reviews', async (req, res) => {
+    try {
+      const { productId } = req.params;
+      
+      // Mock reviews data for now
+      const mockReviews = [
+        {
+          id: '1',
+          productId,
+          userName: 'Ahmad',
+          rating: 5,
+          title: 'Juda yaxshi mahsulot',
+          comment: 'Mahsulot sifati juda yaxshi. Tavsiya qilaman!',
+          helpful: 3,
+          verified: true,
+          createdAt: new Date().toISOString()
+        },
+        {
+          id: '2',
+          productId,
+          userName: 'Olima',
+          rating: 4,
+          title: 'Yaxshi tanlov',
+          comment: 'Narxi ham mos, sifati ham yaxshi.',
+          helpful: 1,
+          verified: false,
+          createdAt: new Date().toISOString()
+        }
+      ];
+      
+      res.json(mockReviews);
+    } catch (error) {
+      console.error('Error fetching product reviews:', error);
+      res.status(500).json([]);
+    }
+  });
+
+  app.post('/api/reviews', async (req, res) => {
+    try {
+      const reviewData = req.body;
+      
+      // Mock creating review
+      const newReview = {
+        id: Date.now().toString(),
+        ...reviewData,
+        helpful: 0,
+        verified: false,
+        createdAt: new Date().toISOString()
+      };
+      
+      res.json(newReview);
+    } catch (error) {
+      console.error('Error adding review:', error);
+      res.status(500).json({ message: 'Internal server error' });
+    }
+  });
+
+  app.post('/api/reviews/:reviewId/helpful', async (req, res) => {
+    try {
+      const { reviewId } = req.params;
+      
+      // Mock marking review as helpful
+      res.json({ success: true, reviewId });
+    } catch (error) {
+      console.error('Error marking review as helpful:', error);
+      res.status(500).json({ message: 'Internal server error' });
+    }
+  });
+
   // Promo timer
   app.get("/api/promo-timer", async (req, res) => {
     try {

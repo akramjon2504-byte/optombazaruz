@@ -12,6 +12,7 @@ import { Badge } from "@/components/ui/badge";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
 import { Search, Filter, X } from "lucide-react";
+import AdvancedSearch, { SearchFilters } from '@/components/search/advanced-search';
 
 interface CatalogProps {
   filters?: {
@@ -35,6 +36,17 @@ export default function Catalog({ filters: propFilters }: CatalogProps) {
   const [selectedCategory, setSelectedCategory] = useState<string>("");
   const [sortBy, setSortBy] = useState<string>("newest");
   const [activeFilters, setActiveFilters] = useState<Record<string, any>>({});
+  const [searchFilters, setSearchFilters] = useState<SearchFilters>({
+    query: '',
+    category: '',
+    minPrice: 0,
+    maxPrice: 10000000,
+    inStock: true,
+    isHit: false,
+    isPromo: false,
+    sortBy: 'name',
+    sortOrder: 'asc'
+  });
 
   const { data: categories = [] } = useQuery<Category[]>({
     queryKey: ["/api/categories"],

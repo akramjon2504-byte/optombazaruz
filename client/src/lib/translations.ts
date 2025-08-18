@@ -123,6 +123,54 @@ export interface Translations {
   notificationsEnabled: Translation;
   notificationsNotSupported: Translation;
   enable: Translation;
+  
+  // Advanced Search
+  filter: Translation;
+  advancedFilters: Translation;
+  clearFilters: Translation;
+  category: Translation;
+  selectCategory: Translation;
+  allCategories: Translation;
+  priceRange: Translation;
+  quickFilters: Translation;
+  inStock: Translation;
+  sortBy: Translation;
+  name: Translation;
+  price: Translation;
+  newest: Translation;
+  ascending: Translation;
+  descending: Translation;
+  
+  // Reviews
+  addReview: Translation;
+  writeReview: Translation;
+  reviewTitle: Translation;
+  reviewTitlePlaceholder: Translation;
+  reviewComment: Translation;
+  reviewCommentPlaceholder: Translation;
+  submitting: Translation;
+  submitReview: Translation;
+  cancel: Translation;
+  noReviews: Translation;
+  beFirstToReview: Translation;
+  verified: Translation;
+  helpful: Translation;
+  optional: Translation;
+  
+  // Comparison
+  maxCompareLimit: Translation;
+  noProductsToCompare: Translation;
+  addProductsToCompare: Translation;
+  productsSelected: Translation;
+  moreAllowed: Translation;
+  hideComparison: Translation;
+  compare: Translation;
+  clearAll: Translation;
+  productComparison: Translation;
+  feature: Translation;
+  viewDetails: Translation;
+  yes: Translation;
+  no: Translation;
 }
 
 export const translations: Translations = {
@@ -233,5 +281,53 @@ export const translations: Translations = {
   notificationsDescription: { uz: "Aksiyalar va yangiliklar haqida birinchi bo'lib bilib oling", ru: "Узнавайте первыми об акциях и новостях" },
   notificationsEnabled: { uz: "Bildirishnomalar yoqildi! Aksiyalardan birinchi bo'lib xabardor bo'ling.", ru: "Уведомления включены! Будьте первыми в курсе акций." },
   notificationsNotSupported: { uz: "Bildirishnomalar qo'llab-quvvatlanmaydi", ru: "Уведомления не поддерживаются" },
-  enable: { uz: "Yoqish", ru: "Включить" }
+  enable: { uz: "Yoqish", ru: "Включить" },
+  
+  // Advanced Search
+  filter: { uz: "Filtr", ru: "Фильтр" },
+  advancedFilters: { uz: "Kengaytirilgan filtrlar", ru: "Расширенные фильтры" },
+  clearFilters: { uz: "Filtrlarni tozalash", ru: "Очистить фильтры" },
+  category: { uz: "Kategoriya", ru: "Категория" },
+  selectCategory: { uz: "Kategoriyani tanlang", ru: "Выберите категорию" },
+  allCategories: { uz: "Barcha kategoriyalar", ru: "Все категории" },
+  priceRange: { uz: "Narx diapazoni", ru: "Диапазон цен" },
+  quickFilters: { uz: "Tez filtrlar", ru: "Быстрые фильтры" },
+  inStock: { uz: "Mavjud", ru: "В наличии" },
+  sortBy: { uz: "Saralash", ru: "Сортировка" },
+  name: { uz: "Nomi", ru: "Название" },
+  price: { uz: "Narxi", ru: "Цена" },
+  newest: { uz: "Eng yangi", ru: "Новинки" },
+  ascending: { uz: "O'sish bo'yicha", ru: "По возрастанию" },
+  descending: { uz: "Kamayish bo'yicha", ru: "По убыванию" },
+  
+  // Reviews
+  addReview: { uz: "Sharh qo'shish", ru: "Добавить отзыв" },
+  writeReview: { uz: "Sharh yozish", ru: "Написать отзыв" },
+  reviewTitle: { uz: "Sharh sarlavhasi", ru: "Заголовок отзыва" },
+  reviewTitlePlaceholder: { uz: "Mahsulot haqida qisqacha fikringiz", ru: "Краткое мнение о товаре" },
+  reviewComment: { uz: "Batafsil sharh", ru: "Подробный отзыв" },
+  reviewCommentPlaceholder: { uz: "Mahsulot haqida batafsil yozing...", ru: "Напишите подробно о товаре..." },
+  submitting: { uz: "Yuborilmoqda...", ru: "Отправляется..." },
+  submitReview: { uz: "Sharh yuborish", ru: "Отправить отзыв" },
+  cancel: { uz: "Bekor qilish", ru: "Отмена" },
+  noReviews: { uz: "Hali sharhlar yo'q", ru: "Пока нет отзывов" },
+  beFirstToReview: { uz: "Birinchi sharh qoldirishchi bo'ling!", ru: "Будьте первым, кто оставит отзыв!" },
+  verified: { uz: "Tasdiqlangan", ru: "Подтвержден" },
+  helpful: { uz: "Foydali", ru: "Полезно" },
+  optional: { uz: "ixtiyoriy", ru: "необязательно" },
+  
+  // Comparison
+  maxCompareLimit: { uz: "Maksimal 4 ta mahsulotni solishtirish mumkin", ru: "Можно сравнивать максимум 4 товара" },
+  noProductsToCompare: { uz: "Solishtirish uchun mahsulotlar yo'q", ru: "Нет товаров для сравнения" },
+  addProductsToCompare: { uz: "Solishtirish uchun mahsulotlar qo'shing", ru: "Добавьте товары для сравнения" },
+  productsSelected: { uz: "mahsulot tanlandi", ru: "товаров выбрано" },
+  moreAllowed: { uz: "yana qo'shish mumkin", ru: "еще можно добавить" },
+  hideComparison: { uz: "Solishtirishni yashirish", ru: "Скрыть сравнение" },
+  compare: { uz: "Solishtirish", ru: "Сравнить" },
+  clearAll: { uz: "Hammasini tozalash", ru: "Очистить все" },
+  productComparison: { uz: "Mahsulotlarni solishtirish", ru: "Сравнение товаров" },
+  feature: { uz: "Xususiyat", ru: "Характеристика" },
+  viewDetails: { uz: "Batafsil ko'rish", ru: "Подробнее" },
+  yes: { uz: "Ha", ru: "Да" },
+  no: { uz: "Yo'q", ru: "Нет" }
 };

@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useCart } from "@/hooks/use-cart";
 import { Search, Heart, ShoppingCart, Phone, Mail, User, UserPlus } from "lucide-react";
+import ThemeToggle from '@/components/ui/theme-toggle';
 
 export default function Header() {
   const { language, setLanguage, t } = useLanguage();
@@ -20,21 +21,22 @@ export default function Header() {
   };
 
   return (
-    <header className="bg-white shadow-lg sticky top-0 z-50">
+    <header className="bg-white dark:bg-gray-900 shadow-lg sticky top-0 z-50 dark:shadow-gray-800/50">
       <div className="container mx-auto px-4">
         {/* Top bar */}
-        <div className="hidden md:flex justify-between items-center py-2 text-sm border-b border-gray-200">
+        <div className="hidden md:flex justify-between items-center py-2 text-sm border-b border-gray-200 dark:border-gray-700">
           <div className="flex items-center space-x-4">
-            <span className="text-gray-600 flex items-center">
+            <span className="text-gray-600 dark:text-gray-300 flex items-center">
               <Phone className="w-4 h-4 mr-1" />
               {t("phoneNumber")}
             </span>
-            <a href="https://t.me/optombazaruzb" target="_blank" rel="noopener noreferrer" className="text-gray-600 flex items-center hover:text-primary transition-colors">
+            <a href="https://t.me/optombazaruzb" target="_blank" rel="noopener noreferrer" className="text-gray-600 dark:text-gray-300 flex items-center hover:text-primary transition-colors">
               <Mail className="w-4 h-4 mr-1" />
               {t("telegramChannel")}
             </a>
           </div>
           <div className="flex items-center space-x-4">
+            <ThemeToggle size="sm" />
             {/* Language switcher */}
             <div className="flex items-center space-x-2">
               <button

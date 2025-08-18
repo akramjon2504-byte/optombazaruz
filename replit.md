@@ -30,6 +30,11 @@ The application is built with a modern web stack, ensuring scalability, performa
 -   **Mobile Responsiveness**: UI/UX is optimized for mobile devices, ensuring a seamless experience across various screen sizes.
 -   **Payment Integration**: Supports multiple payment methods including Stripe, QR card payments (Humo/UzCard), and cash on delivery.
 -   **Robust Error Handling**: Focus on eliminating TypeScript errors, duplicate keys, and ensuring data validation.
+-   **Progressive Web App (PWA)**: Full PWA implementation with service worker, manifest.json, offline mode, push notifications, and app installation capabilities.
+-   **Advanced Search System**: Intelligent search with filtering, suggestions, category selection, price ranges, and sorting options.
+-   **User Reviews System**: Complete product review functionality with ratings, comments, helpful votes, and verification badges.
+-   **Dark Mode Theme**: Modern dark/light theme switching with system preference detection and local storage persistence.
+-   **Product Comparison**: Side-by-side comparison tool supporting up to 4 products with detailed specifications and feature comparison.
 
 ## External Dependencies
 -   **PostgreSQL**: Primary database for storing application data.
