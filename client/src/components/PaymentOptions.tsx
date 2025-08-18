@@ -31,7 +31,7 @@ export function PaymentOptions({ orderId, totalAmount, onPaymentSuccess }: Payme
 
     try {
       let endpoint = "";
-      let payload = { orderId };
+      let payload: any = { orderId };
 
       switch (paymentMethod) {
         case "qr_card":
@@ -67,7 +67,7 @@ export function PaymentOptions({ orderId, totalAmount, onPaymentSuccess }: Payme
           break;
       }
 
-      const response = await apiRequest("POST", endpoint, payload);
+      const response = await apiRequest(endpoint, "POST", payload);
       
       if (response.success) {
         toast({
