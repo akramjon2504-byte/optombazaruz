@@ -8,7 +8,7 @@ export default function Navigation() {
   const [isCategoriesOpen, setIsCategoriesOpen] = useState(false);
 
   return (
-    <nav className="bg-primary text-white">
+    <nav className="bg-primary text-white hidden md:block">
       <div className="container mx-auto px-4">
         <div className="flex items-center space-x-8 py-3">
           <button

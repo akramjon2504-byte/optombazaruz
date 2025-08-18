@@ -44,14 +44,14 @@ export default function Home() {
   const { data: categories = [] } = useQuery<Category[]>({
     queryKey: ["/api/categories"],
     staleTime: 30 * 60 * 1000, // 30 minutes
-    cacheTime: 60 * 60 * 1000, // 1 hour
+    gcTime: 60 * 60 * 1000, // 1 hour
     refetchOnWindowFocus: false,
   });
 
   const { data: blogPosts = [] } = useQuery<BlogPost[]>({
     queryKey: ["/api/blog?limit=3"],
     staleTime: 10 * 60 * 1000, // 10 minutes
-    cacheTime: 30 * 60 * 1000, // 30 minutes
+    gcTime: 30 * 60 * 1000, // 30 minutes
     refetchOnWindowFocus: false,
   });
 
@@ -170,7 +170,7 @@ export default function Home() {
             {t("mainCategories")}
           </h3>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 md:gap-6">
-            {categories.map((category, index) => {
+            {(categories as Category[]).map((category: Category, index: number) => {
               const categoryName = language === "uz" ? category.nameUz : category.nameRu;
               const productCount = getCategoryProductCount(category.slug);
               const colors = [
@@ -207,8 +207,8 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Promotional Section */}
-      <section className="py-12 bg-gradient-to-r from-red-500 to-red-600 text-white">
+      {/* Promotional Section - Hidden on mobile */}
+      <section className="py-12 bg-gradient-to-r from-red-500 to-red-600 text-white hidden md:block">
         <div className="container mx-auto px-4">
           <div className="text-center mb-10">
             <h3 className="text-4xl font-bold mb-4" data-testid="text-flash-sale">
@@ -227,8 +227,8 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Hit Products */}
-      <section className="py-16 bg-gray-50">
+      {/* Hit Products - Hidden on mobile */}
+      <section className="py-16 bg-gray-50 hidden md:block">
         <div className="container mx-auto px-4">
           <div className="flex justify-between items-center mb-10">
             <h3 className="text-3xl font-bold" data-testid="text-hit-products">
@@ -265,7 +265,7 @@ export default function Home() {
           </div>
           
           <div className="grid md:grid-cols-3 gap-8">
-            {blogPosts.map((post) => {
+            {(blogPosts as BlogPost[]).map((post: BlogPost) => {
               const title = language === "uz" ? post.titleUz : post.titleRu;
               
               return (
