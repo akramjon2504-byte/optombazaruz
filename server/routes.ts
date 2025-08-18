@@ -19,11 +19,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.use(session({
     secret: process.env.SESSION_SECRET || 'dev-secret-key-change-in-production',
     resave: false,
-    saveUninitialized: false,
+    saveUninitialized: true, // Create session for all users
+    name: 'optombazar-session',
     cookie: {
       httpOnly: true,
       secure: false, // Keep false for development
       maxAge: 7 * 24 * 60 * 60 * 1000, // 1 week
+      sameSite: 'lax'
     },
   }));
 
@@ -605,9 +607,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/cart", async (req, res) => {
     try {
       const sessionId = req.sessionID;
+      console.log('GET /api/cart - SessionID:', sessionId);
       const cartItems = await storage.getCartItems(sessionId);
+      console.log('Cart items found:', cartItems.length);
       res.json(cartItems);
     } catch (error) {
+      console.error('GET /api/cart error:', error);
       res.status(500).json({ message: "Failed to fetch cart" });
     }
   });
@@ -615,14 +620,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/cart", async (req, res) => {
     try {
       const sessionId = req.sessionID;
+      console.log('POST /api/cart - SessionID:', sessionId);
+      console.log('POST /api/cart - Body:', req.body);
       const validatedData = insertCartItemSchema.parse({
         ...req.body,
         sessionId
       });
       
       const cartItem = await storage.addToCart(validatedData);
+      console.log('Cart item added:', cartItem);
       res.status(201).json(cartItem);
     } catch (error) {
+      console.error('POST /api/cart error:', error);
       res.status(400).json({ message: "Invalid cart item data" });
     }
   });
