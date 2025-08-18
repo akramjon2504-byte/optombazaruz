@@ -6,6 +6,7 @@ import { storage } from "./storage";
 import { authService } from "./services/auth";
 import { insertUserSchema, insertCategorySchema, insertProductSchema, insertCartItemSchema, insertWishlistItemSchema, insertChatMessageSchema, insertOrderSchema, insertPaymentSchema, insertBlogPostSchema } from "@shared/schema";
 import { setupAuth, isAuthenticated } from "./replitAuth";
+import { setupGoogleAuth } from "./googleAuth";
 import { generateChatResponse } from "./services/gemini";
 import { blogService } from "./services/blog";
 import { telegramService } from "./services/telegram";
@@ -13,6 +14,7 @@ import telegramRoutes from "./routes/telegram";
 import { seedDatabase } from "./seedData";
 import { PaymentService } from "./services/payment";
 import { randomUUID } from "crypto";
+import passport from "passport";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Session configuration - using memory store for now
@@ -28,6 +30,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
       sameSite: 'lax'
     },
   }));
+
+  // Initialize Passport
+  app.use(passport.initialize());
+  app.use(passport.session());
+
+  // Passport serialization
+  passport.serializeUser((user: any, done) => {
+    done(null, user.id);
+  });
+
+  passport.deserializeUser(async (id: string, done) => {
+    try {
+      const user = await storage.getUser(id);
+      done(null, user);
+    } catch (error) {
+      done(error, null);
+    }
+  });
+
+  // Setup Google OAuth
+  setupGoogleAuth(app);
 
   // Seed database with real OptomBazar.uz data
   await seedDatabase();
