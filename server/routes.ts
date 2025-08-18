@@ -287,8 +287,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.put('/api/admin/categories/:id', requireAdmin, async (req, res) => {
     try {
       const id = req.params.id;
-      const validatedData = insertCategorySchema.parse(req.body);
-      const category = await storage.updateCategory(id, validatedData);
+      const updateData = req.body;
+      
+      // Generate slug if name changed but slug not provided
+      if ((updateData.nameUz || updateData.nameRu) && !updateData.slug) {
+        const title = updateData.nameUz || updateData.nameRu;
+        updateData.slug = title
+          .toLowerCase()
+          .replace(/[^\w\s-]/g, '') // Remove special chars except hyphens
+          .replace(/\s+/g, '-') // Replace spaces with hyphens
+          .replace(/-+/g, '-') // Replace multiple hyphens with single
+          .trim();
+      }
+
+      const category = await storage.updateCategory(id, updateData);
       res.json(category);
     } catch (error) {
       console.error('Update category error:', error);
@@ -328,7 +340,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post('/api/admin/products', requireAdmin, async (req, res) => {
     try {
-      const validatedData = insertProductSchema.parse(req.body);
+      const productData = req.body;
+      
+      // Generate slug if not provided
+      if (!productData.slug && (productData.nameUz || productData.nameRu)) {
+        const title = productData.nameUz || productData.nameRu;
+        productData.slug = title
+          .toLowerCase()
+          .replace(/[^\w\s-]/g, '') // Remove special chars except hyphens
+          .replace(/\s+/g, '-') // Replace spaces with hyphens
+          .replace(/-+/g, '-') // Replace multiple hyphens with single
+          .trim();
+      }
+      
+      // Ensure price is handled as string
+      if (productData.price && typeof productData.price === 'number') {
+        productData.price = productData.price.toString();
+      }
+
+      const validatedData = insertProductSchema.parse(productData);
       const product = await storage.createProduct(validatedData);
       
       // Send notification to Telegram about new product with Gemini generated marketing
@@ -353,9 +383,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.put('/api/admin/products/:id', requireAdmin, async (req, res) => {
     try {
-      const id = req.params.id; // Keep as string ID  
-      const validatedData = insertProductSchema.parse(req.body);
-      const product = await storage.updateProduct(id, validatedData);
+      const id = req.params.id;
+      const updateData = req.body;
+      
+      // Generate slug if title changed but slug not provided
+      if ((updateData.nameUz || updateData.nameRu) && !updateData.slug) {
+        const title = updateData.nameUz || updateData.nameRu;
+        updateData.slug = title
+          .toLowerCase()
+          .replace(/[^\w\s-]/g, '') // Remove special chars except hyphens
+          .replace(/\s+/g, '-') // Replace spaces with hyphens
+          .replace(/-+/g, '-') // Replace multiple hyphens with single
+          .trim();
+      }
+      
+      // Ensure price is handled as string
+      if (updateData.price && typeof updateData.price === 'number') {
+        updateData.price = updateData.price.toString();
+      }
+
+      const product = await storage.updateProduct(id, updateData);
       res.json(product);
     } catch (error) {
       console.error('Update product error:', error);
@@ -984,15 +1031,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Admin blog management endpoints
-  app.get('/api/admin/blog', isAuthenticated, async (req: any, res) => {
+  app.get('/api/admin/blog', requireAdmin, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
-      const user = await storage.getUser(userId);
-      
-      if (!user?.isAdmin) {
-        return res.status(403).json({ message: "Admin access required" });
-      }
-
       const posts = await storage.getBlogPosts(50);
       res.json(posts);
     } catch (error) {
@@ -1001,22 +1041,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post('/api/admin/blog', isAuthenticated, async (req: any, res) => {
+  app.post('/api/admin/blog', requireAdmin, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
-      const user = await storage.getUser(userId);
+      const blogPostData = req.body;
       
-      if (!user?.isAdmin) {
-        return res.status(403).json({ message: "Admin access required" });
+      // Generate proper slug from title
+      const generateSlug = (title: string) => {
+        return title
+          .toLowerCase()
+          .replace(/[^\w\s-]/g, '') // Remove special chars except hyphens
+          .replace(/\s+/g, '-') // Replace spaces with hyphens
+          .replace(/-+/g, '-') // Replace multiple hyphens with single
+          .trim();
+      };
+
+      // Ensure slug is provided
+      if (!blogPostData.slug) {
+        blogPostData.slug = generateSlug(blogPostData.titleUz || blogPostData.titleRu || 'untitled');
       }
 
-      const blogPostData = insertBlogPostSchema.parse(req.body);
+      const validatedData = insertBlogPostSchema.parse(blogPostData);
       const blogPost = await storage.createBlogPost({
-        ...blogPostData,
-        slug: blogPostData.titleUz.toLowerCase()
-          .replace(/[^\w\s]/g, '')
-          .replace(/\s+/g, '-'),
-        isPublished: blogPostData.isPublished
+        ...validatedData,
+        isPublished: validatedData.isPublished ?? false
       });
       
       res.status(201).json(blogPost);
@@ -1026,38 +1073,42 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.patch('/api/admin/blog/:id', isAuthenticated, async (req: any, res) => {
+  app.patch('/api/admin/blog/:id', requireAdmin, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
-      const user = await storage.getUser(userId);
-      
-      if (!user?.isAdmin) {
-        return res.status(403).json({ message: "Admin access required" });
-      }
-
       const { id } = req.params;
-      const { isPublished } = req.body;
+      const updateData = req.body;
       
-      await storage.updateBlogPost(id, { 
-        isPublished
-      });
+      // If publishing, set publishedAt timestamp
+      if (updateData.isPublished && !updateData.publishedAt) {
+        updateData.publishedAt = new Date();
+      }
       
-      res.json({ success: true });
+      const updatedPost = await storage.updateBlogPost(id, updateData);
+      
+      if (!updatedPost) {
+        return res.status(404).json({ message: "Blog post not found" });
+      }
+      
+      res.json(updatedPost);
     } catch (error) {
       console.error("Error updating blog post:", error);
       res.status(500).json({ message: "Failed to update blog post" });
     }
   });
 
-  app.post('/api/admin/generate-blog-post', isAuthenticated, async (req: any, res) => {
+  app.delete('/api/admin/blog/:id', requireAdmin, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
-      const user = await storage.getUser(userId);
-      
-      if (!user?.isAdmin) {
-        return res.status(403).json({ message: "Admin access required" });
-      }
+      const { id } = req.params;
+      await storage.deleteBlogPost(id);
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error deleting blog post:", error);
+      res.status(500).json({ message: "Failed to delete blog post" });
+    }
+  });
 
+  app.post('/api/admin/generate-blog-post', requireAdmin, async (req: any, res) => {
+    try {
       const { topic } = req.body;
       const blogPost = await blogService.generateBlogPost(topic || "E-tijorat va optom savdo");
       res.json(blogPost);
@@ -1067,17 +1118,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get('/api/admin/analytics', isAuthenticated, async (req: any, res) => {
+  app.get('/api/admin/analytics', requireAdmin, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
-      const user = await storage.getUser(userId);
-      
-      if (!user?.isAdmin) {
-        return res.status(403).json({ message: "Admin access required" });
-      }
-
       const analytics = {
-        totalUsers: 0,
+        totalUsers: await storage.getUserCount(),
         totalOrders: 0, 
         totalRevenue: 0,
         totalPosts: (await storage.getBlogPosts(1000)).length
