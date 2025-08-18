@@ -187,6 +187,16 @@ export const translations = {
   technicalError: { uz: "Kechirasiz, texnik xatolik yuz berdi. Iltimos, keyinroq urinib ko'ring.", ru: "Извините, произошла техническая ошибка. Пожалуйста, попробуйте позже." },
   support24: { uz: "24/7 qo'llab-quvvatlash", ru: "24/7 поддержка" },
   
+  // Product detail page
+  quantity: { uz: "Miqdor", ru: "Количество" },
+  inStock: { uz: "Omborda", ru: "В наличии" },
+  pieces: { uz: "dona", ru: "штук" },
+  backToCatalog: { uz: "Katalogga qaytish", ru: "Вернуться к каталогу" },
+  description: { uz: "Tavsif", ru: "Описание" },
+  freeDelivery: { uz: "Bepul yetkazib berish", ru: "Бесплатная доставка" },
+  qualityGuaranteeDetail: { uz: "Sifat kafolati", ru: "Гарантия качества" },
+  support247Detail: { uz: "24/7 qo'llab-quvvatlash", ru: "Круглосуточная поддержка" },
+  
 
   
   // Timer translations

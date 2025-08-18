@@ -125,11 +125,11 @@ export default function ProductDetail() {
         {/* Breadcrumb */}
         <div className="flex items-center space-x-2 text-sm text-gray-600 mb-6">
           <Link href="/">
-            <span className="hover:text-primary cursor-pointer">Bosh sahifa</span>
+            <span className="hover:text-primary cursor-pointer">{language === 'uz' ? 'Bosh sahifa' : 'Главная'}</span>
           </Link>
           <span>/</span>
           <Link href="/catalog">
-            <span className="hover:text-primary cursor-pointer">Katalog</span>
+            <span className="hover:text-primary cursor-pointer">{t("catalog")}</span>
           </Link>
           <span>/</span>
           <span className="text-gray-900">{productName}</span>
@@ -139,7 +139,7 @@ export default function ProductDetail() {
         <Link href="/catalog">
           <Button variant="outline" className="mb-6" data-testid="button-back-catalog">
             <ArrowLeft className="w-4 h-4 mr-2" />
-            Katalogga qaytish
+            {t("backToCatalog")}
           </Button>
         </Link>
 
@@ -174,7 +174,7 @@ export default function ProductDetail() {
             {/* Badges */}
             <div className="flex space-x-2 mb-4">
               {product.isHit && (
-                <Badge variant="secondary" className="bg-secondary text-white">Hit</Badge>
+                <Badge variant="secondary" className="bg-secondary text-white">{t("hit")}</Badge>
               )}
               {product.discountPercent > 0 && (
                 <Badge variant="destructive" className="bg-discount text-white">
@@ -182,7 +182,7 @@ export default function ProductDetail() {
                 </Badge>
               )}
               {product.stock === 0 && (
-                <Badge variant="outline" className="text-gray-500">Qolmadi</Badge>
+                <Badge variant="outline" className="text-gray-500">{t("outOfStockMessage")}</Badge>
               )}
             </div>
 
@@ -211,17 +211,17 @@ export default function ProductDetail() {
             <div className="mb-6">
               <div className="flex items-center space-x-2">
                 <span className="text-3xl font-bold text-primary" data-testid="text-product-price">
-                  {price.toLocaleString()} сум
+                  {price.toLocaleString()} {language === 'uz' ? "so'm" : 'сум'}
                 </span>
                 {originalPrice && originalPrice > price && (
                   <span className="text-xl text-gray-500 line-through">
-                    {originalPrice.toLocaleString()} сум
+                    {originalPrice.toLocaleString()} {language === 'uz' ? "so'm" : 'сум'}
                   </span>
                 )}
               </div>
               {originalPrice && originalPrice > price && (
                 <span className="text-green-600 font-semibold">
-                  Tejash: {(originalPrice - price).toLocaleString()} сум
+                  {language === 'uz' ? 'Tejash' : 'Экономия'}: {(originalPrice - price).toLocaleString()} {language === 'uz' ? "so'm" : 'сум'}
                 </span>
               )}
             </div>
@@ -229,7 +229,7 @@ export default function ProductDetail() {
             {/* Description */}
             {productDescription && (
               <div className="mb-6">
-                <h3 className="font-semibold mb-2">Tavsif</h3>
+                <h3 className="font-semibold mb-2">{t("description")}</h3>
                 <p className="text-gray-600" data-testid="text-product-description">
                   {productDescription}
                 </p>
@@ -239,7 +239,7 @@ export default function ProductDetail() {
             {/* Quantity and Actions */}
             <div className="space-y-4 mb-6">
               <div className="flex items-center space-x-4">
-                <label className="font-semibold">Miqdor:</label>
+                <label className="font-semibold">{t("quantity")}:</label>
                 <div className="flex items-center space-x-2">
                   <Button
                     variant="outline"
@@ -250,9 +250,18 @@ export default function ProductDetail() {
                   >
                     -
                   </Button>
-                  <span className="px-4 py-2 border rounded text-center min-w-[50px]" data-testid="text-quantity">
-                    {quantity}
-                  </span>
+                  <input
+                    type="number"
+                    value={quantity}
+                    onChange={(e) => {
+                      const value = parseInt(e.target.value) || 1;
+                      setQuantity(Math.max(1, Math.min(product.stock, value)));
+                    }}
+                    className="px-3 py-2 border rounded text-center w-20"
+                    min="1"
+                    max={product.stock}
+                    data-testid="input-quantity"
+                  />
                   <Button
                     variant="outline"
                     size="sm"
@@ -264,7 +273,7 @@ export default function ProductDetail() {
                   </Button>
                 </div>
                 <span className="text-sm text-gray-500">
-                  (Omborda: {product.stock} dona)
+                  ({t("inStock")}: {product.stock} {t("pieces")})
                 </span>
               </div>
 
@@ -276,7 +285,7 @@ export default function ProductDetail() {
                   data-testid="button-add-to-cart"
                 >
                   <ShoppingCart className="w-5 h-5 mr-2" />
-                  {product.stock === 0 ? "Qolmadi" : t("addToCart")}
+                  {product.stock === 0 ? t("outOfStockMessage") : t("addToCart")}
                 </Button>
                 
                 <Button
@@ -294,15 +303,15 @@ export default function ProductDetail() {
             <div className="grid grid-cols-3 gap-4 text-center">
               <div className="flex flex-col items-center space-y-2">
                 <Truck className="w-8 h-8 text-primary" />
-                <span className="text-sm">Bepul yetkazib berish</span>
+                <span className="text-sm">{t("freeDelivery")}</span>
               </div>
               <div className="flex flex-col items-center space-y-2">
                 <Shield className="w-8 h-8 text-primary" />
-                <span className="text-sm">Sifat kafolati</span>
+                <span className="text-sm">{t("qualityGuaranteeDetail")}</span>
               </div>
               <div className="flex flex-col items-center space-y-2">
                 <Clock className="w-8 h-8 text-primary" />
-                <span className="text-sm">24/7 qo'llab-quvvatlash</span>
+                <span className="text-sm">{t("support247Detail")}</span>
               </div>
             </div>
           </div>
@@ -311,11 +320,11 @@ export default function ProductDetail() {
         {/* Reviews Section */}
         <Card className="mb-8">
           <CardContent className="p-6">
-            <h3 className="text-2xl font-bold mb-6">Sharhlar ({reviews.length})</h3>
+            <h3 className="text-2xl font-bold mb-6">{t("reviews")} ({reviews.length})</h3>
             
             {reviews.length === 0 ? (
               <p className="text-gray-600 text-center py-8">
-                Hozircha sharhlar yo'q. Birinchi bo'lib sharh qoldiring!
+                {language === 'uz' ? 'Hozircha sharhlar yo\'q. Birinchi bo\'lib sharh qoldiring!' : 'Пока нет отзывов. Будьте первым, кто оставит отзыв!'}
               </p>
             ) : (
               <div className="space-y-6">
