@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import { Input } from "@/components/ui/input";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useCart } from "@/hooks/use-cart";
 import { Heart, ShoppingCart, Star, Truck, Shield, Clock, ArrowLeft } from "lucide-react";
@@ -250,14 +251,14 @@ export default function ProductDetail() {
                   >
                     -
                   </Button>
-                  <input
+                  <Input
                     type="number"
                     value={quantity}
                     onChange={(e) => {
                       const value = parseInt(e.target.value) || 1;
                       setQuantity(Math.max(1, Math.min(product.stock, value)));
                     }}
-                    className="px-3 py-2 border rounded text-center w-20"
+                    className="text-center w-20"
                     min="1"
                     max={product.stock}
                     data-testid="input-quantity"

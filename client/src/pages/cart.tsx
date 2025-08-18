@@ -225,9 +225,17 @@ export default function Cart() {
                           <Minus className="h-4 w-4" />
                         </Button>
                         
-                        <span className="w-12 text-center font-medium" data-testid={`text-quantity-${item.id}`}>
-                          {item.quantity}
-                        </span>
+                        <Input
+                          type="number"
+                          min="1"
+                          value={item.quantity}
+                          onChange={(e) => {
+                            const newQuantity = Math.max(1, parseInt(e.target.value) || 1);
+                            handleQuantityChange(item.id, newQuantity);
+                          }}
+                          className="w-16 text-center"
+                          data-testid={`input-quantity-${item.id}`}
+                        />
                         
                         <Button
                           size="sm"
