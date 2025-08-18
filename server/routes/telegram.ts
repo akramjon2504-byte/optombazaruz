@@ -7,7 +7,7 @@ const router = express.Router();
 // Admin routes for Telegram bot
 router.post('/telegram/send-marketing', async (req, res) => {
   try {
-    await telegramBot.createMarketingPost();
+    await telegramBot.createDailyShowcase();
     res.json({ success: true, message: 'Marketing post sent' });
   } catch (error) {
     console.error('Failed to send marketing post:', error);

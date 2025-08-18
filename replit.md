@@ -129,6 +129,19 @@ Bu to'liq funksional elektron tijorat veb-ilovasi bo'lib, Replit Agent muhitidan
   - ✅ AI javob berishda foydalanuvchi kontekstini ishlatadi
   - ✅ Translation key xatolari tuzatildi (aiAssistant)
 
+- **2024-08-18**: Telegram Marketing Automation - Real Products Integration COMPLETED
+  - ✅ Real mahsulotlardan foydalanib kunlik namoyish tizimi yaratildi
+  - ✅ Gemini 1.5 Flash API orqali o'zbek tilida marketing kontent generatsiyasi  
+  - ✅ Har kuni 9:00 va 15:00 da avtomatik mahsulot namoyishi (@optombazaruzb kanaliga)
+  - ✅ Har dushanba 10:00 da haftalik aksiya postlari
+  - ✅ Real mahsulot nomlari, narxlari va chegirma ma'lumotlari ishlatiladi
+  - ✅ Admin API endpointlari qo'shildi: /api/admin/telegram/showcase va /promotion
+  - ✅ Professional copywriting uslubida formatlovchi belgilarsiz kontent
+  - ✅ Database dan 21 ta mahsulot muvaffaqiyatli ishlatildi
+  - ✅ TelegramMarketingBot sinfi to'liq qayta ishlab chiqildi
+  - ✅ Telegram bot (@optombazaruzb) real kanalga posting qobiliyati
+  - ✅ Marketing automation 100% avtomatik - admin aralashuvisiz ishlaydi
+
 ## Database Schema
 - Users, categories, products, cart/wishlist items
 - Orders and payments system

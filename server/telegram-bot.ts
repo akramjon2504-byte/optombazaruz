@@ -34,26 +34,56 @@ export class TelegramMarketingBot {
     console.log('✅ Telegram bot commands configured (polling disabled)');
   }
 
-  async generateMarketingContent(): Promise<MarketingPost> {
+  async generateProductShowcase(): Promise<MarketingPost> {
     try {
+      // Import storage and get real products
+      const { storage } = await import('./storage');
+      const products = await storage.getProducts({});
+      
+      if (products.length === 0) {
+        throw new Error('Mahsulotlar topilmadi');
+      }
+      
+      // Select 3-5 random products for showcase
+      const shuffled = products.sort(() => 0.5 - Math.random());
+      const selectedProducts = shuffled.slice(0, Math.min(5, products.length));
+      
+      // Get product details for prompt
+      const productInfo = selectedProducts.map(p => ({
+        name: p.nameUz,
+        price: p.price,
+        category: p.categoryId,
+        isHit: p.isHit,
+        isPromo: p.isPromo,
+        discount: p.discountPercent || 0
+      }));
+
       const prompt = `
-O'zbekiston optom bozori uchun marketing post yarating. Post quyidagi talablarga mos bo'lsin:
+Quyidagi real mahsulotlar uchun OptomBazar.uz Telegram kanali uchun marketing post yarating:
 
-MUHIM: Matnda formatlovchi belgilar ishlatmang (* ** __ - va boshqalar)
-Faqat oddiy matn, emoji va hashtag ishlatishingiz mumkin.
+MAHSULOTLAR:
+${productInfo.map(p => `- ${p.name} (${p.price} so'm${p.isPromo ? ', ' + p.discount + '% CHEGIRMA' : ''})`).join('\n')}
 
-1. O'zbek tilida bo'lsin
-2. Optom savdo haqida bo'lsin
-3. Qiziqarli va jalb qiluvchi bo'lsin
-4. Emoji ishlatilsin (lekin yulduzcha belgilarsiz)
-5. Call-to-action bo'lsin
-6. OptomBazar.uz saytini targ'ib qilsin
-7. SEO va copywriting uchun optimallashtirilgan bo'lsin
+MUHIM TALABLAR:
+- Matnda formatlovchi belgilar ishlatmang (* ** __ - va boshqalar)
+- Faqat oddiy matn, emoji va hashtag ishlating
+- O'zbek tilida professional yozing
+- Marketing va copywriting uchun optimallashtirilgan bo'lsin
+- Real mahsulot nomlarini aynan ishlating
+- Narxlarni ko'rsating
+- Qiziqarli va jalb qiluvchi bo'lsin
+- Call-to-action qo'shing
 
 Format:
-- Sarlavha (qisqa va diqqatni tortuvchi)
-- Kontent (200-300 so'z, oddiy matn)
-- Hashtag (#optombazar #uzbekistan #wholesale)
+🛒 [Diqqat tortuvchi sarlavha]
+
+[Mahsulotlar haqida qisqacha tavsif va narxlar]
+
+📞 Buyurtma: +998 99 644 84 44
+🌐 Sayt: https://optombazar.uz
+📱 Telegram: @optombazaruzb
+
+#optombazar #uzbekistan #wholesale #optomnarx
       `;
 
       const response = await this.ai.models.generateContent({
@@ -61,20 +91,79 @@ Format:
         contents: prompt,
       });
 
-      const text = response.text || "";
-
-      // Parse the response
-      const lines = text.split('\n');
-      const title = lines.find((line: string) => line.includes('Sarlavha:') || line.startsWith('**'))?.replace(/[*#]/g, '').replace('Sarlavha:', '').trim() || 'Marketing Post';
-      const content = text;
+      const content = response.text || "Mahsulotlar namoyishi";
 
       return {
-        title,
+        title: "Kunlik mahsulotlar namoyishi",
         content,
-        imagePrompt: 'Professional wholesale market image with Uzbek business theme'
+        imagePrompt: 'Uzbekistan wholesale market products showcase'
       };
     } catch (error) {
-      console.error('Marketing content generation error:', error);
+      console.error('Product showcase generation error:', error);
+      throw error;
+    }
+  }
+
+  async generatePromotionPost(): Promise<MarketingPost> {
+    try {
+      const { storage } = await import('./storage');
+      const products = await storage.getProducts({ isPromo: true });
+      
+      // If no promo products, get hit products
+      const selectedProducts = products.length > 0 
+        ? products.slice(0, 4) 
+        : (await storage.getProducts({ isHit: true })).slice(0, 4);
+      
+      if (selectedProducts.length === 0) {
+        throw new Error('Aksiya mahsulotlari topilmadi');
+      }
+
+      const productDetails = selectedProducts.map(p => ({
+        name: p.nameUz,
+        price: p.price,
+        originalPrice: p.originalPrice,
+        discount: p.discountPercent || 0
+      }));
+
+      const prompt = `
+OptomBazar.uz uchun haftalik AKSIYA posti yarating:
+
+AKSIYA MAHSULOTLARI:
+${productDetails.map(p => `- ${p.name} - ${p.price} so'm${p.originalPrice ? ' (eski narx: ' + p.originalPrice + ' so\'m)' : ''}${p.discount > 0 ? ' - ' + p.discount + '% chegirma!' : ''}`).join('\n')}
+
+TALABLAR:
+- O'zbek tilida professional aksiya e'loni
+- Formatlovchi belgilar ishlatmang
+- Real mahsulot va narxlarni ishlating
+- Chegirma foizlarini ta'kidlang
+- Shoshilinch his yarating
+- Call-to-action qo'shing
+- Emoji ishlating
+
+Format:
+🎉 HAFTALIK AKSIYA! 🎉
+
+[Aksiya tavsifi va mahsulotlar ro'yxati]
+
+⏰ Aksiya muddati cheklangan!
+📞 Buyurtma: +998 99 644 84 44
+🌐 optombazar.uz
+
+#aksiya #chegirma #optombazar #wholesale
+      `;
+
+      const response = await this.ai.models.generateContent({
+        model: "gemini-1.5-flash",
+        contents: prompt,
+      });
+
+      return {
+        title: "Haftalik aksiya",
+        content: response.text || "Haftalik aksiya",
+        imagePrompt: 'Promotion sale banner for Uzbek wholesale market'
+      };
+    } catch (error) {
+      console.error('Promotion post generation error:', error);
       throw error;
     }
   }
@@ -135,18 +224,33 @@ Hashteglar: #optombazar #biznes #uzbekistan
     }
   }
 
-  async createMarketingPost(): Promise<void> {
+  async createDailyShowcase(): Promise<void> {
     try {
-      const post = await this.generateMarketingContent();
+      const showcase = await this.generateProductShowcase();
       
       // Send to Telegram channel
-      await this.bot.sendMessage(TELEGRAM_CHANNEL_ID, post.content, {
+      await this.bot.sendMessage(TELEGRAM_CHANNEL_ID, showcase.content, {
         parse_mode: 'HTML'
       });
 
-      console.log('Marketing post sent to Telegram channel');
+      console.log('✅ Kunlik mahsulotlar namoyishi yuborildi');
     } catch (error) {
-      console.error('Failed to create marketing post:', error);
+      console.error('Failed to create daily showcase:', error);
+    }
+  }
+
+  async createPromotionPost(): Promise<void> {
+    try {
+      const promotion = await this.generatePromotionPost();
+      
+      // Send to Telegram channel
+      await this.bot.sendMessage(TELEGRAM_CHANNEL_ID, promotion.content, {
+        parse_mode: 'HTML'
+      });
+
+      console.log('✅ Haftalik aksiya posti yuborildi');
+    } catch (error) {
+      console.error('Failed to create promotion post:', error);
     }
   }
 
@@ -170,34 +274,70 @@ Batafsil o'qish: https://optombazar.uz/blog
     }
   }
 
-  // Schedule daily posts
+  // Schedule daily posts and promotions
   startScheduledPosts(): void {
-    // Marketing post every 6 hours
-    setInterval(async () => {
-      try {
-        await this.createMarketingPost();
-      } catch (error) {
-        console.error('Scheduled marketing post failed:', error);
+    // Daily product showcase at 9:00 AM
+    const scheduleDaily = (hour: number, callback: () => Promise<void>) => {
+      const now = new Date();
+      const scheduled = new Date(now);
+      scheduled.setHours(hour, 0, 0, 0);
+      
+      if (scheduled <= now) {
+        scheduled.setDate(scheduled.getDate() + 1);
       }
-    }, 6 * 60 * 60 * 1000); // 6 hours
+      
+      const timeUntil = scheduled.getTime() - now.getTime();
+      
+      setTimeout(() => {
+        callback();
+        setInterval(callback, 24 * 60 * 60 * 1000); // Every 24 hours
+      }, timeUntil);
+    };
 
-    // Blog post daily at 10 AM
-    const now = new Date();
-    const tomorrow10AM = new Date(now);
-    tomorrow10AM.setDate(now.getDate() + 1);
-    tomorrow10AM.setHours(10, 0, 0, 0);
+    // Daily product showcase at 9:00 AM
+    scheduleDaily(9, async () => {
+      try {
+        await this.createDailyShowcase();
+      } catch (error) {
+        console.error('Daily showcase failed:', error);
+      }
+    });
 
-    const timeUntil10AM = tomorrow10AM.getTime() - now.getTime();
+    // Afternoon showcase at 3:00 PM
+    scheduleDaily(15, async () => {
+      try {
+        await this.createDailyShowcase();
+      } catch (error) {
+        console.error('Afternoon showcase failed:', error);
+      }
+    });
 
-    setTimeout(() => {
-      this.createBlogPost();
-      // Then repeat every 24 hours
-      setInterval(() => {
-        this.createBlogPost();
-      }, 24 * 60 * 60 * 1000);
-    }, timeUntil10AM);
+    // Weekly promotion every Monday at 10:00 AM
+    const scheduleWeekly = () => {
+      const now = new Date();
+      const nextMonday = new Date(now);
+      nextMonday.setDate(now.getDate() + (1 + 7 - now.getDay()) % 7);
+      nextMonday.setHours(10, 0, 0, 0);
+      
+      if (nextMonday <= now) {
+        nextMonday.setDate(nextMonday.getDate() + 7);
+      }
+      
+      const timeUntil = nextMonday.getTime() - now.getTime();
+      
+      setTimeout(() => {
+        this.createPromotionPost();
+        setInterval(() => {
+          this.createPromotionPost();
+        }, 7 * 24 * 60 * 60 * 1000); // Every 7 days
+      }, timeUntil);
+    };
+
+    scheduleWeekly();
 
     console.log('Telegram scheduled posts started');
+    console.log('📅 Kunlik mahsulot namoyishi: har kuni 9:00 va 15:00 da');
+    console.log('📅 Haftalik aksiya: har dushanba 10:00 da');
   }
 
   async sendToChannel(message: string): Promise<void> {

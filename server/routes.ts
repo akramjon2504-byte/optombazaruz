@@ -450,6 +450,41 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Real Product-based Marketing API endpoints
+  app.post('/api/admin/telegram/showcase', requireAuth, requireAdmin, async (req, res) => {
+    try {
+      const { telegramBot } = await import('./telegram-bot');
+      await telegramBot.createDailyShowcase();
+      res.json({ 
+        success: true,
+        message: 'Kunlik mahsulotlar namoyishi Telegram kanaliga yuborildi'
+      });
+    } catch (error) {
+      console.error('Manual showcase error:', error);
+      res.status(500).json({ 
+        message: 'Mahsulotlar namoyishini yuborishda xatolik',
+        error: error instanceof Error ? error.message : 'Unknown error' 
+      });
+    }
+  });
+
+  app.post('/api/admin/telegram/promotion', requireAuth, requireAdmin, async (req, res) => {
+    try {
+      const { telegramBot } = await import('./telegram-bot');
+      await telegramBot.createPromotionPost();
+      res.json({ 
+        success: true,
+        message: 'Haftalik aksiya posti Telegram kanaliga yuborildi'
+      });
+    } catch (error) {
+      console.error('Manual promotion error:', error);
+      res.status(500).json({ 
+        message: 'Aksiya postini yuborishda xatolik',
+        error: error instanceof Error ? error.message : 'Unknown error' 
+      });
+    }
+  });
+
   // Check user auth status
   app.get('/api/auth/user', (req, res) => {
     try {
