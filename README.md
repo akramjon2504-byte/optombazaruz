@@ -1,86 +1,187 @@
-# OptomBazar - Uzbekistan Wholesale Marketplace
+# OptomBazar.uz - O'zbekistonning Eng Yirik Optom Bozori
 
-OptomBazar.uz ning zamonaviy React/Node.js versiyasi - O'zbekiston optom bozori uchun e-commerce platforma.
+![OptomBazar Logo](https://optombazar.uz/favicon.ico)
 
-## Asosiy Xususiyatlar
+## 📋 Loyiha Haqida
 
-- **Zamonaviy Stack**: React 18 + TypeScript + Express.js + PostgreSQL
-- **Ko'p Tilli Qo'llab-quvvatlash**: O'zbek va Rus tillari
-- **AI Chat Assistant**: Google Gemini AI integratsiyasi
-- **Telegram Marketing**: @optombazaruzb kanali orqali avtomatik reklama
-- **Admin Panel**: Blog yozuvlari va statistikalarni boshqarish
-- **QR Card To'lovlari**: Zamonaviy to'lov tizimlari
+OptomBazar.uz - O'zbekistonda eng katta va ishonchli optom savdo platformasi. Bu loyiha to'liq funksional elektron tijorat veb-ilovasi bo'lib, ikki tilda (o'zbek va rus) qo'llab-quvvatlaydi.
 
-## Texnik Ma'lumotlar
+## 🚀 Asosiy Xususiyatlar
+
+### 💼 E-tijorat Funksiyalari
+- ✅ Ko'p tilli qo'llab-quvvatlash (O'zbek/Rus)
+- ✅ Mahsulot katalogi va kategoriyalar
+- ✅ Qidiruv va filtr tizimi
+- ✅ Savatcha va buyurtma berish
+- ✅ Foydalanuvchi autentifikatsiyasi
+- ✅ Admin panel va boshqaruv tizimi
+
+### 🤖 AI-Powered Funksiyalar
+- ✅ Telegram bot (@optombazaruzb) marketing avtomatizatsiyasi
+- ✅ Gemini 2.5 Flash API orqali kontent generatsiyasi
+- ✅ Avtomatik blog postlari (kuniga 12 ta)
+- ✅ AI chat widget mijozlar uchun
+- ✅ Marketing postlari avtomatizatsiyasi
+
+### 📱 Mobil Responsive
+- ✅ To'liq mobil optimizatsiya
+- ✅ Adaptive dizayn
+- ✅ Touch-friendly interfeys
+
+## 🛠 Texnik Arxitektura
 
 ### Frontend
-- React 18 + TypeScript
-- shadcn/ui komponentlari
-- Tailwind CSS
-- TanStack Query
-- Wouter routing
+- **Framework**: React 18 + TypeScript
+- **Build Tool**: Vite
+- **Styling**: TailwindCSS + shadcn/ui
+- **State Management**: TanStack Query + React Context
+- **Routing**: Wouter
 
 ### Backend
-- Express.js + TypeScript
-- Drizzle ORM
-- PostgreSQL ma'lumotlar bazasi
-- Session-based authentication
-- Google OAuth integratsiyasi
+- **Runtime**: Node.js + Express.js
+- **Language**: TypeScript
+- **Database**: PostgreSQL
+- **ORM**: Drizzle ORM
+- **Authentication**: Passport.js (session-based)
 
-### AI Xizmatlari
-- Google Gemini AI (chat + blog generation)
-- Telegram Bot API (marketing)
+### AI va Bot Integration
+- **AI Model**: Google Gemini 2.5 Flash
+- **Telegram Bot**: @optombazaruzb
+- **Content Generation**: Avtomatik blog va marketing postlari
 
-## Development
+## 📦 O'rnatish va Ishga Tushirish
 
+### Talablar
+- Node.js 18+
+- PostgreSQL database
+- Telegram Bot Token (ixtiyoriy)
+- Gemini API Key (ixtiyoriy)
+
+### Loyihani Ishga Tushirish
+
+1. **Dependencies o'rnatish:**
 ```bash
 npm install
+```
+
+2. **Database sozlash:**
+```bash
+npm run db:push
+```
+
+3. **Serverni ishga tushirish:**
+```bash
 npm run dev
 ```
 
-## Render.com ga Deploy Qilish
+Loyiha http://localhost:5000 da ochiladi.
 
-1. GitHub repository yarating
-2. Render.com da Web Service yarating
-3. Environment variables qo'shing:
-   - `GEMINI_API_KEY`
-   - `TELEGRAM_BOT_TOKEN`
-   - `GOOGLE_OAUTH_CLIENT_ID`
-   - `GOOGLE_OAUTH_CLIENT_SECRET`
-
-4. OAuth Callback URL ni yangilang:
-   ```
-   https://your-app.onrender.com/api/callback
-   ```
-
-## OAuth Callback URL O'zgartirish
-
-Render.com ga deploy qilganingizda, Google OAuth sozlamalarida callback URL ni yangilashingiz kerak:
-
-1. [Google Cloud Console](https://console.cloud.google.com/) ga kiring
-2. OAuth 2.0 Client IDs bo'limiga o'ting
-3. Callback URL ni yangilang:
-   - Development: `https://replit-domen.replit.dev/api/callback`
-   - Production: `https://your-app.onrender.com/api/callback`
-
-## Environment Variables
-
-### Majburiy
-- `DATABASE_URL` - PostgreSQL ma'lumotlar bazasi URL
-- `SESSION_SECRET` - Session shifrlash kaliti
-
-### Ixtiyoriy (AI/Marketing uchun)
-- `GEMINI_API_KEY` - Google Gemini AI
-- `TELEGRAM_BOT_TOKEN` - Telegram bot
-- `GOOGLE_OAUTH_CLIENT_ID` - Google OAuth
-- `GOOGLE_OAUTH_CLIENT_SECRET` - Google OAuth
-
-## Loyiha Strukturasi
+## 🗂 Katalog Tuzilishi
 
 ```
-├── client/          # React frontend
-├── server/          # Express.js backend
-├── shared/          # Umumiy turlar va schemalar
-├── render.yaml      # Render deployment config
-└── package.json.render  # Production dependencies
+├── client/                 # Frontend (React)
+│   ├── src/
+│   │   ├── components/    # UI komponentlar
+│   │   ├── pages/         # Sahifalar
+│   │   ├── contexts/      # React Context
+│   │   └── hooks/         # Custom hooks
+├── server/                # Backend (Express)
+│   ├── routes.ts         # API routes
+│   ├── storage.ts        # Database layer
+│   └── index.ts          # Server entry point
+├── shared/               # Umumiy kod
+│   ├── schema.ts         # Database schema
+│   └── languages.ts      # Til sozlamalari
+└── README.md            # Bu fayl
 ```
+
+## 📊 Ma'lumotlar Bazasi
+
+### Asosiy Jadvallar
+- `users` - Foydalanuvchilar
+- `categories` - Mahsulot kategoriyalari
+- `products` - Mahsulotlar
+- `cart_items` - Savatcha elementlari
+- `orders` - Buyurtmalar
+- `blog_posts` - Blog postlari
+
+## 🌐 API Endpoints
+
+### Autentifikatsiya
+- `POST /api/auth/login` - Kirish
+- `POST /api/auth/register` - Ro'yxatdan o'tish
+- `GET /api/auth/user` - Foydalanuvchi ma'lumotlari
+
+### Mahsulotlar
+- `GET /api/products` - Barcha mahsulotlar
+- `GET /api/products/:id` - Bitta mahsulot
+- `POST /api/products` - Yangi mahsulot (admin)
+
+### Kategoriyalar
+- `GET /api/categories` - Barcha kategoriyalar
+- `POST /api/categories` - Yangi kategoriya (admin)
+
+### Savatcha
+- `GET /api/cart` - Savatcha
+- `POST /api/cart` - Savatga qo'shish
+- `DELETE /api/cart/:id` - Savatdan o'chirish
+
+## 🎨 Dizayn Tizimi
+
+### Ranglar
+- **Primary**: Ko'k (`#2563eb`)
+- **Secondary**: Kulrang
+- **Accent**: Yashil (`#16a34a`)
+- **Warning**: Sariq
+- **Error**: Qizil
+
+### Shriftlar
+- **Asosiy**: Inter, system fonts
+- **O'lchamlar**: 12px dan 48px gacha
+
+## 🔧 Konfiguratsiya
+
+### Muhit O'zgaruvchilari
+```env
+DATABASE_URL=postgresql://...
+GEMINI_API_KEY=your_gemini_key
+TELEGRAM_BOT_TOKEN=your_bot_token
+NODE_ENV=development
+```
+
+## 📈 Performance va Optimizatsiya
+
+- ✅ Code splitting
+- ✅ Image lazy loading
+- ✅ API response caching
+- ✅ Database indexes
+- ✅ CSS optimization
+
+## 🔒 Xavfsizlik
+
+- ✅ Session-based authentication
+- ✅ CSRF himoyasi
+- ✅ Input validation
+- ✅ SQL injection himoyasi
+- ✅ Rate limiting
+
+## 📱 Kontakt Ma'lumotlari
+
+- **Telefon**: +998 99 644 84 44
+- **Telegram**: [@optombazaruzb](https://t.me/optombazaruzb)
+- **Telegram Bot**: [@optombazaruzb](https://t.me/optombazaruzbot)
+- **Veb-sayt**: [optombazar.uz](https://optombazar.uz)
+
+## 🤝 Qo'llab-quvvatlash
+
+Texnik yordam va savol-javoblar uchun:
+- Telegram: [@optombazaruzb](https://t.me/optombazaruzb)
+- 24/7 qo'llab-quvvatlash
+
+## 📄 Litsenziya
+
+© 2024 OptomBazar.uz. Barcha huquqlar himoyalangan.
+
+---
+
+**OptomBazar.uz** - O'zbekistonning eng ishonchli optom savdo platformasi! 🛍️

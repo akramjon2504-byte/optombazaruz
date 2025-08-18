@@ -399,7 +399,7 @@ function AdminPanel() {
 
   const handleSaveCategory = () => {
     if (editingCategory) {
-      updateCategoryMutation.mutate({ id: editingCategory.id, data: categoryForm });
+      updateCategoryMutation.mutate({ id: parseInt(editingCategory.id), data: categoryForm });
     } else {
       createCategoryMutation.mutate(categoryForm);
     }

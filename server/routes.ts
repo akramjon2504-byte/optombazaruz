@@ -57,7 +57,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
     }
     
-    return res.status(401).json({ message: 'Authentication required' });
+    return res.status(401).json({ message: 'Admin huquqlariga ega bo\'lishingiz kerak' });
   };
 
   // Admin routes

@@ -118,8 +118,6 @@ export const translations = {
   
   // Header & Navigation
   searchPlaceholder: { uz: "Mahsulotlarni qidirish...", ru: "Поиск товаров..." },
-  telegramChannel: { uz: "Telegram kanal", ru: "Telegram канал" },
-  phoneNumber: { uz: "+998 99 644 84 44", ru: "+998 99 644 84 44" },
   
   // Product Card & Actions
   hit: { uz: "Хит", ru: "Хит" },
