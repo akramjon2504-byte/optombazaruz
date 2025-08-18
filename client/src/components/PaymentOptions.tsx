@@ -118,17 +118,52 @@ export function PaymentOptions({ orderId, totalAmount, onPaymentSuccess }: Payme
           {paymentMethod === "qr_card" && (
             <Card className="ml-6">
               <CardContent className="pt-4">
-                <div className="space-y-2">
-                  <Label htmlFor="qrCard">QR Kart raqami</Label>
-                  <Input
-                    id="qrCard"
-                    data-testid="input-qr-card-number"
-                    placeholder="9860 **** **** ****"
+                <div className="space-y-4">
+                  {/* QR Code Image */}
+                  <div className="text-center">
+                    <img 
+                      src="/attached_assets/image_1755517749327.png" 
+                      alt="QR kod to'lov uchun"
+                      className="mx-auto max-w-sm rounded-lg border"
+                    />
+                    <p className="text-sm text-muted-foreground mt-2">
+                      QR kodni skanerlang yoki karta raqamini kiriting
+                    </p>
+                  </div>
+                  
+                  {/* Card Information */}
+                  <div className="bg-blue-50 dark:bg-blue-950/20 p-4 rounded-lg">
+                    <h4 className="font-semibold mb-2">To'lov ma'lumotlari:</h4>
+                    <div className="space-y-2 text-sm">
+                      <div className="flex justify-between">
+                        <span>Karta raqami:</span>
+                        <span className="font-mono font-semibold">5614 6822 1912 1078</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Karta egasi:</span>
+                        <span className="font-semibold">OptomBazar.uz</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Bank:</span>
+                        <span>Humo / UzCard</span>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="qrCard">Sizning QR kart raqamingiz (to'lov tasdig'i uchun)</Label>
+                    <Input
+                      id="qrCard"
+                      data-testid="input-qr-card-number"
+                      placeholder="9860 **** **** ****"
                     value={qrCardNumber}
                     onChange={(e) => setQrCardNumber(e.target.value)}
                     maxLength={19}
                   />
-                  <p className="text-sm text-muted-foreground">Kartaga pul tashlab chekini telegram orqali adminga yuboring</p>
+                    <p className="text-xs text-muted-foreground">
+                      Kartaga pul tashlash chekini telegram orqali adminga yuboring
+                    </p>
+                  </div>
                 </div>
               </CardContent>
             </Card>

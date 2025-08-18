@@ -133,7 +133,7 @@ export default function Cart() {
 
   const calculateTotal = () => {
     return cartItems.reduce((total: number, item: CartItem) => 
-      total + (parseFloat(item.product.price) * item.quantity), 0
+      total + (parseFloat(item.product.price.toString()) * item.quantity), 0
     );
   };
 
@@ -210,7 +210,7 @@ export default function Cart() {
                           {language === 'uz' ? item.product.nameUz : item.product.nameRu}
                         </h3>
                         <p className="text-lg font-bold">
-                          {parseFloat(item.product.price).toLocaleString()} {t.sum}
+                          {parseFloat(item.product.price.toString()).toLocaleString()} {t.sum}
                         </p>
                       </div>
                       
@@ -264,7 +264,7 @@ export default function Cart() {
                     {cartItems.map((item: CartItem) => (
                       <div key={item.id} className="flex justify-between text-sm">
                         <span>{item.quantity}x {language === 'uz' ? item.product.nameUz : item.product.nameRu}</span>
-                        <span>{(parseFloat(item.product.price) * item.quantity).toLocaleString()} {t.sum}</span>
+                        <span>{(parseFloat(item.product.price.toString()) * item.quantity).toLocaleString()} {t.sum}</span>
                       </div>
                     ))}
                   </div>
