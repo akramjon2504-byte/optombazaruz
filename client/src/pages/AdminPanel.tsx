@@ -90,11 +90,12 @@ function AdminPanel() {
     descriptionUz: '',
     descriptionRu: '',
     categoryId: '',
-    price: 0,
-    originalPrice: 0,
+    price: '0',
+    originalPrice: '0',
     imageUrl: '',
     imageUrl2: '',
     imageUrl3: '',
+    slug: '',
     isHit: false,
     isPromo: false,
     stock: 0
@@ -355,11 +356,12 @@ function AdminPanel() {
       descriptionUz: '',
       descriptionRu: '',
       categoryId: '',
-      price: 0,
-      originalPrice: 0,
+      price: '0',
+      originalPrice: '0',
       imageUrl: '',
       imageUrl2: '',
       imageUrl3: '',
+      slug: '',
       isHit: false,
       isPromo: false,
       stock: 0
@@ -388,11 +390,12 @@ function AdminPanel() {
       descriptionUz: product.descriptionUz || '',
       descriptionRu: product.descriptionRu || '',
       categoryId: product.categoryId,
-      price: product.price,
-      originalPrice: product.originalPrice || 0,
+      price: product.price.toString(),
+      originalPrice: (product.originalPrice || 0).toString(),
       imageUrl: product.imageUrl || '',
       imageUrl2: product.imageUrl2 || '',
       imageUrl3: product.imageUrl3 || '',
+      slug: product.slug,
       isHit: product.isHit || false,
       isPromo: product.isPromo || false,
       stock: product.stock
@@ -612,6 +615,18 @@ function AdminPanel() {
                       />
                     </div>
                     <div className="grid grid-cols-4 items-center gap-4">
+                      <Label htmlFor="slug" className="text-right">
+                        Slug
+                      </Label>
+                      <Input
+                        id="slug"
+                        value={categoryForm.slug}
+                        onChange={(e) => setCategoryForm({...categoryForm, slug: e.target.value})}
+                        className="col-span-3"
+                        placeholder="kategoriya-slug"
+                      />
+                    </div>
+                    <div className="grid grid-cols-4 items-center gap-4">
                       <Label htmlFor="imageUrl" className="text-right">
                         {language === 'uz' ? 'Rasm URL' : 'URL изображения'}
                       </Label>
@@ -743,6 +758,18 @@ function AdminPanel() {
                       </Select>
                     </div>
                     <div className="grid grid-cols-4 items-center gap-4">
+                      <Label htmlFor="productSlug" className="text-right">
+                        Slug
+                      </Label>
+                      <Input
+                        id="productSlug"
+                        value={productForm.slug}
+                        onChange={(e) => setProductForm({...productForm, slug: e.target.value})}
+                        className="col-span-3"
+                        placeholder="mahsulot-slug"
+                      />
+                    </div>
+                    <div className="grid grid-cols-4 items-center gap-4">
                       <Label htmlFor="productDescUz" className="text-right">
                         {language === 'uz' ? 'Tavsif (O\'zbek)' : 'Описание (Узбекский)'}
                       </Label>
@@ -774,7 +801,7 @@ function AdminPanel() {
                         id="productPrice"
                         type="number"
                         value={productForm.price}
-                        onChange={(e) => setProductForm({...productForm, price: parseInt(e.target.value) || 0})}
+                        onChange={(e) => setProductForm({...productForm, price: e.target.value})}
                         className="col-span-3"
                       />
                     </div>
