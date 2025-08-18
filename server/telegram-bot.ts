@@ -6,8 +6,14 @@ const TELEGRAM_TOKEN = '7640281872:AAE3adEZv3efPr-V4Xt77tFgs5k7vVWxqZQ';
 const TELEGRAM_CHANNEL_ID = '@optombazaruzb';
 const ADMIN_USER_ID = 1021369075;
 
-// Initialize Telegram Bot
-const bot = new TelegramBot(TELEGRAM_TOKEN, { polling: false });
+// Initialize Telegram Bot (ensure only one instance)
+let bot: TelegramBot;
+try {
+  bot = new TelegramBot(TELEGRAM_TOKEN, { polling: false });
+} catch (error) {
+  console.log('Bot instance already exists, reusing...');
+  bot = new TelegramBot(TELEGRAM_TOKEN, { polling: false });
+}
 
 // Initialize Gemini AI
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || "" });

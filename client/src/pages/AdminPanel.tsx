@@ -71,18 +71,19 @@ function AdminPanel() {
   
   // Category form states
   const [showCategoryDialog, setShowCategoryDialog] = useState(false);
-  const [editingCategory, setEditingCategory] = useState<any>(null);
+  const [editingCategory, setEditingCategory] = useState<Category | null>(null);
   const [categoryForm, setCategoryForm] = useState({
     nameUz: '',
     nameRu: '',
     descriptionUz: '',
     descriptionRu: '',
-    imageUrl: ''
+    imageUrl: '',
+    slug: ''
   });
 
   // Product form states  
   const [showProductDialog, setShowProductDialog] = useState(false);
-  const [editingProduct, setEditingProduct] = useState<any>(null);
+  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [productForm, setProductForm] = useState({
     nameUz: '',
     nameRu: '',
@@ -118,11 +119,11 @@ function AdminPanel() {
     queryKey: ['/api/admin/orders'],
   });
 
-  const { data: categories } = useQuery({
+  const { data: categories = [] } = useQuery({
     queryKey: ['/api/categories'],
   });
 
-  const { data: products } = useQuery({
+  const { data: products = [] } = useQuery({
     queryKey: ['/api/products'],
   });
 
@@ -205,7 +206,7 @@ function AdminPanel() {
   });
 
   const updateCategoryMutation = useMutation({
-    mutationFn: async ({ id, data }: { id: number; data: typeof categoryForm }) => {
+    mutationFn: async ({ id, data }: { id: string; data: typeof categoryForm }) => {
       return apiRequest(`/api/admin/categories/${id}`, 'PUT', data);
     },
     onSuccess: () => {
@@ -227,7 +228,7 @@ function AdminPanel() {
   });
 
   const deleteCategoryMutation = useMutation({
-    mutationFn: async (id: number) => {
+    mutationFn: async (id: string) => {
       return apiRequest(`/api/admin/categories/${id}`, 'DELETE');
     },
     onSuccess: () => {
@@ -291,7 +292,7 @@ function AdminPanel() {
   });
 
   const updateProductMutation = useMutation({
-    mutationFn: async ({ id, data }: { id: number; data: typeof productForm }) => {
+    mutationFn: async ({ id, data }: { id: string; data: typeof productForm }) => {
       return apiRequest(`/api/admin/products/${id}`, 'PUT', data);
     },
     onSuccess: () => {
@@ -313,7 +314,7 @@ function AdminPanel() {
   });
 
   const deleteProductMutation = useMutation({
-    mutationFn: async (id: number) => {
+    mutationFn: async (id: string) => {
       return apiRequest(`/api/admin/products/${id}`, 'DELETE');
     },
     onSuccess: () => {
@@ -341,7 +342,8 @@ function AdminPanel() {
       nameRu: '',
       descriptionUz: '',
       descriptionRu: '',
-      imageUrl: ''
+      imageUrl: '',
+      slug: ''
     });
     setEditingCategory(null);
   };
@@ -372,7 +374,8 @@ function AdminPanel() {
       nameRu: category.nameRu,
       descriptionUz: category.descriptionUz || '',
       descriptionRu: category.descriptionRu || '',
-      imageUrl: category.imageUrl || ''
+      imageUrl: category.imageUrl || '',
+      slug: category.slug
     });
     setShowCategoryDialog(true);
   };
@@ -399,7 +402,7 @@ function AdminPanel() {
 
   const handleSaveCategory = () => {
     if (editingCategory) {
-      updateCategoryMutation.mutate({ id: parseInt(editingCategory.id), data: categoryForm });
+      updateCategoryMutation.mutate({ id: editingCategory.id, data: categoryForm });
     } else {
       createCategoryMutation.mutate(categoryForm);
     }
