@@ -27,11 +27,11 @@ export default function Header() {
           <div className="flex items-center space-x-4">
             <span className="text-gray-600 flex items-center">
               <Phone className="w-4 h-4 mr-1" />
-              {t("phone")}
+              +998 71 203 30 30
             </span>
             <span className="text-gray-600 flex items-center">
               <Mail className="w-4 h-4 mr-1" />
-              {t("email")}
+              info@optombazar.uz
             </span>
           </div>
           <div className="flex items-center space-x-4">
@@ -61,14 +61,18 @@ export default function Header() {
                 RU
               </button>
             </div>
-            <span className="text-gray-600 flex items-center cursor-pointer hover:text-primary transition-colors">
-              <User className="w-4 h-4 mr-1" />
-              {t("login")}
-            </span>
-            <span className="text-gray-600 flex items-center cursor-pointer hover:text-primary transition-colors">
-              <UserPlus className="w-4 h-4 mr-1" />
-              {t("register")}
-            </span>
+            <Link href="/login">
+              <span className="text-gray-600 flex items-center cursor-pointer hover:text-primary transition-colors">
+                <User className="w-4 h-4 mr-1" />
+                {t("login")}
+              </span>
+            </Link>
+            <Link href="/register">
+              <span className="text-gray-600 flex items-center cursor-pointer hover:text-primary transition-colors">
+                <UserPlus className="w-4 h-4 mr-1" />
+                {t("register")}
+              </span>
+            </Link>
           </div>
         </div>
 

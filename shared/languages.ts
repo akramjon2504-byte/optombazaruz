@@ -73,6 +73,19 @@ export const translations = {
   // Marketing
   newProducts: { uz: "Yangi mahsulotlar", ru: "Новые товары" },
   hotDeals: { uz: "Issiq takliflar", ru: "Горячие предложения" },
+  promotions: { uz: "Aksiyalar", ru: "Акции" },
+  hitProducts: { uz: "Xit mahsulotlar", ru: "Хиты продаж" },
+  productsCount: { uz: "mahsulot", ru: "товаров" },
+  
+  // Hero section
+  heroTitle: { 
+    uz: "O'zbekistonning eng yirik optom bozori", 
+    ru: "Крупнейший оптовый рынок Узбекистана" 
+  },
+  heroSubtitle: { 
+    uz: "Bizda 10,000+ dan ortiq mahsulot va ishonchli ta'minotchilar mavjud", 
+    ru: "У нас более 10,000 товаров и надежные поставщики" 
+  },
   freeShipping: { uz: "Bepul yetkazib berish", ru: "Бесплатная доставка" },
   wholesale: { uz: "Optom narxlar", ru: "Оптовые цены" },
   
