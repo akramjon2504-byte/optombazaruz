@@ -440,34 +440,41 @@ function AdminPanel() {
 
       <div className="container mx-auto px-4 py-6">
         <Tabs value={selectedTab} onValueChange={setSelectedTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-7">
-            <TabsTrigger value="dashboard" className="flex items-center gap-2">
-              <BarChart3 className="h-4 w-4" />
-              {t('dashboard')}
+          <TabsList className="grid w-full grid-cols-3 md:grid-cols-7 gap-1">
+            <TabsTrigger value="dashboard" className="flex items-center gap-1 md:gap-2 text-xs md:text-sm">
+              <BarChart3 className="h-3 w-3 md:h-4 md:w-4" />
+              <span className="hidden md:inline">{t('dashboard')}</span>
+              <span className="md:hidden">📊</span>
             </TabsTrigger>
-            <TabsTrigger value="categories" className="flex items-center gap-2">
-              <FolderPlus className="h-4 w-4" />
-              {language === 'uz' ? 'Kategoriyalar' : 'Категории'}
+            <TabsTrigger value="categories" className="flex items-center gap-1 md:gap-2 text-xs md:text-sm">
+              <FolderPlus className="h-3 w-3 md:h-4 md:w-4" />
+              <span className="hidden md:inline">{language === 'uz' ? 'Kategoriyalar' : 'Категории'}</span>
+              <span className="md:hidden">📁</span>
             </TabsTrigger>
-            <TabsTrigger value="products" className="flex items-center gap-2">
-              <Package className="h-4 w-4" />
-              {language === 'uz' ? 'Mahsulotlar' : 'Продукты'}
+            <TabsTrigger value="products" className="flex items-center gap-1 md:gap-2 text-xs md:text-sm">
+              <Package className="h-3 w-3 md:h-4 md:w-4" />
+              <span className="hidden md:inline">{language === 'uz' ? 'Mahsulotlar' : 'Продукты'}</span>
+              <span className="md:hidden">📦</span>
             </TabsTrigger>
-            <TabsTrigger value="users" className="flex items-center gap-2">
-              <Users className="h-4 w-4" />
-              {language === 'uz' ? 'Foydalanuvchilar' : 'Пользователи'}
+            <TabsTrigger value="users" className="flex items-center gap-1 md:gap-2 text-xs md:text-sm">
+              <Users className="h-3 w-3 md:h-4 md:w-4" />
+              <span className="hidden md:inline">{language === 'uz' ? 'Foydalanuvchilar' : 'Пользователи'}</span>
+              <span className="md:hidden">👥</span>
             </TabsTrigger>
-            <TabsTrigger value="marketing" className="flex items-center gap-2">
-              <Send className="h-4 w-4" />
-              {language === 'uz' ? 'Marketing' : 'Маркетинг'}
+            <TabsTrigger value="marketing" className="flex items-center gap-1 md:gap-2 text-xs md:text-sm">
+              <Send className="h-3 w-3 md:h-4 md:w-4" />
+              <span className="hidden md:inline">{language === 'uz' ? 'Marketing' : 'Маркетинг'}</span>
+              <span className="md:hidden">📢</span>
             </TabsTrigger>
-            <TabsTrigger value="blog" className="flex items-center gap-2">
-              <FileText className="h-4 w-4" />
-              {t('blog')}
+            <TabsTrigger value="blog" className="flex items-center gap-1 md:gap-2 text-xs md:text-sm">
+              <FileText className="h-3 w-3 md:h-4 md:w-4" />
+              <span className="hidden md:inline">{t('blog')}</span>
+              <span className="md:hidden">📝</span>
             </TabsTrigger>
-            <TabsTrigger value="orders" className="flex items-center gap-2">
-              <MessageSquare className="h-4 w-4" />
-              {language === 'uz' ? 'Buyurtmalar' : 'Заказы'}
+            <TabsTrigger value="orders" className="flex items-center gap-1 md:gap-2 text-xs md:text-sm">
+              <MessageSquare className="h-3 w-3 md:h-4 md:w-4" />
+              <span className="hidden md:inline">{language === 'uz' ? 'Buyurtmalar' : 'Заказы'}</span>
+              <span className="md:hidden">🛒</span>
             </TabsTrigger>
           </TabsList>
 
@@ -481,7 +488,7 @@ function AdminPanel() {
                       <p className="text-sm font-medium text-muted-foreground">
                         {language === 'uz' ? 'Jami foydalanuvchilar' : 'Всего пользователей'}
                       </p>
-                      <p className="text-2xl font-bold">{stats?.totalUsers || 0}</p>
+                      <p className="text-2xl font-bold">{(users as any[])?.length || 0}</p>
                     </div>
                   </div>
                 </CardContent>
@@ -495,7 +502,7 @@ function AdminPanel() {
                       <p className="text-sm font-medium text-muted-foreground">
                         {language === 'uz' ? 'Jami buyurtmalar' : 'Всего заказов'}
                       </p>
-                      <p className="text-2xl font-bold">{stats?.totalOrders || 0}</p>
+                      <p className="text-2xl font-bold">{(orders as any[])?.length || 0}</p>
                     </div>
                   </div>
                 </CardContent>
@@ -509,7 +516,7 @@ function AdminPanel() {
                       <p className="text-sm font-medium text-muted-foreground">
                         {language === 'uz' ? 'Oylik savdo' : 'Месячные продажи'}
                       </p>
-                      <p className="text-2xl font-bold">{stats?.monthlySales || 0} so'm</p>
+                      <p className="text-2xl font-bold">0 so'm</p>
                     </div>
                   </div>
                 </CardContent>
@@ -523,7 +530,7 @@ function AdminPanel() {
                       <p className="text-sm font-medium text-muted-foreground">
                         {language === 'uz' ? 'Chat xabarlari' : 'Чат сообщения'}
                       </p>
-                      <p className="text-2xl font-bold">{stats?.totalMessages || 0}</p>
+                      <p className="text-2xl font-bold">0</p>
                     </div>
                   </div>
                 </CardContent>
@@ -538,7 +545,11 @@ function AdminPanel() {
               </h2>
               <Dialog open={showCategoryDialog} onOpenChange={setShowCategoryDialog}>
                 <DialogTrigger asChild>
-                  <Button onClick={() => { resetCategoryForm(); setShowCategoryDialog(true); }}>
+                  <Button onClick={() => { 
+                    setEditingCategory(null); 
+                    setCategoryForm({ nameUz: '', nameRu: '', descriptionUz: '', descriptionRu: '', slug: '', imageUrl: '' });
+                    setShowCategoryDialog(true); 
+                  }}>
                     <Plus className="h-4 w-4 mr-2" />
                     {language === 'uz' ? 'Yangi kategoriya' : 'Новая категория'}
                   </Button>

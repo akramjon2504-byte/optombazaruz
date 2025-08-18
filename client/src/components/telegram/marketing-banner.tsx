@@ -10,7 +10,7 @@ export default function MarketingBanner() {
 
   const handleJoin = () => {
     // Open Telegram channel
-    window.open("https://t.me/optombazar_uz", "_blank");
+    window.open("https://t.me/optombazaruzb", "_blank");
     setIsVisible(false);
   };
 
@@ -26,7 +26,7 @@ export default function MarketingBanner() {
         <CardContent className="p-4">
           <div className="flex items-center mb-2">
             <Send className="w-6 h-6 mr-2" />
-            <span className="font-bold">{t("telegramChannel")}</span>
+            <span className="font-bold">{t("telegramBot")}</span>
           </div>
           <p className="text-sm mb-3 text-blue-100">
             {t("latestOffers")}

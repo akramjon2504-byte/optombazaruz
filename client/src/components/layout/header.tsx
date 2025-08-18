@@ -27,12 +27,12 @@ export default function Header() {
           <div className="flex items-center space-x-4">
             <span className="text-gray-600 flex items-center">
               <Phone className="w-4 h-4 mr-1" />
-              +998 71 203 30 30
+              {t("phoneNumber")}
             </span>
-            <span className="text-gray-600 flex items-center">
+            <a href="https://t.me/optombazaruzb" target="_blank" rel="noopener noreferrer" className="text-gray-600 flex items-center hover:text-primary transition-colors">
               <Mail className="w-4 h-4 mr-1" />
-              info@optombazar.uz
-            </span>
+              {t("telegramChannel")}
+            </a>
           </div>
           <div className="flex items-center space-x-4">
             {/* Language switcher */}

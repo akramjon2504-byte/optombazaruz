@@ -79,7 +79,7 @@ export default function Home() {
                     className="bg-white text-primary hover:bg-gray-100"
                     data-testid="button-view-catalog"
                   >
-                    {t("viewCatalog")}
+                    {t("viewCatalogBtn")}
                   </Button>
                 </Link>
                 <Button 
@@ -88,7 +88,7 @@ export default function Home() {
                   className="border-2 border-white text-white hover:bg-white hover:text-primary"
                   data-testid="button-ai-assistant"
                 >
-                  {t("aiAssistant")}
+                  {t("aiAssistantBtn")}
                 </Button>
               </div>
             </div>
@@ -137,7 +137,16 @@ export default function Home() {
                 <Link key={category.id} href={`/catalog?category=${category.slug}`}>
                   <div className="text-center hover-lift cursor-pointer group" data-testid={`category-${category.slug}`}>
                     <div className={`rounded-full p-6 mb-4 transition-all ${colors[index % colors.length]}`}>
-                      <i className={`${category.icon} text-3xl`}></i>
+                      {/* Category icons */}
+                      {index === 0 && <div className="text-3xl">🛍️</div>}
+                      {index === 1 && <div className="text-3xl">🍽️</div>}
+                      {index === 2 && <div className="text-3xl">🏠</div>}
+                      {index === 3 && <div className="text-3xl">📱</div>}
+                      {index === 4 && <div className="text-3xl">👕</div>}
+                      {index === 5 && <div className="text-3xl">🧴</div>}
+                      {index === 6 && <div className="text-3xl">📝</div>}
+                      {index === 7 && <div className="text-3xl">🎉</div>}
+                      {index > 7 && <div className="text-3xl">📦</div>}
                     </div>
                     <h4 className="font-semibold text-gray-900 mb-1">{categoryName}</h4>
                     <p className="text-sm text-gray-500">{productCount}+ {t("products")}</p>

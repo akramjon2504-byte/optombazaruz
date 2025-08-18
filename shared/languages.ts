@@ -28,6 +28,9 @@ export const translations = {
   firstName: { uz: "Ism", ru: "Имя" },
   lastName: { uz: "Familiya", ru: "Фамилия" },
   phone: { uz: "Telefon", ru: "Телефон" },
+  phoneNumber: { uz: "+998 99 644 84 44", ru: "+998 99 644 84 44" },
+  telegramChannel: { uz: "@optombazaruzb", ru: "@optombazaruzb" },
+  telegramBot: { uz: "OptomBazar.uz Bot", ru: "OptomBazar.uz Bot" },
   
   // Admin
   adminPanel: { uz: "Admin panel", ru: "Админ панель" },
@@ -89,11 +92,10 @@ export const translations = {
   freeShipping: { uz: "Bepul yetkazib berish", ru: "Бесплатная доставка" },
   wholesale: { uz: "Optom narxlar", ru: "Оптовые цены" },
   
-  // Hero Section
-  heroTitle: { uz: "O'zbekistonning Eng Yirik Optom Bazori", ru: "Крупнейший Оптовый Рынок Узбекистана" },
-  heroSubtitle: { uz: "5000 dan ortiq mahsulot, eng yaxshi narxlar va tezkor yetkazib berish", ru: "Более 5000 товаров, лучшие цены и быстрая доставка" },
-  viewCatalog: { uz: "Katalogni ko'rish", ru: "Смотреть каталог" },
-  aiAssistant: { uz: "AI Yordamchi", ru: "AI Помощник" },
+  // Hero buttons
+  viewCatalogBtn: { uz: "Katalogni ko'rish", ru: "Смотреть каталог" },
+  aiAssistantBtn: { uz: "AI Yordamchi", ru: "AI Помощник" },
+
   
   // Features
   wholesalePrices: { uz: "Optom Narxlar", ru: "Оптовые Цены" },
@@ -104,7 +106,7 @@ export const translations = {
   // Categories
   popularCategories: { uz: "Mashhur Kategoriyalar", ru: "Популярные Категории" },
   viewAll: { uz: "Barchasini ko'rish", ru: "Смотреть все" },
-  productsCount: { uz: "mahsulot", ru: "товаров" },
+  totalProducts: { uz: "jami mahsulot", ru: "всего товаров" },
   
   // Latest News
   latestNews: { uz: "So'nggi Yangiliklar", ru: "Последние Новости" },
@@ -116,8 +118,8 @@ export const translations = {
   
   // Header & Navigation
   searchPlaceholder: { uz: "Mahsulotlarni qidirish...", ru: "Поиск товаров..." },
-  promotions: { uz: "Aksiyalar", ru: "Акции" },
-  hitProducts: { uz: "Hit mahsulotlar", ru: "Хит товары" },
+  telegramChannel: { uz: "Telegram kanal", ru: "Telegram канал" },
+  phoneNumber: { uz: "+998 99 644 84 44", ru: "+998 99 644 84 44" },
   
   // Product Card & Actions
   hit: { uz: "Хит", ru: "Хит" },
@@ -146,7 +148,6 @@ export const translations = {
   address: { uz: "Toshkent sh., O'zbekiston", ru: "г. Ташкент, Узбекистан" },
   
   // Telegram
-  telegramChannel: { uz: "Telegram kanal", ru: "Telegram канал" },
   latestOffers: { uz: "Eng so'nggi takliflar", ru: "Последние предложения" },
   join: { uz: "Qo'shilish", ru: "Присоединиться" },
   close: { uz: "Yopish", ru: "Закрыть" },

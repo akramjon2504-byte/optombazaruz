@@ -31,19 +31,33 @@ export async function registerRoutes(app: Express): Promise<Server> {
   await seedDatabase();
 
   // Define middleware functions
-  const requireAuth = async (req: Request & { user?: any }, res: Response, next: NextFunction) => {
+  const requireAuth = async (req: Request & { user?: any; session?: any }, res: Response, next: NextFunction) => {
+    // Check session for admin login
+    if (req.session?.isAdmin && req.session?.user) {
+      req.user = req.session.user;
+      return next();
+    }
+    
     if (!req.user) {
       return res.status(401).json({ message: 'Authentication required' });
     }
     next();
   };
 
-  const requireAdmin = async (req: Request & { user?: any }, res: Response, next: NextFunction) => {
-    const user = await storage.getUser(req.user.id);
-    if (!user?.isAdmin) {
-      return res.status(403).json({ message: 'Admin access required' });
+  const requireAdmin = async (req: Request & { user?: any; session?: any }, res: Response, next: NextFunction) => {
+    // Check session admin
+    if (req.session?.isAdmin && req.session?.user?.isAdmin) {
+      return next();
     }
-    next();
+    
+    if (req.user) {
+      const user = await storage.getUser(req.user.id);
+      if (user?.isAdmin) {
+        return next();
+      }
+    }
+    
+    return res.status(401).json({ message: 'Authentication required' });
   };
 
   // Admin routes
