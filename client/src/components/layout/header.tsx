@@ -44,7 +44,7 @@ export default function Header() {
                 className={`px-2 py-1 font-semibold transition-colors ${
                   language === "uz"
                     ? "text-primary border-b-2 border-primary"
-                    : "text-gray-600 hover:text-primary"
+                    : "text-gray-600 dark:text-gray-300 hover:text-primary"
                 }`}
                 data-testid="button-language-uz"
               >
@@ -56,7 +56,7 @@ export default function Header() {
                 className={`px-2 py-1 font-semibold transition-colors ${
                   language === "ru"
                     ? "text-primary border-b-2 border-primary"
-                    : "text-gray-600 hover:text-primary"
+                    : "text-gray-600 dark:text-gray-300 hover:text-primary"
                 }`}
                 data-testid="button-language-ru"
               >
@@ -64,13 +64,13 @@ export default function Header() {
               </button>
             </div>
             <Link href="/login">
-              <span className="text-gray-600 flex items-center cursor-pointer hover:text-primary transition-colors">
+              <span className="text-gray-600 dark:text-gray-300 flex items-center cursor-pointer hover:text-primary transition-colors">
                 <User className="w-4 h-4 mr-1" />
                 {t("login")}
               </span>
             </Link>
             <Link href="/register">
-              <span className="text-gray-600 flex items-center cursor-pointer hover:text-primary transition-colors">
+              <span className="text-gray-600 dark:text-gray-300 flex items-center cursor-pointer hover:text-primary transition-colors">
                 <UserPlus className="w-4 h-4 mr-1" />
                 {t("register")}
               </span>
@@ -87,8 +87,8 @@ export default function Header() {
                 OB
               </div>
               <div className="ml-2 md:ml-3">
-                <h1 className="font-bold text-lg md:text-2xl text-gray-900">OptomBazar</h1>
-                <p className="text-xs md:text-sm text-gray-600 hidden sm:block">{language === "uz" ? "O'zbekistonning optom bozori" : "Оптовый рынок Узбекистана"}</p>
+                <h1 className="font-bold text-lg md:text-2xl text-gray-900 dark:text-white">OptomBazar</h1>
+                <p className="text-xs md:text-sm text-gray-600 dark:text-gray-300 hidden sm:block">{language === "uz" ? "O'zbekistonning optom bozori" : "Оптовый рынок Узбекистана"}</p>
               </div>
             </div>
           </Link>
@@ -124,7 +124,7 @@ export default function Header() {
                 className={`px-2 py-1 text-xs font-semibold transition-colors ${
                   language === "uz"
                     ? "text-primary border-b-2 border-primary"
-                    : "text-gray-600 hover:text-primary"
+                    : "text-gray-600 dark:text-gray-300 hover:text-primary"
                 }`}
                 data-testid="button-language-uz-mobile"
               >
@@ -136,7 +136,7 @@ export default function Header() {
                 className={`px-2 py-1 text-xs font-semibold transition-colors ${
                   language === "ru"
                     ? "text-primary border-b-2 border-primary"
-                    : "text-gray-600 hover:text-primary"
+                    : "text-gray-600 dark:text-gray-300 hover:text-primary"
                 }`}
                 data-testid="button-language-ru-mobile"
               >
@@ -169,7 +169,7 @@ export default function Header() {
             </Link>
             
             <div className="text-right hidden md:block">
-              <p className="text-sm text-gray-600">{t("cart")}:</p>
+              <p className="text-sm text-gray-600 dark:text-gray-300">{t("cart")}:</p>
               <p className="font-bold text-lg" data-testid="text-cart-total">
                 {parseFloat(cartTotal).toLocaleString()} сум
               </p>
