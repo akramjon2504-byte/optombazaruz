@@ -16,7 +16,7 @@ import OfflineBanner from "@/components/pwa/offline-banner";
 import PushNotifications from "@/components/pwa/push-notifications";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
-import { Bot, Truck, Award, Headphones } from "lucide-react";
+import { Bot, Truck, Award, Headphones, Search, ChevronDown } from "lucide-react";
 
 interface Category {
   id: string;
@@ -156,20 +156,106 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Advanced Search Section */}
-      <section className="py-8 bg-gradient-to-b from-blue-50 to-white dark:from-gray-900 dark:to-gray-800">
+      {/* Mobile Hero Section */}
+      <section className="md:hidden bg-gradient-to-br from-primary/10 to-secondary/10 py-8">
+        <div className="container mx-auto px-4 text-center">
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-3">
+            {t("heroTitle")}
+          </h1>
+          <p className="text-gray-600 dark:text-gray-300 mb-6 text-sm leading-relaxed">
+            {t("heroSubtitle")}
+          </p>
+          <div className="flex gap-3 justify-center">
+            <Link href="/catalog">
+              <Button size="sm" className="px-6 py-2 rounded-full font-semibold">
+                {t("viewCatalogBtn")}
+              </Button>
+            </Link>
+            <Button size="sm" variant="outline" className="px-6 py-2 rounded-full font-semibold">
+              <Bot className="w-4 h-4 mr-2" />
+              AI Yordam
+            </Button>
+          </div>
+        </div>
+      </section>
+
+      {/* Mobile Search Section */}
+      <section className="md:hidden py-4 bg-white dark:bg-gray-800">
+        <div className="container mx-auto px-4">
+          <form onSubmit={handleSearch} className="relative">
+            <Input
+              type="text"
+              placeholder={t("searchPlaceholder")}
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full pr-12 py-3 text-base"
+            />
+            <Button
+              type="submit"
+              size="sm"
+              className="absolute right-2 top-1/2 transform -translate-y-1/2"
+            >
+              <Search className="w-4 h-4" />
+            </Button>
+          </form>
+        </div>
+      </section>
+
+      {/* Advanced Search Section - Desktop */}
+      <section className="hidden md:block py-8 bg-gradient-to-b from-blue-50 to-white dark:from-gray-900 dark:to-gray-800">
         <div className="container mx-auto px-4">
           <AdvancedSearch onSearch={handleSearch} />
         </div>
       </section>
 
       {/* Quick Categories */}
-      <section className="py-12 bg-white">
+      <section className="py-8 md:py-12 bg-white dark:bg-gray-900">
         <div className="container mx-auto px-4">
-          <h3 className="text-2xl md:text-3xl font-bold text-center mb-8 md:mb-10" data-testid="text-main-categories">
+          <h3 className="text-xl md:text-3xl font-bold text-center mb-6 md:mb-10 text-gray-900 dark:text-white" data-testid="text-main-categories">
             {t("mainCategories")}
           </h3>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 md:gap-6">
+          {/* Mobile: Single column layout */}
+          <div className="md:hidden space-y-3">
+            {(categories as Category[]).map((category: Category, index: number) => {
+              const categoryName = language === "uz" ? category.nameUz : category.nameRu;
+              const productCount = getCategoryProductCount(category.slug);
+              const colors = [
+                "bg-blue-50 text-blue-600 border-blue-200",
+                "bg-green-50 text-green-600 border-green-200", 
+                "bg-orange-50 text-orange-600 border-orange-200",
+                "bg-purple-50 text-purple-600 border-purple-200",
+                "bg-pink-50 text-pink-600 border-pink-200",
+                "bg-gray-50 text-gray-600 border-gray-200"
+              ];
+              
+              return (
+                <Link key={category.id} href={`/catalog?category=${category.slug}`}>
+                  <div className={`flex items-center p-4 rounded-xl border-2 transition-all hover:scale-[1.02] ${colors[index % colors.length]} dark:bg-gray-800 dark:border-gray-700 dark:text-white`} data-testid={`category-${category.slug}`}>
+                    <div className="flex-shrink-0 w-12 h-12 rounded-full bg-white/80 flex items-center justify-center mr-4">
+                      {index === 0 && <div className="text-2xl">🛍️</div>}
+                      {index === 1 && <div className="text-2xl">🍽️</div>}
+                      {index === 2 && <div className="text-2xl">🏠</div>}
+                      {index === 3 && <div className="text-2xl">📱</div>}
+                      {index === 4 && <div className="text-2xl">👕</div>}
+                      {index === 5 && <div className="text-2xl">🧴</div>}
+                      {index === 6 && <div className="text-2xl">📝</div>}
+                      {index === 7 && <div className="text-2xl">🎉</div>}
+                      {index > 7 && <div className="text-2xl">📦</div>}
+                    </div>
+                    <div className="flex-1">
+                      <h4 className="font-bold text-base leading-tight mb-1">{categoryName}</h4>
+                      <p className="text-sm opacity-75">{productCount}+ {t("products")}</p>
+                    </div>
+                    <div className="text-gray-400">
+                      <ChevronDown className="w-5 h-5 rotate-[-90deg]" />
+                    </div>
+                  </div>
+                </Link>
+              );
+            })}
+          </div>
+          {/* Desktop: Grid layout */}
+          <div className="hidden md:grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 md:gap-6">
             {(categories as Category[]).map((category: Category, index: number) => {
               const categoryName = language === "uz" ? category.nameUz : category.nameRu;
               const productCount = getCategoryProductCount(category.slug);
@@ -197,8 +283,8 @@ export default function Home() {
                       {index === 7 && <div className="text-2xl md:text-3xl">🎉</div>}
                       {index > 7 && <div className="text-2xl md:text-3xl">📦</div>}
                     </div>
-                    <h4 className="font-semibold text-gray-900 mb-1 text-sm md:text-base leading-tight">{categoryName}</h4>
-                    <p className="text-xs md:text-sm text-gray-500">{productCount}+ {t("products")}</p>
+                    <h4 className="font-semibold text-gray-900 dark:text-white mb-1 text-sm md:text-base leading-tight">{categoryName}</h4>
+                    <p className="text-xs md:text-sm text-gray-500 dark:text-gray-400">{productCount}+ {t("products")}</p>
                   </div>
                 </Link>
               );
