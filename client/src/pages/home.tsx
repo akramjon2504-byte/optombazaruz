@@ -41,6 +41,7 @@ interface BlogPost {
 export default function Home() {
   const { language, t } = useLanguage();
   const [searchFilters, setSearchFilters] = useState({});
+  const [searchQuery, setSearchQuery] = useState("");
 
   const { data: categories = [] } = useQuery<Category[]>({
     queryKey: ["/api/categories"],
@@ -58,6 +59,13 @@ export default function Home() {
 
   const handleSearch = (filters: any) => {
     setSearchFilters(filters);
+  };
+
+  const handleMobileSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      window.location.href = `/catalog?search=${encodeURIComponent(searchQuery)}`;
+    }
   };
 
   const getCategoryProductCount = (slug: string) => {
@@ -183,7 +191,7 @@ export default function Home() {
       {/* Mobile Search Section */}
       <section className="md:hidden py-4 bg-white dark:bg-gray-800">
         <div className="container mx-auto px-4">
-          <form onSubmit={handleSearch} className="relative">
+          <form onSubmit={handleMobileSearch} className="relative">
             <Input
               type="text"
               placeholder={t("searchPlaceholder")}
