@@ -78,8 +78,8 @@ export default function Home() {
       <Header />
       <Navigation />
 
-      {/* Modern Hero Section */}
-      <section className="hero-gradient text-white py-16 md:py-24 relative overflow-hidden">
+      {/* Modern Hero Section - Hidden on mobile */}
+      <section className="hero-gradient text-white py-16 md:py-24 relative overflow-hidden hidden md:block">
         {/* Animated background elements */}
         <div className="absolute inset-0 overflow-hidden">
           <div className="float-element absolute top-20 left-10 w-20 h-20 bg-white/10 rounded-full blur-xl"></div>
