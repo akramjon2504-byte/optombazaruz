@@ -59,17 +59,17 @@ export function PaymentOptions({ orderId, totalAmount, onPaymentSuccess }: Payme
 
       switch (paymentMethod) {
         case "qr_card":
-          if (!qrCardNumber.trim() || !senderName.trim() || !transferAmount.trim()) {
+          if (!senderName.trim() || !transferAmount.trim()) {
             toast({
               title: "Xato",
-              description: "Barcha to'lov ma'lumotlarini kiriting",
+              description: "Jo'natuvchi ismi va o'tkazilgan summani kiriting",
               variant: "destructive"
             });
             setIsProcessing(false);
             return;
           }
           endpoint = "/api/payment/qr-card";
-          payload = { ...payload, qrCardNumber, senderName, transferAmount };
+          payload = { ...payload, senderName, transferAmount };
           break;
 
         case "bank_transfer":
@@ -215,17 +215,16 @@ export function PaymentOptions({ orderId, totalAmount, onPaymentSuccess }: Payme
                     </div>
                   </div>
                   
-                  <div className="space-y-2">
-                    <Label htmlFor="qrCard">Sizning QR kart raqamingiz (to'lov tasdig'i uchun)</Label>
-                    <Input
-                      id="qrCard"
-                      data-testid="input-qr-card-number"
-                      placeholder="9860 **** **** ****"
-                    value={qrCardNumber}
-                    onChange={(e) => setQrCardNumber(e.target.value)}
-                    maxLength={19}
-                  />
-                    
+                  <div className="bg-green-50 dark:bg-green-950/20 p-4 rounded-lg mb-4">
+                    <p className="text-sm font-medium text-green-800 dark:text-green-200 mb-2">✅ To'lov qadamlari:</p>
+                    <ol className="text-sm text-green-700 dark:text-green-300 space-y-1 list-decimal list-inside">
+                      <li>Yuqoridagi QR kodni skanerlang yoki karta raqamiga pul o'tkazing</li>
+                      <li>Quyidagi maydonlarni to'ldiring</li>
+                      <li>Chekni @optombazaruzb telegram kanaliga yuboring</li>
+                    </ol>
+                  </div>
+                  
+                  <div className="space-y-4">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="space-y-2">
                         <Label htmlFor="senderName">Kimning nomidan o'tkazildi</Label>
@@ -247,9 +246,13 @@ export function PaymentOptions({ orderId, totalAmount, onPaymentSuccess }: Payme
                       </div>
                     </div>
                     
-                    <p className="text-xs text-muted-foreground bg-yellow-50 dark:bg-yellow-950/20 p-2 rounded">
-                      💡 Kartaga pul tashlash chekini telegram orqali @optombazaruzb adminga yuboring
-                    </p>
+                    <div className="bg-yellow-50 dark:bg-yellow-950/20 p-4 rounded-lg">
+                      <p className="text-sm font-medium text-yellow-800 dark:text-yellow-200 mb-2">📱 Muhim eslatma:</p>
+                      <p className="text-xs text-yellow-700 dark:text-yellow-300">
+                        To'lov tasdig'i uchun o'tkazma chekini telegram orqali <strong>@optombazaruzb</strong> kanaliga yuboring.
+                        Buyurtma raqamingizni ham qayd qiling.
+                      </p>
+                    </div>
                   </div>
                 </div>
               </CardContent>
