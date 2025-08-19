@@ -265,10 +265,9 @@
   padding-bottom: env(safe-area-inset-bottom);
 }
 
-/* Add bottom padding to main content to avoid overlap with mobile nav */
+/* Mobile optimizations */
 @media (max-width: 767px) {
   body {
-    padding-bottom: 80px !important; /* Height of mobile bottom nav */
     overflow-x: hidden !important; /* Prevent horizontal scrollbar on mobile */
   }
   

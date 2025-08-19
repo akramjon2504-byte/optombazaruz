@@ -5,7 +5,6 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 import { ThemeProvider } from "@/contexts/ThemeContext";
-import MobileBottomNav from "@/components/layout/mobile-bottom-nav";
 import { useAuth } from "@/hooks/useAuth";
 import { Skeleton } from "@/components/ui/skeleton";
 import NotFound from "@/pages/not-found";
@@ -81,7 +80,6 @@ function App() {
         <LanguageProvider>
           <TooltipProvider>
             <AuthRouter />
-            <MobileBottomNav />
             <Toaster />
           </TooltipProvider>
         </LanguageProvider>
