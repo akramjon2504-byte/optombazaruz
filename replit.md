@@ -7,6 +7,8 @@ Optombazar is a full-featured e-commerce web application designed for the Uzbek 
 - Sayt faqat o'zbek va rus tillarida bo'lishi kerak
 - Ingliz tilidagi so'zlarni olib tashlash kerak
 - Optombazar.uz saytiga mos keluvchi dizayn va funksiyalar
+- Muloqot o'zbek tilida bo'lishi kerak
+- Keyingi ishlarni aniq belgilash va rejalashtirish
 
 ## System Architecture
 The application is built with a modern web stack, ensuring scalability, performance, and maintainability.
