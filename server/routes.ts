@@ -854,6 +854,34 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "SessionId and message are required" });
       }
 
+      // Agar ism va telefon kiritilgan bo'lsa, foydalanuvchini users jadvaliga qo'shamiz
+      if (userName && userPhone) {
+        try {
+          // Oldin bunday telefon raqami bor yoki yo'qligini tekshiramiz
+          const existingUser = await storage.getUserByPhone(userPhone);
+          
+          if (!existingUser) {
+            // Yangi foydalanuvchi qo'shamiz
+            const newUser = await storage.createUser({
+              firstName: userName,
+              phone: userPhone,
+              preferredLanguage: 'uz',
+              authProvider: 'chatbot'
+            });
+            console.log('Chatbot orqali yangi foydalanuvchi qo\'shildi:', newUser);
+          } else {
+            // Mavjud foydalanuvchini yangilaymiz (agar ismi boshqa bo'lsa)
+            if (existingUser.firstName !== userName) {
+              await storage.updateUser(existingUser.id, { firstName: userName });
+              console.log('Foydalanuvchi ma\'lumotlari yangilandi:', existingUser.id);
+            }
+          }
+        } catch (userError) {
+          console.error('Foydalanuvchini qo\'shishda xatolik:', userError);
+          // Chatbot ishlashini to'xtatmaymiz, xatolikni log qilamiz
+        }
+      }
+
       // Store user message with user info
       await storage.createChatMessage({
         sessionId,
@@ -866,8 +894,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Generate AI response with user context
       const contextPrompt = userName ? 
-        `Foydalanuvchi: ${userName} (${userPhone}). Savol: ${message}` : 
-        message;
+        `Foydalanuvchi: ${userName} (${userPhone}). Savol: ${message}. OptomBazar.uz saytidagi chatbot sifatida javob bering. O'zbek tilida javob bering.` : 
+        `OptomBazar.uz saytidagi chatbot sifatida javob bering. O'zbek tilida javob bering. Savol: ${message}`;
       const response = await generateChatResponse(contextPrompt);
 
       // Store AI response
