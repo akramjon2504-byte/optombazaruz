@@ -87,6 +87,32 @@ export const notifications = {
     });
   },
 
+  newProductAdded: (productName?: string) => {
+    const lang = getCurrentLanguage();
+    const title = getTranslation('newProductAdded', lang);
+    const checkItOut = getTranslation('checkItOut', lang);
+    
+    toast({
+      title,
+      description: productName ? `${productName} - ${checkItOut}` : checkItOut,
+      variant: "info" as any,
+      duration: 5000,
+    });
+  },
+
+  newBlogPostAdded: (postTitle?: string) => {
+    const lang = getCurrentLanguage();
+    const title = getTranslation('newBlogPostAdded', lang);
+    const checkItOut = getTranslation('checkItOut', lang);
+    
+    toast({
+      title,
+      description: postTitle ? `${postTitle} - ${checkItOut}` : checkItOut,
+      variant: "info" as any,
+      duration: 5000,
+    });
+  },
+
   // Custom notification with language support
   custom: (titleKey: keyof typeof import('@shared/languages').translations, description?: string, variant: 'default' | 'destructive' | 'success' | 'warning' | 'info' = 'default') => {
     const lang = getCurrentLanguage();

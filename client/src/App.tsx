@@ -7,6 +7,7 @@ import { LanguageProvider } from "@/contexts/LanguageContext";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 import { useAuth } from "@/hooks/useAuth";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useWebSocketNotifications } from "@/hooks/useWebSocketNotifications";
 import NotFound from "@/pages/not-found";
 import Home from "@/pages/home";
 import Catalog from "@/pages/catalog";
@@ -24,6 +25,9 @@ import Help from "@/pages/help";
 
 function AuthRouter() {
   const { isLoading, isAuthenticated, isAdmin } = useAuth();
+  
+  // Initialize WebSocket notifications
+  useWebSocketNotifications();
 
   if (isLoading) {
     return (

@@ -12,6 +12,7 @@ import { blogService } from "./services/blog";
 import { telegramService } from "./services/telegram";
 import telegramRoutes from "./routes/telegram";
 import { seedDatabase } from "./seedData";
+import { wsNotificationService } from "./websocket";
 import { PaymentService } from "./services/payment";
 import { randomUUID } from "crypto";
 import passport from "passport";
@@ -384,6 +385,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
         const fallbackMessage = `🎉 Yangi mahsulot!\n\n${product.nameUz}\n💰 Narx: ${product.price} so'm\n\nOptomBazar.uz - eng yaxshi mahsulotlar!`;
         await telegramService.sendToChannel(fallbackMessage);
       }
+
+      // Send real-time notification to all connected clients
+      wsNotificationService.broadcastNotification({
+        type: 'new_product',
+        title: product.nameUz || product.nameRu || 'Yangi mahsulot',
+        message: `Narx: ${product.price} so'm`,
+        data: {
+          productId: product.id,
+          slug: product.slug,
+          price: product.price
+        }
+      });
       
       res.status(201).json(product);
     } catch (error) {
@@ -1211,6 +1224,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
         ...validatedData,
         isPublished: validatedData.isPublished ?? false
       });
+
+      // Send real-time notification to all connected clients if published
+      if (blogPost.isPublished) {
+        wsNotificationService.broadcastNotification({
+          type: 'new_blog_post',
+          title: blogPost.titleUz || blogPost.titleRu || 'Yangi post',
+          message: blogPost.contentUz?.substring(0, 100) + '...' || 'Yangiliklarni o\'qing',
+          data: {
+            postId: blogPost.id,
+            slug: blogPost.slug
+          }
+        });
+      }
       
       res.status(201).json(blogPost);
     } catch (error) {

@@ -220,6 +220,9 @@ export const translations = {
   operationSuccessful: { uz: "Operatsiya muvaffaqiyatli", ru: "Операция успешна" },
   enable: { uz: "Yoqish", ru: "Включить" },
   later: { uz: "Keyinroq", ru: "Позже" },
+  newProductAdded: { uz: "Yangi mahsulot qo'shildi", ru: "Добавлен новый товар" },
+  newBlogPostAdded: { uz: "Yangi post yozildi", ru: "Опубликован новый пост" },
+  checkItOut: { uz: "Ko'rib chiqing", ru: "Посмотреть" },
 };
 
 export function getTranslation(key: keyof typeof translations, lang: Language): string {
