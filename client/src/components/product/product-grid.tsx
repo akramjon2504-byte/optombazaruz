@@ -64,7 +64,7 @@ export default function ProductGrid({
   const { data: products = [], isLoading, error } = useQuery<Product[]>({
     queryKey,
     staleTime: 5 * 60 * 1000, // 5 minutes
-    cacheTime: 30 * 60 * 1000, // 30 minutes
+    gcTime: 30 * 60 * 1000, // 30 minutes
     refetchOnWindowFocus: false,
     refetchOnMount: false,
   });
@@ -134,7 +134,7 @@ export default function ProductGrid({
   return (
     <div className="space-y-6">
       <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 ${className} stagger-children`} data-testid="product-grid">
-        {displayProducts.map((product, index) => (
+        {displayProducts.map((product: Product, index: number) => (
           <div 
             key={product.id} 
             className="animate-fadeInUp"
