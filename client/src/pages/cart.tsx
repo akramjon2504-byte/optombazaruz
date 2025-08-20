@@ -39,6 +39,7 @@ export default function Cart() {
       empty: "Savatingiz bo'sh",
       emptyDescription: "Mahsulotlarni qo'shib xarid qilishni boshlang",
       continueShopping: "Xaridni davom ettirish",
+      addMoreProducts: "Yana mahsulot qo'shish",
       quantity: "Miqdori",
       price: "Narxi",
       total: "Jami",
@@ -58,6 +59,7 @@ export default function Cart() {
       empty: "Ваша корзина пуста",
       emptyDescription: "Добавьте товары, чтобы начать покупки",
       continueShopping: "Продолжить покупки",
+      addMoreProducts: "Добавить еще товары",
       quantity: "Количество",
       price: "Цена", 
       total: "Итого",
@@ -155,21 +157,7 @@ export default function Cart() {
   const remainingAmount = Math.max(0, MINIMUM_ORDER_AMOUNT - currentTotal);
   const canCheckout = currentTotal >= MINIMUM_ORDER_AMOUNT;
 
-  // Debug logging
-  console.log('🛒 Cart Debug:', {
-    cartItemsLength: cartItems.length,
-    currentTotal,
-    MINIMUM_ORDER_AMOUNT,
-    remainingAmount,
-    canCheckout,
-    shouldShowWarning: !canCheckout && cartItems.length > 0,
-    cartItems: cartItems.map(item => ({
-      id: item.id,
-      price: item.product.price,
-      quantity: item.quantity,
-      total: parseFloat(item.product.price.toString()) * item.quantity
-    }))
-  });
+
 
   const handlePaymentSuccess = () => {
     // Clear cart and show success
@@ -317,8 +305,8 @@ export default function Cart() {
                     </span>
                   </div>
 
-                  {/* Minimum Order Warning - Force display for testing */}
-                  {cartItems.length > 0 && currentTotal < MINIMUM_ORDER_AMOUNT && (
+                  {/* Minimum Order Warning */}
+                  {!canCheckout && cartItems.length > 0 && (
                     <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-700 rounded-lg p-4 space-y-3">
                       <div className="flex items-center justify-between text-sm">
                         <span className="font-medium text-yellow-800 dark:text-yellow-200">
@@ -373,6 +361,17 @@ export default function Cart() {
                     </div>
                   )}
                   
+                  {/* Add More Products Button */}
+                  <Button 
+                    className="w-full mb-3" 
+                    size="lg"
+                    variant="outline"
+                    onClick={() => window.location.href = "/catalog"}
+                  >
+                    <Plus className="h-4 w-4 mr-2" />
+                    {t.addMoreProducts}
+                  </Button>
+
                   <Button 
                     className="w-full" 
                     size="lg"
