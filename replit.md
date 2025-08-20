@@ -9,6 +9,8 @@ Optombazar is a full-featured e-commerce web application designed for the Uzbek 
 - Optombazar.uz saytiga mos keluvchi dizayn va funksiyalar
 - Muloqot o'zbek tilida bo'lishi kerak
 - Keyingi ishlarni aniq belgilash va rejalashtirish
+- Optom xaridlar uchun minimal 500,000 so'm buyurtma miqdori talabi
+- Real-time bildirishnomalar tizimi kerak
 
 ## System Architecture
 The application is built with a modern web stack, ensuring scalability, performance, and maintainability.
@@ -43,6 +45,8 @@ The application is built with a modern web stack, ensuring scalability, performa
 -   **AI Recommendations**: Intelligent product recommendations using collaborative filtering, similarity matching, and personalized suggestions.
 -   **Wishlist Management**: Comprehensive wishlist functionality with dropdown preview and quick actions.
 -   **Performance Optimization**: Advanced caching strategies, lazy loading, virtual scrolling, and debounced search for optimal performance.
+-   **Wholesale Minimum Order System**: Enforced minimum order amount of 500,000 som for wholesale purchases with real-time progress tracking, visual indicators, and server-side validation.
+-   **Real-time WebSocket Notifications**: Live notification system for new products and blog posts with automatic reconnection, push notification support, and multilingual messages.
 
 ## External Dependencies
 -   **PostgreSQL**: Primary database for storing application data.

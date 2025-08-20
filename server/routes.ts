@@ -1119,6 +1119,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
         orderData.userId = (req.user as any).claims.sub;
       }
 
+      // Check minimum order amount for wholesale (500,000 som)
+      const MINIMUM_ORDER_AMOUNT = 500000;
+      const totalAmount = parseFloat(orderData.totalAmount) || 0;
+      
+      if (totalAmount < MINIMUM_ORDER_AMOUNT) {
+        return res.status(400).json({ 
+          message: "Minimum order amount required",
+          error: "MINIMUM_ORDER_NOT_REACHED",
+          minimumAmount: MINIMUM_ORDER_AMOUNT,
+          currentAmount: totalAmount,
+          remainingAmount: MINIMUM_ORDER_AMOUNT - totalAmount,
+          messageUz: `Optom xarid uchun minimal ${MINIMUM_ORDER_AMOUNT.toLocaleString()} so'm buyurtma kerak`,
+          messageRu: `Для оптовой покупки требуется минимум ${MINIMUM_ORDER_AMOUNT.toLocaleString()} сум`
+        });
+      }
+
       const orderId = await PaymentService.createOrder(orderData);
       res.json({ orderId, message: "Order created successfully" });
     } catch (error) {

@@ -46,7 +46,12 @@ export default function Cart() {
       removeItem: "O'chirish",
       updateQuantity: "Miqdorni yangilash",
       checkout: "To'lovga o'tish",
-      processing: "Jarayon..."
+      processing: "Jarayon...",
+      minOrderAmount: "Minimal buyurtma miqdori",
+      minOrderRequired: "Optom xarid uchun minimal 500,000 so'm buyurtma kerak",
+      currentAmount: "Joriy miqdor",
+      addMore: "Yana qo'shing",
+      toReachMinimum: "minimal miqdorga yetish uchun"
     },
     ru: {
       title: "Корзина", 
@@ -60,7 +65,12 @@ export default function Cart() {
       removeItem: "Удалить",
       updateQuantity: "Обновить количество",
       checkout: "Оформить заказ",
-      processing: "Обработка..."
+      processing: "Обработка...",
+      minOrderAmount: "Минимальная сумма заказа",
+      minOrderRequired: "Для оптовой покупки требуется минимум 500,000 сум",
+      currentAmount: "Текущая сумма",
+      addMore: "Добавьте еще",
+      toReachMinimum: "до минимальной суммы"
     }
   };
 
@@ -112,8 +122,15 @@ export default function Cart() {
       setShowPayment(true);
       notifications.orderCreated(data.orderId);
     },
-    onError: () => {
-      notifications.errorOccurred(language === 'uz' ? 'Buyurtma yaratishda xatolik yuz berdi' : 'Ошибка при создании заказа');
+    onError: (error: any) => {
+      // Handle minimum order amount error specifically
+      if (error.response?.data?.error === 'MINIMUM_ORDER_NOT_REACHED') {
+        const errorData = error.response.data;
+        const message = language === 'uz' ? errorData.messageUz : errorData.messageRu;
+        notifications.errorOccurred(message);
+      } else {
+        notifications.errorOccurred(language === 'uz' ? 'Buyurtma yaratishda xatolik yuz berdi' : 'Ошибка при создании заказа');
+      }
     }
   });
 
@@ -131,6 +148,12 @@ export default function Cart() {
       total + (parseFloat(item.product.price.toString()) * item.quantity), 0
     );
   };
+
+  // Wholesale minimum order amount (500,000 som)
+  const MINIMUM_ORDER_AMOUNT = 500000;
+  const currentTotal = calculateTotal();
+  const remainingAmount = Math.max(0, MINIMUM_ORDER_AMOUNT - currentTotal);
+  const canCheckout = currentTotal >= MINIMUM_ORDER_AMOUNT;
 
   const handlePaymentSuccess = () => {
     // Clear cart and show success
@@ -274,18 +297,78 @@ export default function Cart() {
                   <div className="flex justify-between text-lg font-bold">
                     <span>{t.total}:</span>
                     <span data-testid="text-total-amount">
-                      {calculateTotal().toLocaleString()} {t.sum}
+                      {currentTotal.toLocaleString()} {t.sum}
                     </span>
                   </div>
+
+                  {/* Minimum Order Warning */}
+                  {!canCheckout && (
+                    <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-700 rounded-lg p-4 space-y-3">
+                      <div className="flex items-center justify-between text-sm">
+                        <span className="font-medium text-yellow-800 dark:text-yellow-200">
+                          {t.minOrderAmount}:
+                        </span>
+                        <span className="font-bold text-yellow-800 dark:text-yellow-200">
+                          {MINIMUM_ORDER_AMOUNT.toLocaleString()} {t.sum}
+                        </span>
+                      </div>
+                      
+                      <div className="flex items-center justify-between text-sm">
+                        <span className="text-yellow-700 dark:text-yellow-300">
+                          {t.currentAmount}:
+                        </span>
+                        <span className="font-medium text-yellow-700 dark:text-yellow-300">
+                          {currentTotal.toLocaleString()} {t.sum}
+                        </span>
+                      </div>
+                      
+                      <div className="flex items-center justify-between text-sm">
+                        <span className="text-yellow-700 dark:text-yellow-300">
+                          {t.addMore}:
+                        </span>
+                        <span className="font-bold text-red-600 dark:text-red-400">
+                          {remainingAmount.toLocaleString()} {t.sum}
+                        </span>
+                      </div>
+                      
+                      <p className="text-xs text-yellow-600 dark:text-yellow-400 text-center">
+                        {t.minOrderRequired}
+                      </p>
+                      
+                      {/* Progress bar */}
+                      <div className="w-full bg-yellow-200 dark:bg-yellow-800 rounded-full h-2">
+                        <div 
+                          className="bg-yellow-500 dark:bg-yellow-400 h-2 rounded-full transition-all duration-300"
+                          style={{ width: `${Math.min(100, (currentTotal / MINIMUM_ORDER_AMOUNT) * 100)}%` }}
+                        ></div>
+                      </div>
+                      <p className="text-xs text-center text-yellow-600 dark:text-yellow-400">
+                        {Math.round((currentTotal / MINIMUM_ORDER_AMOUNT) * 100)}% {t.toReachMinimum}
+                      </p>
+                    </div>
+                  )}
+
+                  {/* Success indicator when minimum is reached */}
+                  {canCheckout && (
+                    <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-700 rounded-lg p-3">
+                      <p className="text-sm text-green-700 dark:text-green-300 text-center font-medium">
+                        ✅ {language === 'uz' ? 'Minimal miqdor bajarildi!' : 'Минимальная сумма достигнута!'}
+                      </p>
+                    </div>
+                  )}
                   
                   <Button 
                     className="w-full" 
                     size="lg"
                     onClick={() => checkoutMutation.mutate()}
-                    disabled={checkoutMutation.isPending}
+                    disabled={checkoutMutation.isPending || !canCheckout}
                     data-testid="button-checkout"
+                    variant={canCheckout ? "default" : "secondary"}
                   >
-                    {checkoutMutation.isPending ? t.processing : t.checkout}
+                    {checkoutMutation.isPending ? t.processing : 
+                     canCheckout ? t.checkout : 
+                     (language === 'uz' ? `Yana ${remainingAmount.toLocaleString()} ${t.sum} qo'shing` : 
+                      `Добавьте еще ${remainingAmount.toLocaleString()} ${t.sum}`)}
                   </Button>
                 </CardContent>
               </Card>

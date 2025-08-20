@@ -210,6 +210,26 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Wholesale Information Banner */}
+      <section className="py-4 bg-gradient-to-r from-blue-600 to-blue-700 dark:from-blue-800 dark:to-blue-900">
+        <div className="container mx-auto px-4">
+          <div className="text-center text-white">
+            <div className="flex items-center justify-center gap-2 mb-2">
+              <Award className="w-5 h-5" />
+              <span className="font-semibold text-lg">
+                {language === 'uz' ? 'Optom Xaridlar' : 'Оптовые Покупки'}
+              </span>
+            </div>
+            <p className="text-blue-100 text-sm md:text-base">
+              {language === 'uz' 
+                ? '🛒 Minimal buyurtma miqdori: 500,000 so\'m • Profesional wholesale narxlar • Tez yetkazib berish'
+                : '🛒 Минимальная сумма заказа: 500,000 сум • Профессиональные оптовые цены • Быстрая доставка'
+              }
+            </p>
+          </div>
+        </div>
+      </section>
+
       {/* Advanced Search Section - Desktop */}
       <section className="hidden md:block py-8 bg-gradient-to-b from-blue-50 to-white dark:from-gray-900 dark:to-gray-800">
         <div className="container mx-auto px-4">

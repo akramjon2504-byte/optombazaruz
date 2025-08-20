@@ -113,6 +113,26 @@ export const notifications = {
     });
   },
 
+  minimumOrderNotReached: (currentAmount: number, minimumAmount: number) => {
+    const lang = getCurrentLanguage();
+    const remainingAmount = minimumAmount - currentAmount;
+    
+    const title = lang === 'uz' 
+      ? 'Minimal buyurtma miqdoriga yetmadi'
+      : 'Не достигнута минимальная сумма заказа';
+      
+    const description = lang === 'uz'
+      ? `Yana ${remainingAmount.toLocaleString()} so'm qo'shing`
+      : `Добавьте еще ${remainingAmount.toLocaleString()} сум`;
+    
+    toast({
+      title,
+      description,
+      variant: "destructive",
+      duration: 5000,
+    });
+  },
+
   // Custom notification with language support
   custom: (titleKey: keyof typeof import('@shared/languages').translations, description?: string, variant: 'default' | 'destructive' | 'success' | 'warning' | 'info' = 'default') => {
     const lang = getCurrentLanguage();
