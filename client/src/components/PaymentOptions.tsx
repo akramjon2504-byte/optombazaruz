@@ -69,7 +69,13 @@ export function PaymentOptions({ orderId, totalAmount, onPaymentSuccess }: Payme
             return;
           }
           endpoint = "/api/payment/qr-card";
-          payload = { ...payload, senderName, transferAmount };
+          payload = { 
+            orderId, 
+            cardNumber: qrCardNumber || "5614682219121078", // Use provided card number or default
+            senderName, 
+            transferAmount,
+            customerInfo 
+          };
           break;
 
         case "bank_transfer":

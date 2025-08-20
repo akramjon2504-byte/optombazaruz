@@ -156,13 +156,19 @@ export default function Cart() {
   const canCheckout = currentTotal >= MINIMUM_ORDER_AMOUNT;
 
   // Debug logging
-  console.log('Cart Debug:', {
+  console.log('🛒 Cart Debug:', {
     cartItemsLength: cartItems.length,
     currentTotal,
     MINIMUM_ORDER_AMOUNT,
     remainingAmount,
     canCheckout,
-    shouldShowWarning: !canCheckout && cartItems.length > 0
+    shouldShowWarning: !canCheckout && cartItems.length > 0,
+    cartItems: cartItems.map(item => ({
+      id: item.id,
+      price: item.product.price,
+      quantity: item.quantity,
+      total: parseFloat(item.product.price.toString()) * item.quantity
+    }))
   });
 
   const handlePaymentSuccess = () => {
@@ -311,8 +317,8 @@ export default function Cart() {
                     </span>
                   </div>
 
-                  {/* Minimum Order Warning */}
-                  {!canCheckout && cartItems.length > 0 && (
+                  {/* Minimum Order Warning - Force display for testing */}
+                  {cartItems.length > 0 && currentTotal < MINIMUM_ORDER_AMOUNT && (
                     <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-700 rounded-lg p-4 space-y-3">
                       <div className="flex items-center justify-between text-sm">
                         <span className="font-medium text-yellow-800 dark:text-yellow-200">
