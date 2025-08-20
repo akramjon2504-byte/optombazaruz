@@ -14,6 +14,7 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 import { apiRequest } from '@/lib/queryClient';
 import { Eye, EyeOff, Mail, Lock, User, Phone } from 'lucide-react';
+import { notifications } from '@/lib/toast-helpers';
 
 const registerSchema = z.object({
   email: z.string().email('Email manzil noto\'g\'ri'),
@@ -57,18 +58,11 @@ function Register() {
       });
     },
     onSuccess: () => {
-      toast({
-        title: t('success'),
-        description: t('registrationSuccess'),
-      });
+      notifications.custom('registrationSuccess', undefined, 'success');
       setLocation('/login');
     },
     onError: (error: Error) => {
-      toast({
-        title: t('error'),
-        description: error.message,
-        variant: 'destructive',
-      });
+      notifications.errorOccurred(error.message);
     },
   });
 

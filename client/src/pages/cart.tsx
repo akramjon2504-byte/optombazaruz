@@ -10,6 +10,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { PaymentOptions } from "@/components/PaymentOptions";
+import { notifications } from "@/lib/toast-helpers";
 
 interface CartItem {
   id: string;
@@ -73,10 +74,7 @@ export default function Cart() {
     mutationFn: (itemId: string) => apiRequest(`/api/cart/${itemId}`, "DELETE"),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/cart"] });
-      toast({
-        title: "Muvaffaqiyat",
-        description: "Mahsulot savatdan olib tashlandi",
-      });
+      notifications.operationSuccessful(t.removeItem);
     },
   });
 
@@ -112,13 +110,10 @@ export default function Cart() {
     onSuccess: (data: any) => {
       setOrderId(data.orderId);
       setShowPayment(true);
+      notifications.orderCreated(data.orderId);
     },
     onError: () => {
-      toast({
-        title: "Xato",
-        description: "Buyurtma yaratishda xatolik yuz berdi",
-        variant: "destructive"
-      });
+      notifications.errorOccurred(language === 'uz' ? 'Buyurtma yaratishda xatolik yuz berdi' : 'Ошибка при создании заказа');
     }
   });
 
@@ -141,10 +136,7 @@ export default function Cart() {
     // Clear cart and show success
     queryClient.invalidateQueries({ queryKey: ["/api/cart"] });
     setShowPayment(false);
-    toast({
-      title: "Muvaffaqiyat!",
-      description: "Buyurtmangiz qabul qilindi",
-    });
+    notifications.paymentProcessed();
   };
 
   if (isLoading) {

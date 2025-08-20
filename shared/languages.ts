@@ -205,6 +205,21 @@ export const translations = {
   hours: { uz: "soat", ru: "часов" },
   minutes: { uz: "daqiqa", ru: "минут" },
   seconds: { uz: "soniya", ru: "секунд" },
+  
+  // Notifications
+  enableNotifications: { uz: "Bildirishnomalarni yoqish", ru: "Включить уведомления" },
+  notificationsEnabled: { uz: "Bildirishnomalar yoqildi", ru: "Уведомления включены" },
+  notificationsNotSupported: { uz: "Bildirishnomalar qo'llab-quvvatlanmaydi", ru: "Уведомления не поддерживаются" },
+  notificationDescription: { uz: "Aksiyalar va takliflardan birinchi bo'lib xabardor bo'ling", ru: "Будьте первыми в курсе акций и предложений" },
+  notificationsDescription: { uz: "Aksiyalar va takliflardan birinchi bo'lib xabardor bo'ling", ru: "Будьте первыми в курсе акций и предложений" },
+  cartItemAdded: { uz: "Mahsulot savatga qo'shildi", ru: "Товар добавлен в корзину" },
+  wishlistItemAdded: { uz: "Mahsulot sevimlilar ro'yxatiga qo'shildi", ru: "Товар добавлен в избранное" },
+  orderCreated: { uz: "Buyurtma yaratildi", ru: "Заказ создан" },
+  paymentProcessed: { uz: "To'lov amalga oshirildi", ru: "Платеж обработан" },
+  errorOccurred: { uz: "Xatolik yuz berdi", ru: "Произошла ошибка" },
+  operationSuccessful: { uz: "Operatsiya muvaffaqiyatli", ru: "Операция успешна" },
+  enable: { uz: "Yoqish", ru: "Включить" },
+  later: { uz: "Keyinroq", ru: "Позже" },
 };
 
 export function getTranslation(key: keyof typeof translations, lang: Language): string {

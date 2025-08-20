@@ -7,6 +7,7 @@ import { Star, Heart, ShoppingCart, Truck, Shield, RefreshCw } from "lucide-reac
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useCart } from "@/hooks/use-cart";
 import { cn } from "@/lib/utils";
+import { notifications } from "@/lib/toast-helpers";
 
 interface Product {
   id: string;
@@ -56,9 +57,13 @@ export default function QuickViewModal({ product, isOpen, onClose }: QuickViewMo
 
   const handleAddToCart = () => {
     addToCart({ productId: product.id, quantity });
+    notifications.cartItemAdded(productName);
   };
 
   const handleToggleWishlist = () => {
+    if (!isWishlisted) {
+      notifications.wishlistItemAdded(productName);
+    }
     setIsWishlisted(!isWishlisted);
   };
 

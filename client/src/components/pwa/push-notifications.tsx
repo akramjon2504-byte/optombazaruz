@@ -41,11 +41,12 @@ export default function PushNotifications({ className }: PushNotificationsProps)
         await subscribeUser();
         setShowPrompt(false);
         
-        // Show test notification
-        new Notification('Optombazar', {
+        // Show test notification with smaller font
+        new Notification('OptomBazar', {
           body: t('notificationsEnabled') || 'Bildirishnomalar yoqildi! Aksiyalardan birinchi bo\'lib xabardor bo\'ling.',
           icon: '/icons/icon-192x192.svg',
-          badge: '/icons/icon-72x72.svg'
+          badge: '/icons/icon-72x72.svg',
+          tag: 'optombazar-notification'
         });
       }
     } catch (error) {
@@ -165,5 +166,5 @@ function convertVapidKey(vapidKey: string): Uint8Array {
     .replace(/_/g, '/');
     
   const rawData = window.atob(base64);
-  return new Uint8Array([...rawData].map(char => char.charCodeAt(0)));
+  return new Uint8Array(Array.from(rawData).map(char => char.charCodeAt(0)));
 }

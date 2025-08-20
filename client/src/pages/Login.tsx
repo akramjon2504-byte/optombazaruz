@@ -14,6 +14,7 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 import { apiRequest } from '@/lib/queryClient';
 import { Eye, EyeOff, Mail, Lock } from 'lucide-react';
+import { notifications } from '@/lib/toast-helpers';
 
 const loginSchema = z.object({
   email: z.string().email('Email manzil noto\'g\'ri'),
@@ -41,10 +42,7 @@ function Login() {
       return apiRequest('/api/auth/login', 'POST', data);
     },
     onSuccess: (user: any) => {
-      toast({
-        title: t('success'),
-        description: t('loginSuccess'),
-      });
+      notifications.custom('loginSuccess', undefined, 'success');
       
       // Redirect based on user role
       if (user.isAdmin) {
@@ -54,11 +52,7 @@ function Login() {
       }
     },
     onError: (error: Error) => {
-      toast({
-        title: t('error'),
-        description: error.message,
-        variant: 'destructive',
-      });
+      notifications.errorOccurred(error.message);
     },
   });
 

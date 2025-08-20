@@ -7,6 +7,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { useCart } from "@/hooks/use-cart";
 import { Heart, ShoppingCart, Star } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { notifications } from "@/lib/toast-helpers";
 
 interface ProductCardProps {
   product: {
@@ -42,11 +43,15 @@ export default function ProductCard({ product, className }: ProductCardProps) {
     e.preventDefault();
     e.stopPropagation();
     addToCart({ productId: product.id });
+    notifications.cartItemAdded(productName);
   };
 
   const handleToggleWishlist = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
+    if (!isWishlisted) {
+      notifications.wishlistItemAdded(productName);
+    }
     setIsWishlisted(!isWishlisted);
   };
 
