@@ -12,7 +12,20 @@ import { Badge } from "@/components/ui/badge";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
 import { Search, Filter, X } from "lucide-react";
-import AdvancedSearch, { SearchFilters } from '@/components/search/advanced-search';
+import AdvancedSearch from '@/components/search/advanced-search';
+
+// Define SearchFilters interface locally since it's not exported
+interface SearchFilters {
+  query: string;
+  category: string;
+  minPrice: number;
+  maxPrice: number;
+  inStock: boolean;
+  isHit: boolean;
+  isPromo: boolean;
+  sortBy: string;
+  sortOrder: string;
+}
 
 interface CatalogProps {
   filters?: {
