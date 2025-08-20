@@ -155,6 +155,16 @@ export default function Cart() {
   const remainingAmount = Math.max(0, MINIMUM_ORDER_AMOUNT - currentTotal);
   const canCheckout = currentTotal >= MINIMUM_ORDER_AMOUNT;
 
+  // Debug logging
+  console.log('Cart Debug:', {
+    cartItemsLength: cartItems.length,
+    currentTotal,
+    MINIMUM_ORDER_AMOUNT,
+    remainingAmount,
+    canCheckout,
+    shouldShowWarning: !canCheckout && cartItems.length > 0
+  });
+
   const handlePaymentSuccess = () => {
     // Clear cart and show success
     queryClient.invalidateQueries({ queryKey: ["/api/cart"] });
@@ -302,7 +312,7 @@ export default function Cart() {
                   </div>
 
                   {/* Minimum Order Warning */}
-                  {!canCheckout && (
+                  {!canCheckout && cartItems.length > 0 && (
                     <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-700 rounded-lg p-4 space-y-3">
                       <div className="flex items-center justify-between text-sm">
                         <span className="font-medium text-yellow-800 dark:text-yellow-200">
